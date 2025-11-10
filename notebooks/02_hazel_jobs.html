@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>hazel_jobs</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="02_hazel_jobs_files/libs/clipboard/clipboard.min.js"></script>
+<script src="02_hazel_jobs_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="02_hazel_jobs_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="02_hazel_jobs_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="02_hazel_jobs_files/libs/quarto-html/popper.min.js"></script>
+<script src="02_hazel_jobs_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="02_hazel_jobs_files/libs/quarto-html/anchor.min.js"></script>
+<link href="02_hazel_jobs_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="02_hazel_jobs_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="02_hazel_jobs_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="02_hazel_jobs_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="02_hazel_jobs_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="brc-documentation-introduction-to-hazel-hpc" class="level1">
+<h1>BRC Documentation: Introduction to Hazel-HPC</h1>
+<section id="running-jobs-on-hazel-hpc" class="level2">
+<h2 class="anchored" data-anchor-id="running-jobs-on-hazel-hpc">02. Running jobs on Hazel-HPC</h2>
+<section id="what-is-a-job" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-job">What is a job</h3>
+<p>An HPC job is the unit of work that a user submits to the cluster’s Workload Manager (or job scheduler) for execution. It’s essentially your program, simulation code, or analysis script, bundled with all the necessary instructions for the system to run it. These instructions are typically contained within a job script (or submission script), which includes vital directives for the scheduler. By encapsulating the executable code, resource requirements, and runtime parameters, the job acts as a complete, self-contained package that the scheduler can manage and allocate hardware for, ensuring efficient use of the shared cluster resources.</p>
+<section id="lsf-job-scheduler" class="level4">
+<h4 class="anchored" data-anchor-id="lsf-job-scheduler">LSF Job Scheduler</h4>
+<p>Hazel uses the LSF (Load Sharing Facility) job scheduler, currently known as IBM Spectrum LSF. Users submit jobs using the <code>bsub</code> command and include specific directives (e.g., <code>#BSUB -n 16</code>) to communicate their resource needs to the scheduler. LSF then handles the entire lifecycle of the job—from submission to completion, including fault tolerance and output logging.</p>
+<hr>
+<p><br></p>
+</section>
+</section>
+<section id="interactive-jobs" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-jobs">🖥️ Interactive Jobs</h3>
+<p>For quick testing, debugging, or running applications that require a graphical interface (GUI), you must request a temporary allocation on a compute node using an interactive job.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> bsub <span class="at">-Is</span> <span class="at">-n</span> 1 <span class="at">-W</span> 10 bash</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Option</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>-I</code></strong></td>
+<td style="text-align: left;">Requests an <strong>interactive</strong> session.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>-s</code></strong></td>
+<td style="text-align: left;">Sends a <strong>signal</strong> to the job shell upon termination.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>-n 1</code></strong></td>
+<td style="text-align: left;">Requests <strong>1 CPU core</strong>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>-W 10</code></strong></td>
+<td style="text-align: left;">Requests <strong>10 minutes</strong> of wall-clock time.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>bash</code></strong></td>
+<td style="text-align: left;">The shell to run on the allocated node.</td>
+</tr>
+</tbody>
+</table>
+<p><br>
+</p>
+<section id="requesting-multiple-cores-on-interactive" class="level4">
+<h4 class="anchored" data-anchor-id="requesting-multiple-cores-on-interactive">Requesting multiple cores on Interactive</h4>
+<p>It is possible to request multiple cores for an interactive node. For example, to request an interactive session using <strong>4 cores</strong> (<code>-n 4</code>), with <strong>all cores on the same node</strong> (<code>-R "span[hosts=1]"</code>), and <strong>10 minutes</strong> of wall clock time (<code>-W 10</code>) use:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-Is</span> <span class="at">-n</span> 4 <span class="at">-R</span> <span class="st">"span[hosts=1]"</span> <span class="at">-W</span> 10 bash</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<p><br></p>
+</section>
+</section>
+<section id="anatomy-of-a-job-script" class="level3">
+<h3 class="anchored" data-anchor-id="anatomy-of-a-job-script">📋 Anatomy of a Job Script</h3>
+<p>Job scheduling software. LSF (Load sharing facility) Job contains: the script you want to run and information about the resources you need to run it.</p>
+<section id="example-of-a-job-script" class="level4">
+<h4 class="anchored" data-anchor-id="example-of-a-job-script">0. Example of a job script:</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Request resources here</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -J fastqc                       # job name</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -n 2                            # number of CPUs required per task</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -q shared_memory                # the queue to run on</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -R "span[hosts=1]"              # number of hosts to spread the jobs across, 1 host used here</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -R "rusage[mem=4GB]"            # required total memory for the job </span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -o "./output.%J.log"            # standard output file (%J is job name)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -e "./error.%J.log"             # standard error file (%J is job ID)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -W 10:00                        # time to run</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Load modules here</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># (i.e. module load conda)</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Execute commands here</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># echo for log</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"job started"</span><span class="kw">;</span> <span class="bu">pwd</span><span class="kw">;</span> <span class="fu">hostname</span><span class="kw">;</span> <span class="fu">date</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Add here all the code to run the job (i.e. apptainer run ${FASTQC} fastqc $FASTQ_DIR/${SAMPLE}_*.fastq*)</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># print date for log</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"job ended"</span><span class="kw">;</span> <span class="fu">date</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="request-resources-block" class="level4">
+<h4 class="anchored" data-anchor-id="request-resources-block">1. Request resources block</h4>
+<p>The “Request Resources Block” is the most critical section, as it uses LSF directives (lines starting with <code>#BSUB</code>) to tell the Workload Manager exactly how much computing power and time your job needs.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Directive</th>
+<th style="text-align: left;">Command</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Job Name</strong></td>
+<td style="text-align: left;"><code>#BSUB -J fastqc</code></td>
+<td style="text-align: left;">Sets the <strong>job name</strong> to <code>fastqc</code>. This is used to identify the job in the queue and in output files.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>CPU Cores</strong></td>
+<td style="text-align: left;"><code>#BSUB -n 2</code></td>
+<td style="text-align: left;">Requests <strong>2 CPU cores</strong> per task. For a parallel job, this is the number of cores dedicated to that single task.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Queue</strong></td>
+<td style="text-align: left;"><code>#BSUB -q shared_memory</code></td>
+<td style="text-align: left;">Specifies the <strong>queue</strong> (or partition) where the job should run. The <code>shared_memory</code> queue suggests this job runs on a single node.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Host Span</strong></td>
+<td style="text-align: left;"><code>#BSUB -R "span[hosts=1]"</code></td>
+<td style="text-align: left;">Requests that all required resources (the 2 cores) for the task must reside on a <strong>single computing host</strong> (node).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Memory</strong></td>
+<td style="text-align: left;"><code>#BSUB -R "rusage[mem=4GB]"</code></td>
+<td style="text-align: left;">Requests <strong>4 GB of total memory</strong> (RAM) for the job task. The job will be scheduled only on a node with at least this much available memory.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Output File</strong></td>
+<td style="text-align: left;"><code>#BSUB -o "./output.%J.log"</code></td>
+<td style="text-align: left;">Directs <strong>standard output</strong> (<code>stdout</code>) to this file.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Error File</strong></td>
+<td style="text-align: left;"><code>#BSUB -e "./error.%J.log"</code></td>
+<td style="text-align: left;">Directs <strong>standard error</strong> (<code>stderr</code>) to this file.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Wall Time</strong></td>
+<td style="text-align: left;"><code>#BSUB -W 10:00</code></td>
+<td style="text-align: left;">Sets the maximum <strong>wall-clock time</strong> (actual time elapsed) to <strong>10 minutes</strong>. If the job runs longer, LSF will terminate it.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="load-modules-block" class="level4">
+<h4 class="anchored" data-anchor-id="load-modules-block">2. Load modules block</h4>
+<p>This block is crucial for setting up the software environment your specific job requires. HPC systems use a tool called Modules to manage different versions of software, compilers, and libraries without conflicts.</p>
+<p>This section uses the <code>module load</code> command to prepare the job’s environment. This avoids conflicts by allowing different users and different jobs to use specific, isolated versions of software on the shared cluster.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Command</th>
+<th style="text-align: left;">Example</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Setup</strong></td>
+<td style="text-align: left;"><code>module load conda</code></td>
+<td style="text-align: left;">Loads the <strong>Conda</strong> module, which manages virtual environments. This makes the <code>conda</code> command available for use.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Path Prep</strong></td>
+<td style="text-align: left;"><code>module load gcc/8.3.0</code></td>
+<td style="text-align: left;">Loads a specific version of the <strong>GNU Compiler Collection</strong>. This is common for jobs that need to compile code or run code compiled against a specific library version.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Activation</strong></td>
+<td style="text-align: left;"><code>source activate my_env</code></td>
+<td style="text-align: left;"><em>If using Conda</em>, this line activates the specific virtual environment containing your job’s required tools (like <code>fastqc</code>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Principle:</strong> Always load the modules your job needs <em>before</em> trying to run the main command.</p>
+<hr>
+</section>
+<section id="execute-commands-block" class="level4">
+<h4 class="anchored" data-anchor-id="execute-commands-block">3. Execute commands block</h4>
+<p>This is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s).This is where you place the executable commands that perform the job’s core task. It’s often wrapped with simple <code>echo</code> commands to log key steps, helping with debugging and monitoring.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Command</th>
+<th style="text-align: left;">Example</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Start Log</strong></td>
+<td style="text-align: left;"><code>echo "job started"; pwd; hostname; date</code></td>
+<td style="text-align: left;"><strong>Logs the start time</strong> and environment details (<code>pwd</code> for current directory, <code>hostname</code> for the node name) into your standard output (<code>output.%J.log</code>) file.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Core Task</strong></td>
+<td style="text-align: left;"><code>apptainer run ${FASTQC} fastqc $FASTQ_DIR/${SAMPLE}_*.fastq*</code></td>
+<td style="text-align: left;"><strong>Runs the main application.</strong> This example uses <strong>Apptainer</strong> (formerly Singularity) to execute the <code>fastqc</code> application within a specific container (<code>${FASTQC}</code>), processing the input data files.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>End Log</strong></td>
+<td style="text-align: left;"><code>echo "job ended"; date</code></td>
+<td style="text-align: left;"><strong>Logs the end time</strong> of the computational work. This is vital for calculating the actual runtime and ensuring the job finished successfully.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Principle:</strong> Every command listed here runs on the allocated compute resources, not on the login node.</p>
+<hr>
+<p><br></p>
+</section>
+</section>
+<section id="job-monitoring-and-management" class="level3">
+<h3 class="anchored" data-anchor-id="job-monitoring-and-management">🛠️ Job Monitoring and Management</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Command Category</th>
+<th style="text-align: left;">Command Syntax</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Submission</strong></td>
+<td style="text-align: left;"><code>bsub &lt; yourjob.sh</code></td>
+<td style="text-align: left;"><strong>Submits</strong> the job script (<code>yourjob.sh</code>) to the LSF scheduler. The scheduler processes the <code>#BSUB</code> directives within the script.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Status Check</strong></td>
+<td style="text-align: left;"><code>bjobs</code></td>
+<td style="text-align: left;">Displays a list of <strong>all your jobs</strong> (running, pending, suspended, etc.) and their current status.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Detailed Status</strong></td>
+<td style="text-align: left;"><code>bjobs -l [JOBID]</code></td>
+<td style="text-align: left;">Provides a <strong>detailed report</strong> on a specific job, including the execution host, resource usage, and waiting reasons (if pending).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Termination</strong></td>
+<td style="text-align: left;"><code>bkill [JOBID]</code></td>
+<td style="text-align: left;"><strong>Terminates</strong> (kills) a running or pending job instantly. Use this if your job is faulty or you no longer need the results.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Resource Inquiry</strong></td>
+<td style="text-align: left;"><code>bhosts</code></td>
+<td style="text-align: left;">Shows the <strong>status of the compute nodes</strong> in the cluster, indicating which are available, busy, or otherwise unavailable.</td>
+</tr>
+</tbody>
+</table>
+<section id="get-job-information-with-bjobs" class="level4">
+<h4 class="anchored" data-anchor-id="get-job-information-with-bjobs">1. Get job information with <code>bjobs</code></h4>
+<p>The bjobs command is used to monitor the status of jobs after they are submitted to LSF. An LSF job status is usually in one of two states (STAT): PEND means that the job is queued and waiting for resources to become available and RUN means that the job is currently executing.</p>
+<p>A typical <code>bjobs</code> output looks like:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[unityID@login01</span> ~]$ bjobs</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">JOBID</span>   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">948851</span>  unityID  RUN   standard   login01.hpc bc2j6       myjob1 </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Once you have the <strong>JOBID</strong> you can obtain more information about the job using:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bjobs</span> <span class="at">-l</span> JOBID</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For jobs in a pending state, this will give information about why the job is pending. It is possible to make resource requests that are impossible to satisfy; jobs that have been pending for a long time may have made that type of request. It is possible that the chosen resources are currently being used, but it is also possible that the specified resources do not exist on the system. For example, LSF will not give an error message upon requesting a 64 core node with 500 GB of memory; it will simply wait until such a node is installed, leaving the job in a forever pending state.</p>
+<p>Other job information commands:</p>
+<ul>
+<li><code>bjobs -l</code>: get more detailed information on the jobs than <code>bjobs</code></li>
+<li><code>bjobs -lp -p3</code>: will include a list of reasons the job is pending, and it may include an estimate of when the job will start (<em>e.g., Job will start no sooner than indicated time stamp</em>).</li>
+<li><code>bjobs -u all | grep gpu</code>: find jobs running in a particular queue</li>
+<li><code>bjobs -r -X -o "jobid queue cpu_used run_time avg_mem max_mem slots delimiter=','"</code>: return a CSV formatted list of your jobs showing the job ID, queue, total CPU time, elapsed wall clock time, average memory utilized, maximum memory utilized, and the number of cores reserved</li>
+</ul>
+<blockquote class="blockquote">
+<p>Note: Job priority is determined by several factors including fair share priority, queue priority, and time of submission.</p>
+</blockquote>
+</section>
+<section id="modify-job-requests-with-bmod" class="level4">
+<h4 class="anchored" data-anchor-id="modify-job-requests-with-bmod">2. Modify job requests with <code>bmod</code></h4>
+<p>For example, to change the wall clock limit for a pending or running job, use</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bmod</span> <span class="at">-W</span> [new time] [job ID].</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="kill-jobs-with-bkill" class="level4">
+<h4 class="anchored" data-anchor-id="kill-jobs-with-bkill">3. Kill jobs with <code>bkill</code></h4>
+<p>A pending job may be removed from the queue or a running job may be terminated by using the bkill command. The job ID is used to specify which job to remove.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bkill</span> JOBID</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To terminate all running and pending jobs, use <code>bkill 0</code>.</p>
+<hr>
+<p><br></p>
+</section>
+</section>
+<section id="queues-on-hazel-from-hazelwiki" class="level3">
+<h3 class="anchored" data-anchor-id="queues-on-hazel-from-hazelwiki">🚦 Queues on Hazel (from <a href="https://hpc.ncsu.edu/Documents/LSFResources.php">HazelWiki</a>)</h3>
+<p>To specify a queue, use&nbsp;<code>-q queue_name</code>.</p>
+<p>In general, <strong>users&nbsp;should not&nbsp;specify a queue</strong>. When no queue is specified, LSF will choose the most appropriate queue based on the number of cores and time requested from the set of&nbsp;default queues. The exceptions are partner queues and&nbsp;specialty queues, which are queues with special resources.</p>
+<section id="default-queues" class="level4">
+<h4 class="anchored" data-anchor-id="default-queues">Default Queues</h4>
+<ul>
+<li>debug</li>
+<li>serial</li>
+<li>short</li>
+<li>single_chassis</li>
+<li>standard</li>
+<li>long</li>
+</ul>
+</section>
+<section id="specialty-queues" class="level4">
+<h4 class="anchored" data-anchor-id="specialty-queues">Specialty Queues</h4>
+<ul>
+<li>shared_memory - Nodes intended for running OpenMP or other shared memory executables particularly if have large memory requirements</li>
+<li>gpu - Nodes with attached NVIDIA GPUs</li>
+<li>short_gpu - Access to partner GPU nodes for up to 2 hour run time</li>
+</ul>
+<p>The queues available to a user can be displayed by using <code>bqueues -u user_name</code>, and the properties of a queue can be displayed by using <code>bqueues -l queue_name</code>. For help interpreting the output of bqueues, see this <a href="https://hpc.ncsu.edu/Documents/lsf_monitor_faq.php#monkey">example</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="ex">base</span><span class="kw">)</span> <span class="ex">[mtouced@login03</span> ~]$ bqueues <span class="at">-u</span> mtouced</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">QUEUE_NAME</span>      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">debug</span>            80  Open:Active       <span class="at">-</span>   64    <span class="at">-</span>    <span class="at">-</span>    64    64     0     0</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">short</span>            75  Open:Active    2560 1024    <span class="at">-</span>    <span class="at">-</span>  4229  2792  1237     0</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">shared_memory</span>    70  Open:Active       <span class="at">-</span>  256    <span class="at">-</span>    <span class="at">-</span>  2164  1086  1028     0</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ex">single_chassis</span>   65  Open:Active       <span class="at">-</span> 1024    <span class="at">-</span>    <span class="at">-</span>  6090  2759  2595     0</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ex">standard</span>         64  Open:Active       <span class="at">-</span> 1024    <span class="at">-</span>    <span class="at">-</span>   112   112     0     0</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">long</span>             63  Open:Active    1536  512    <span class="at">-</span>    <span class="at">-</span>  1167   644   523     0</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="ex">short_gpu</span>        62  Open:Active       <span class="at">-</span>   64    <span class="at">-</span>    <span class="at">-</span>    78    20    58     0</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="ex">gpu</span>              60  Open:Active       <span class="at">-</span>   64    <span class="at">-</span>    <span class="at">-</span>   380   100   280     0</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">serial</span>           30  Open:Active    2048 1024    <span class="at">-</span>    <span class="at">-</span>   342    63   279     0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="bqueues-output" class="level5">
+<h5 class="anchored" data-anchor-id="bqueues-output"><code>bqueues</code> output:</h5>
+<ul>
+<li>NJOBS: number of total jobs in the queue</li>
+<li>RUN: Number of jobs actually running</li>
+<li>PEND: Number of jobs pending</li>
+<li>MAX: The maximum number of cores available. For some queues, like gpu, the MAX is not shown.</li>
+</ul>
+</section>
+</section>
+<section id="other-commands-to-get-queue-information" class="level4">
+<h4 class="anchored" data-anchor-id="other-commands-to-get-queue-information">Other commands to get queue information</h4>
+<ul>
+<li><code>lshosts | grep gpu</code> or <code>bqueues -l gpu</code>: find which hosts have GPUs</li>
+</ul>
+<hr>
+<p><br></p>
+</section>
+</section>
+<section id="standard-output-and-standard-error" class="level3">
+<h3 class="anchored" data-anchor-id="standard-output-and-standard-error">📤 Standard Output and Standard Error</h3>
+<p>When you submit a job to the HPC, your program’s output needs to go somewhere. By default, programs write to two streams: - <strong>Standard Output (stdout)</strong>: Normal program output and results - <strong>Standard Error (stderr)</strong>: Error messages and warnings</p>
+</section>
+<section id="specifying-output-files-in-lsf" class="level3">
+<h3 class="anchored" data-anchor-id="specifying-output-files-in-lsf">Specifying Output Files in LSF</h3>
+<p>In your batch script, use these directives to control where output goes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -o stdout.%J    # Standard output file</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -e stderr.%J    # Standard error file</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>%J</code> is automatically replaced by your job ID when the job starts. For example, if your job ID is 948851, the files will be named: - <code>stdout.948851</code> - <code>stderr.948851</code></p>
+<p><strong>You can customize the names:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -o logs/myanalysis_out.%J</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -e logs/myanalysis_err.%J</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<p><br></p>
+</section>
+<section id="common-errors-and-how-to-fix-them" class="level3">
+<h3 class="anchored" data-anchor-id="common-errors-and-how-to-fix-them">⚠️ Common Errors and How to Fix Them</h3>
+<section id="file-or-directory-missing" class="level4">
+<h4 class="anchored" data-anchor-id="file-or-directory-missing">1. File or Directory Missing</h4>
+<p><strong>Error message in stderr:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/bin/bash:</span> line 12: reads_R1.fastq: No such file or directory</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>or</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cannot</span> access <span class="st">'data/samples.txt'</span>: No such file or directory</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>The file doesn’t exist where you think it does</li>
+<li>You’re using a relative path, but the job runs from a different directory</li>
+<li>Typo in the filename</li>
+</ul>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>Use absolute paths: <code>/path/to/your/data/reads_R1.fastq</code></li>
+<li>Verify the file exists before submitting: <code>ls -l reads_R1.fastq</code></li>
+<li>Check your current directory: <code>pwd</code> (jobs run from the directory where you submit)</li>
+<li>Use <code>#BSUB -cwd /path/to/working/directory</code> to specify working directory</li>
+</ul>
+</section>
+<section id="out-of-memory-oom" class="level4">
+<h4 class="anchored" data-anchor-id="out-of-memory-oom">2. Out of Memory (OOM)</h4>
+<p><strong>Error message in stderr:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">slurmstepd:</span> error: Detected 1 oom-kill event<span class="er">(</span><span class="ex">s</span><span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>or</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Killed</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">java.lang.OutOfMemoryError:</span> Java heap space</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Cause:</strong> Your job exceeded the memory allocated or available on the node.</p>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>Request more memory using <code>-R "rusage[mem=XXXX]"</code> (memory in MB per core)</li>
+<li>Check if your program has memory limit options</li>
+<li>Use a memory-efficient algorithm or subsample your data</li>
+</ul>
+</section>
+<section id="wall-time-exceeded" class="level4">
+<h4 class="anchored" data-anchor-id="wall-time-exceeded">3. Wall Time Exceeded</h4>
+<p><strong>Error message in stderr:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">TERM_RUNLIMIT:</span> job killed after reaching LSF run time limit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Cause:</strong> Your job ran longer than the time specified with <code>-W</code>.</p>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>Increase the wall time: <code>-W 480</code> (for 8 hours)</li>
+<li>Optimize your code or reduce input size</li>
+<li>Break the job into smaller tasks</li>
+<li>Use checkpointing if your program supports it</li>
+</ul>
+</section>
+<section id="wrong-type-wt---incorrect-resource-specification" class="level4">
+<h4 class="anchored" data-anchor-id="wrong-type-wt---incorrect-resource-specification">4. Wrong Type (WT) - Incorrect Resource Specification</h4>
+<p><strong>Error message:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Job</span> not started: requested resource <span class="pp">[</span><span class="ss">avx512</span><span class="pp">]</span> not available</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Cause:</strong> You requested a resource (CPU instruction set, GPU, specific node type) that doesn’t exist or isn’t available.</p>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>Check available resources at the <a href="https://hpc.ncsu.edu/Monitor/ClusterStatusModel.php">cluster status page</a></li>
+<li>Remove or modify the resource specification</li>
+<li>Use more general resource requests</li>
+</ul>
+<p><strong>Common resource specifications on NCSU HPC:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -R "select[avx2]"     # AVX2 instruction set</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -R "select[qc]"       # 8-core nodes</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -R "select[sc]"       # 16-core nodes</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -R "select[dc]"       # 32-core nodes</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -q gpu                # GPU queue</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="module-not-found" class="level4">
+<h4 class="anchored" data-anchor-id="module-not-found">5. Module Not Found</h4>
+<p><strong>Error message in stderr:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module:</span> command not found</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>or</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Lmod</span> has detected the following error: The following module<span class="er">(</span><span class="ex">s</span><span class="kw">)</span> <span class="ex">are</span> unknown: <span class="st">"blast"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Module system not initialized (rarely on NCSU HPC)</li>
+<li>Module name is incorrect or doesn’t exist</li>
+<li>Module is not available on the compute nodes</li>
+</ul>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>Check available modules: <code>module avail</code></li>
+<li>Search for the module: <code>module spider blast</code></li>
+<li>Verify correct module name and version</li>
+<li>Load prerequisite modules first</li>
+</ul>
+</section>
+<section id="permission-denied" class="level4">
+<h4 class="anchored" data-anchor-id="permission-denied">6. Permission Denied</h4>
+<p><strong>Error message in stderr:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./my_script.sh:</span> Permission denied</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Cause:</strong> The script or executable doesn’t have execute permissions.</p>
+<p><strong>Solution:</strong> Make the file executable before submitting:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x my_script.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="debugging-tips" class="level3">
+<h3 class="anchored" data-anchor-id="debugging-tips">🐛 Debugging Tips</h3>
+<ol type="1">
+<li><strong>Check your error file first</strong>: Most problems will show up in the stderr file</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>   <span class="fu">cat</span> error.JOBID</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">tail</span> <span class="at">-50</span> error.JOBID  <span class="co"># Last 50 lines often contain the error</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol start="2" type="1">
+<li><strong>Test your script interactively first</strong>: Request an interactive session and run commands manually</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>   <span class="ex">bsub</span> <span class="at">-Is</span> <span class="at">-n</span> 1 <span class="at">-W</span> 30 bash</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Test your commands here before submitting a batch job</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol start="3" type="1">
+<li><strong>Use verbose/debug flags</strong>: Many programs have options for detailed output</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>   <span class="ex">my_program</span> <span class="at">--verbose</span> input.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol start="4" type="1">
+<li><strong>Add checks in your script</strong>:</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>   <span class="co">#!/bin/bash</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>   <span class="co">#BSUB -n 1</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>   <span class="co">#BSUB -W 30</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>   <span class="co">#BSUB -J mytest</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>   <span class="co">#BSUB -o output.%J</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>   <span class="co">#BSUB -e error.%J</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Exit on any error</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>   <span class="bu">set</span> <span class="at">-e</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Print commands as they execute</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>   <span class="bu">set</span> <span class="at">-x</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Check if input file exists</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-f</span> <span class="st">"input.txt"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>       <span class="bu">echo</span> <span class="st">"ERROR: input.txt not found!"</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>       <span class="bu">exit</span> 1</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>   <span class="cf">fi</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Your analysis here</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>   <span class="ex">my_program</span> input.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol start="5" type="1">
+<li><strong>Monitor your job</strong>: Check on running jobs regularly</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>   <span class="ex">bjobs</span> <span class="at">-l</span> JOBID  <span class="co"># Detailed job info</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<p><br> <br></p>
+</section>
+</section>
+<section id="bonus-login-node-script-with-gnu-parallel" class="level2">
+<h2 class="anchored" data-anchor-id="bonus-login-node-script-with-gnu-parallel">⚡ BONUS!: Login node script with GNU Parallel</h2>
+<p>In some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as: - Downloading databases and data, which is sometimes embedded in a pipeline - Installing tools that require internet connectivity</p>
+<p>When compute nodes lack internet access, these tasks must be performed on the login node. However, remember that we CANNOT run computationally intensive tasks on the login node. Some of these processes, like downloading large databases, can be resource-intensive and could violate cluster policies if executed directly on the login node without proper resource management.</p>
+<p>To address this challenge, we’ll learn how to use GNU Parallel to efficiently manage these tasks while respecting login node limitations.</p>
+<section id="what-is-gnu-parallel" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-gnu-parallel">What is GNU Parallel?</h3>
+<p>GNU Parallel is a <strong>command-line tool that allows you to execute multiple jobs simultaneously while controlling resource usage</strong>. Think of it as a way to run several commands at once, but with intelligent management of how many processes run at any given time. Instead of running tasks sequentially (one after another) or launching them all at once (which could overwhelm the system), GNU Parallel lets you specify how many jobs should run in parallel. For example, if you need to download 100 datasets, you could tell GNU Parallel to download 4 at a time—as soon as one download finishes, it automatically starts the next one until all are complete.</p>
+<p>This controlled parallelization is particularly valuable on login nodes, where we need to be mindful of resource consumption while still completing tasks efficiently. By limiting the number of concurrent processes, GNU Parallel allows us to perform necessary downloads and installations <strong>without monopolizing</strong> the login node’s resources or violating cluster policies.</p>
+<p>It also provides useful features like progress monitoring, automatic retry of failed jobs, and the ability to resume interrupted work—making it an essential tool for managing data-intensive tasks in restricted HPC environments.</p>
+</section>
+<section id="example-1-downloading-data-from-sra" class="level3">
+<h3 class="anchored" data-anchor-id="example-1-downloading-data-from-sra">Example 1: Downloading data from SRA</h3>
+<p>Let’s see how to use GNU Parallel to download multiple datasets from the Sequence Read Archive (SRA) efficiently and responsibly on the login node.</p>
+<section id="basic-setup" class="level4">
+<h4 class="anchored" data-anchor-id="basic-setup">Basic Setup</h4>
+<p>First, create a text file listing the SRA accession numbers you want to download. For example, create a file called <code>sra_accessions.txt</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">SRR28473915</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">SRR28473916</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">SRR28473917</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="ex">SRR28473918</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="ex">SRR28473919</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="simple-parallel-download" class="level4">
+<h4 class="anchored" data-anchor-id="simple-parallel-download">Simple Parallel Download</h4>
+<p>To download these datasets with GNU Parallel, limiting to 3 concurrent downloads:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! /bin/bash</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create some variables for a more clean script</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>3</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># load apptainer module</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># run gnu parallel downloads</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> sra_accessions.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="st">"apptainer exec </span><span class="va">$SRA_CONTAINER</span><span class="st"> prefetch {}"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>Note: Make sure that you use double quotes <code>"..."</code> instead of single quotes <code>'...'</code> so that the variable <code>$SRA_CONTAINER</code> gets expanded to its actual value.</p>
+</blockquote>
+<p>This command reads each accession number from the file and passes it to <code>prefetch</code>. The <code>-j 3</code> flag ensures only 3 downloads run simultaneously, preventing system overload.</p>
+</section>
+<section id="more-robust-download-with-progress-monitoring" class="level4">
+<h4 class="anchored" data-anchor-id="more-robust-download-with-progress-monitoring">More Robust Download with Progress Monitoring</h4>
+<p>For a more informative and robust approach:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! /bin/bash</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create some variables for a more clean script</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>3</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="va">JOBLOG</span><span class="op">=</span>/your_workdir/path/download_log.txt</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># run gnu parallel downloads with joblog</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> sra_accessions.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="at">--progress</span> <span class="at">--joblog</span> <span class="va">$JOBLOG</span> <span class="st">"apptainer exec </span><span class="va">$SRA_CONTAINER</span><span class="st"> prefetch {}"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Key options explained:</p>
+<ul>
+<li><code>-j $CPUS</code>: Run 3 (<code>$CPUS</code>) jobs in parallel</li>
+<li><code>--progress</code>: Display a progress bar showing completed/remaining jobs</li>
+<li><code>--joblog $JOBLOG</code>: Create a log file (<code>download_log.txt</code>) tracking each job’s status and timing</li>
+<li><code>&amp;&amp;</code> and <code>||</code>: Provide success/failure messages for each download</li>
+</ul>
+</section>
+</section>
+<section id="example-2-run-a-list-of-commands" class="level3">
+<h3 class="anchored" data-anchor-id="example-2-run-a-list-of-commands">Example 2: Run a list of commands</h3>
+<p>Sometimes you need to execute multiple independent commands that all require internet access. GNU Parallel can read a list of these commands from a file and execute them in parallel on the login node. This is particularly useful for tasks like downloading reference genomes, databases, or datasets from different sources.</p>
+<section id="creating-a-command-list" class="level4">
+<h4 class="anchored" data-anchor-id="creating-a-command-list">Creating a Command List</h4>
+<p>First, create a file called <code>all_commands.txt</code> with your internet-dependent commands. Here’s an example with common bioinformatics download tasks:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt <span class="at">-O</span> bacteria_summary.txt</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-O</span> https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="ex">prefetch</span> SRR123456</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="ex">prefetch</span> SRR123457</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://ftp.ncbi.nlm.nih.gov/blast/db/16S_ribosomal_RNA.tar.gz</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-O</span> https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp s3://1000genomes/data/sample1.vcf.gz . <span class="at">--no-sign-request</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp s3://1000genomes/data/sample2.vcf.gz . <span class="at">--no-sign-request</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="running-the-commands-in-parallel" class="level4">
+<h4 class="anchored" data-anchor-id="running-the-commands-in-parallel">Running the Commands in Parallel</h4>
+<p>Now use this script to execute the commands with controlled parallelization:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! /bin/bash</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create some variables for a more clean script</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>6</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># run a list of commands</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> all_commands.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="at">-a</span> <span class="at">-</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Script breakdown:</strong></p>
+<ul>
+<li><code>CPUS=6</code>: Limits execution to 6 concurrent downloads</li>
+<li><code>PARALLEL</code>: Variable storing the path to the GNU Parallel executable (adjust for your system)</li>
+<li><code>-j $CPUS</code>: Run up to 6 jobs simultaneously</li>
+<li><code>-a -</code>: Read commands from standard input (stdin), which comes from the <code>cat</code> command</li>
+</ul>
+</section>
+<section id="adding-progress-tracking" class="level4">
+<h4 class="anchored" data-anchor-id="adding-progress-tracking">Adding Progress Tracking</h4>
+<p>For better monitoring, enhance the script with progress reporting:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>6</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Run commands with progress tracking and logging</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> all_commands.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="at">--progress</span> <span class="at">--joblog</span> commands_log.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This approach allows you to download multiple resources from different sources simultaneously while maintaining control over login node resource usage.</p>
+</section>
+</section>
+<section id="sending-the-processes-to-the-background" class="level3">
+<h3 class="anchored" data-anchor-id="sending-the-processes-to-the-background">Sending the processes to the background</h3>
+<p>Since we are running these scripts on the login node, we are going to want to be able to send them to the background so we can continue using the login node terminal. There are several options to do this</p>
+<section id="execute-the-process-directy-on-the-background" class="level4">
+<h4 class="anchored" data-anchor-id="execute-the-process-directy-on-the-background">1. Execute the process directy on the background</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./simple_download.sh</span> <span class="kw">&amp;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="start-the-process-then-background-it" class="level4">
+<h4 class="anchored" data-anchor-id="start-the-process-then-background-it">2. Start the process, then background it</h4>
+<ul>
+<li>Run the script: <code>./simple_download.sh</code></li>
+<li>Press <code>Ctrl+Z</code> to suspend it</li>
+<li>Type <code>bg</code> to resume it in the background</li>
+</ul>
+</section>
+<section id="modifying-your-script" class="level4">
+<h4 class="anchored" data-anchor-id="modifying-your-script">3. Modifying your script</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the process ID</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$!</span> <span class="op">&gt;</span> download.pid</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Background process ID: </span><span class="va">$!</span><span class="st">"</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"To kill this process later, run: kill </span><span class="va">$(</span><span class="fu">cat</span> download.pid<span class="va">)</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This modification allows you to directly obtain the process ID and send it to the background.</p>
+<p>You can also kill the process manually by: 1. Finding the process id with: <code>ps -ef</code> 2. Killing the process using its process id with: <code>kill -9 [process_id]</code></p>
+</section>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

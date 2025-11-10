@@ -1,0 +1,163 @@
+
+## ⚡ BONUS!: Login node script with GNU Parallel
+
+In some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as: 
+- Downloading databases and data, which is sometimes embedded in a pipeline
+- Installing tools that require internet connectivity
+
+When compute nodes lack internet access, these tasks must be performed on the login node. However, remember that we CANNOT run computationally intensive tasks on the login node. Some of these processes, like downloading large databases, can be resource-intensive and could violate cluster policies if executed directly on the login node without proper resource management. 
+
+To address this challenge, we'll learn how to use GNU Parallel to efficiently manage these tasks while respecting login node limitations.
+
+### What is GNU Parallel?
+
+GNU Parallel is a **command-line tool that allows you to execute multiple jobs simultaneously while controlling resource usage**. Think of it as a way to run several commands at once, but with intelligent management of how many processes run at any given time. Instead of running tasks sequentially (one after another) or launching them all at once (which could overwhelm the system), GNU Parallel lets you specify how many jobs should run in parallel. For example, if you need to download 100 datasets, you could tell GNU Parallel to download 4 at a time—as soon as one download finishes, it automatically starts the next one until all are complete.
+
+This controlled parallelization is particularly valuable on login nodes, where we need to be mindful of resource consumption while still completing tasks efficiently. By limiting the number of concurrent processes, GNU Parallel allows us to perform necessary downloads and installations **without monopolizing** the login node's resources or violating cluster policies. 
+
+It also provides useful features like progress monitoring, automatic retry of failed jobs, and the ability to resume interrupted work—making it an essential tool for managing data-intensive tasks in restricted HPC environments.
+
+
+### Example 1: Downloading data from SRA
+Let's see how to use GNU Parallel to download multiple datasets from the Sequence Read Archive (SRA) efficiently and responsibly on the login node.
+
+#### Basic Setup
+
+First, create a text file listing the SRA accession numbers you want to download. For example, create a file called `sra_accessions.txt`:
+
+```bash
+SRR28473915
+SRR28473916
+SRR28473917
+SRR28473918
+SRR28473919
+```
+
+#### Simple Parallel Download
+
+To download these datasets with GNU Parallel, limiting to 3 concurrent downloads:
+```bash
+#! /bin/bash
+
+# create some variables for a more clean script
+CPUS=3
+PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
+SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
+
+# load apptainer module
+module load apptainer
+
+# run gnu parallel downloads
+cat sra_accessions.txt | $PARALLEL -j $CPUS "apptainer exec $SRA_CONTAINER prefetch {}"
+```
+> Note: Make sure that you use double quotes `"..."` instead of single quotes `'...'` so that the variable `$SRA_CONTAINER` gets expanded to its actual value.
+
+This command reads each accession number from the file and passes it to `prefetch`. The `-j 3` flag ensures only 3 downloads run simultaneously, preventing system overload.
+
+
+#### More Robust Download with Progress Monitoring
+
+For a more informative and robust approach:
+```bash
+#! /bin/bash
+# create some variables for a more clean script
+CPUS=3
+PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
+JOBLOG=/your_workdir/path/download_log.txt
+SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
+
+# run gnu parallel downloads with joblog
+cat sra_accessions.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG "apptainer exec $SRA_CONTAINER prefetch {}"
+```
+
+Key options explained:
+
+- `-j $CPUS`: Run 3 (`$CPUS`) jobs in parallel
+- `--progress`: Display a progress bar showing completed/remaining jobs
+- `--joblog $JOBLOG`: Create a log file (`download_log.txt`) tracking each job's status and timing
+- `&&` and `||`: Provide success/failure messages for each download
+
+
+### Example 2: Run a list of commands
+Sometimes you need to execute multiple independent commands that all require internet access. GNU Parallel can read a list of these commands from a file and execute them in parallel on the login node. This is particularly useful for tasks like downloading reference genomes, databases, or datasets from different sources.
+
+#### Creating a Command List
+
+First, create a file called `all_commands.txt` with your internet-dependent commands. Here's an example with common bioinformatics download tasks:
+
+# NOTE TO ME: EXPLAIN COMMANDS!!!!
+
+``` bash
+wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt -O bacteria_summary.txt
+curl -O https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz
+prefetch SRR123456
+prefetch SRR123457
+wget https://ftp.ncbi.nlm.nih.gov/blast/db/16S_ribosomal_RNA.tar.gz
+curl -O https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
+aws s3 cp s3://1000genomes/data/sample1.vcf.gz . --no-sign-request
+aws s3 cp s3://1000genomes/data/sample2.vcf.gz . --no-sign-request
+```
+
+#### Running the Commands in Parallel
+
+Now use this script to execute the commands with controlled parallelization:
+
+```bash
+#! /bin/bash
+# create some variables for a more clean script
+CPUS=6
+PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
+# run a list of commands
+cat all_commands.txt | $PARALLEL -j $CPUS -a -
+```
+
+**Script breakdown:**
+
+- `CPUS=6`: Limits execution to 6 concurrent downloads
+- `PARALLEL`: Variable storing the path to the GNU Parallel executable (adjust for your system)
+- `-j $CPUS`: Run up to 6 jobs simultaneously
+- `-a -`: Read commands from standard input (stdin), which comes from the `cat` command
+
+#### Adding Progress Tracking
+
+For better monitoring, enhance the script with progress reporting:
+```bash
+#!/bin/bash
+CPUS=6
+PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
+
+# Run commands with progress tracking and logging
+cat all_commands.txt | $PARALLEL -j $CPUS --progress --joblog commands_log.txt
+```
+
+This approach allows you to download multiple resources from different sources simultaneously while maintaining control over login node resource usage.
+
+
+### Sending the processes to the background
+
+Since we are running these scripts on the login node, we are going to want to be able to send them to the background so we can continue using the login node terminal. There are several options to do this 
+
+#### 1. Execute the process directy on the background 
+```bash
+./simple_download.sh &
+```
+
+#### 2. Start the process, then background it
+- Run the script: `./simple_download.sh`
+- Press `Ctrl+Z` to suspend it
+- Type `bg` to resume it in the background
+
+#### 3. Modifying your script
+
+```bash
+# Save the process ID
+echo $! > download.pid
+echo "Background process ID: $!"
+echo "To kill this process later, run: kill $(cat download.pid)"
+```
+
+This modification allows you to directly obtain the process ID and send it to the background. 
+
+You can also kill the process manually by: 
+1. Finding the process id with: `ps -ef`
+2. Killing the process using its process id with: `kill -9 [process_id]`
