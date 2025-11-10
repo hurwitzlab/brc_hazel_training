@@ -44,6 +44,13 @@ Job contains: the script you want to run and information about the resources you
 #### 0. Example of a job script:
 ```bash
 #!/bin/bash
+# ==================================================
+# FastQC Job Script for Hazel HPC
+# ==================================================
+# This script runs FastQC quality control on sequencing data
+# using an Apptainer Container
+
+
 # --------------------------------------------------
 # Request resources here
 # --------------------------------------------------
@@ -60,20 +67,73 @@ Job contains: the script you want to run and information about the resources you
 # Load modules here
 # --------------------------------------------------
 
-# (i.e. module load conda)
+module load apptainer
 
 # --------------------------------------------------
 # Execute commands here
 # --------------------------------------------------
 
-# echo for log
-echo "job started"; pwd; hostname; date
+# Print job start information
+echo "=================================================="
+echo "Job started: $(date)"
+echo "Job ID: $LSB_JOBID"
+echo "Running on host: $(hostname)"
+echo "Working directory: $(pwd)"
+echo "=================================================="
 
-# Add here all the code to run the job (i.e. apptainer run ${FASTQC} fastqc $FASTQ_DIR/${SAMPLE}_*.fastq*)
+# Define paths and parameters
+FASTQC_SIF="/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_fastqc:0.12.1--hdfd78af_0.sif"     # Path to the FastQC container
+IN_DIR="/rs1/shares/brc/trainings/hazel_hpc/data"          # Path to input FASTQ files
+SAMPLE="sample_001"                   # Sample name to process
 
+# Create output directory if it doesn't exist
+# (let me know if you find a better way to do this that works)
+mkdir -p /path/to/working/dir/fastqc_results
+OUT_DIR="/path/to/working/dir/fastqc_results"
 
-# print date for log
-echo "job ended"; date
+# --------------------------------------------------
+# Validate inputs
+# --------------------------------------------------
+
+# Check if container exists
+if [ ! -f "${FASTQC_SIF}" ]; then
+    echo "ERROR: Container not found at ${FASTQC_SIF}"
+    exit 1
+fi
+
+# Check if input directory exists
+if [ ! -d "${IN_DIR}" ]; then
+    echo "ERROR: Input directory not found at ${IN_DIR}"
+    exit 1
+fi
+
+# --------------------------------------------------
+# Execute FastQC
+# --------------------------------------------------
+
+echo "Running FastQC on sample: ${SAMPLE}"
+
+apptainer exec ${FASTQC_SIF} fastqc \
+    --threads 2 \
+    --outdir ${OUT_DIR} \
+    ${IN_DIR}/${SAMPLE}_*.fastq*
+
+# Check if FastQC completed successfully
+if [ $? -eq 0 ]; then
+    echo "FastQC completed successfully"
+else
+    echo "ERROR: FastQC failed with exit code $?"
+    exit 1
+fi
+
+# --------------------------------------------------
+# Job completion
+# --------------------------------------------------
+
+echo "=================================================="
+echo "Job completed: $(date)"
+echo "Results saved to: ${OUT_DIR}"
+echo "=================================================="
 ```
 
 ---
@@ -104,9 +164,9 @@ This section uses the `module load` command to prepare the job's environment. Th
 
 | Command | Example | Description |
 | :--- | :--- | :--- |
-| **Setup** | `module load conda` | Loads the **Conda** module, which manages virtual environments. This makes the `conda` command available for use. |
-| **Path Prep** | `module load gcc/8.3.0` | Loads a specific version of the **GNU Compiler Collection**. This is common for jobs that need to compile code or run code compiled against a specific library version. |
+| **Setup Option 1** | `module load conda` | Loads the **Conda** module, which manages virtual environments. This makes the `conda` command available for use. |
 | **Activation** | `source activate my_env` | *If using Conda*, this line activates the specific virtual environment containing your job's required tools (like `fastqc`). |
+| **Setup Option 2** | `module load apptainer` | Loads the **Apptainer** module for running containerized applications. Containers package software with all its dependencies. |
 
 **Key Principle:** Always load the modules your job needs *before* trying to run the main command.
 
@@ -117,13 +177,32 @@ This section uses the `module load` command to prepare the job's environment. Th
 
 This is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s).This is where you place the executable commands that perform the job's core task. It's often wrapped with simple `echo` commands to log key steps, helping with debugging and monitoring.
 
-| Command | Example | Description |
-| :--- | :--- | :--- |
-| **Start Log** | `echo "job started"; pwd; hostname; date` | **Logs the start time** and environment details (`pwd` for current directory, `hostname` for the node name) into your standard output (`output.%J.log`) file. |
-| **Core Task** | `apptainer run ${FASTQC} fastqc $FASTQ_DIR/${SAMPLE}_*.fastq*` | **Runs the main application.** This example uses **Apptainer** (formerly Singularity) to execute the `fastqc` application within a specific container (`${FASTQC}`), processing the input data files. |
-| **End Log** | `echo "job ended"; date` | **Logs the end time** of the computational work. This is vital for calculating the actual runtime and ensuring the job finished successfully. |
+### 3. Execute Commands Block
 
-**Key Principle:** Every command listed here runs on the allocated compute resources, not on the login node.
+This is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s). It's often wrapped with simple `echo` commands to log key steps, helping with debugging and monitoring.
+
+| **Command** | **Example** | **Description** |
+|-------------|-------------|-----------------|
+| **Start Log** | `echo "Job started: $(date)"`<br>`echo "Job ID: $LSB_JOBID"`<br>`echo "Running on host: $(hostname)"`<br>`echo "Working directory: $(pwd)"` | Logs the start time and environment details into your standard output (`output.%J.log`) file:<br>• `date` - records when the job started<br>• `$LSB_JOBID` - shows the unique job ID assigned by LSF<br>• `hostname` - shows which compute node is running the job<br>• `pwd` - prints current working directory |
+| **Set Variables** | `FASTQC_SIF="/rs1/shares/brc/admin`<br>`/containers/images/`<br>`quay.io_biocontainers_fastqc:0.12.1--hdfd78af_0.sif"`<br>`IN_DIR="/rs1/shares/brc`<br>`/trainings/hazel_hpc/data"`<br>`SAMPLE="sample_001"` | Defines paths and parameters used throughout the script:<br>• Container image location<br>• Input data directory<br>• Output directory for results<br>• Sample identifier to process |
+| **Create Directories** | `mkdir -p /path/to/working/`<br>`dir/fastqc_results`<br>`OUT_DIR="/path/to/working/`<br>`dir/fastqc_results"` | Creates the output directory if it doesn't already exist. The `-p` flag prevents errors if the directory already exists. |
+| **Validate Inputs** | `if [ ! -f "${FASTQC_SIF}" ]; then`<br>&nbsp;&nbsp;`echo "ERROR: Container not found"`<br>&nbsp;&nbsp;`exit 1`<br>`fi` | Checks that required files and directories exist before running the main task:<br>• Verifies the container image exists<br>• Confirms the input directory is accessible<br>• Exits with error code if validation fails |
+| **Core Task** | `apptainer exec ${FASTQC_SIF} fastqc \`<br>&nbsp;&nbsp;`--threads 2 \`<br>&nbsp;&nbsp;`--outdir ${OUT_DIR} \`<br>&nbsp;&nbsp;`${IN_DIR}/${SAMPLE}_*.fastq*` | Runs the main application using Apptainer to execute `fastqc` within the container:<br>• `--threads 2` - uses 2 CPU cores (matches `#BSUB -n 2`)<br>• `--outdir` - specifies where to save results<br>• Processes all FASTQ files matching the sample pattern |
+| **Error Checking** | `if [ $? -eq 0 ]; then`<br>&nbsp;&nbsp;`echo "FastQC completed successfully"`<br>`else`<br>&nbsp;&nbsp;`echo "ERROR: FastQC failed"`<br>&nbsp;&nbsp;`exit 1`<br>`fi` | Checks the exit status of the previous command:<br>• `$?` contains the exit code (0 = success)<br>• Logs whether the task completed successfully<br>• Exits with error code if the task failed |
+| **End Log** | `echo "Job completed: $(date)"`<br>`echo "Results saved to: ${OUT_DIR}"` | Logs the end time and output location. This helps you:<br>• Calculate actual runtime<br>• Confirm the job completed<br>• Know where to find results |
+
+**Key Principle:** Every command listed here runs on the allocated compute resources, not on the login node. This ensures your intensive computations don't overload the shared login environment.
+
+**Best Practices Shown:**
+
+- **Logging**: Track when and where your job runs
+- **Variables**: Make paths easy to change and reuse
+- **Validation**: Catch problems before wasting compute time
+- **Error handling**: Know immediately if something goes wrong
+- **Documentation**: Clear comments explain what each section does
+
+
+> Note: All images should be in `/rs1/shares/brc/admin/containers/images`, if your tool is not there feel free to contact us and request it.
 
 ---
 
