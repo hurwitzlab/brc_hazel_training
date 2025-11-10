@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ncsu_hazel_hpc</title>
+<title>readme</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,18 +58,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="01_ncsu_hazel_hpc_files/libs/clipboard/clipboard.min.js"></script>
-<script src="01_ncsu_hazel_hpc_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="01_ncsu_hazel_hpc_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="01_ncsu_hazel_hpc_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="01_ncsu_hazel_hpc_files/libs/quarto-html/popper.min.js"></script>
-<script src="01_ncsu_hazel_hpc_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="01_ncsu_hazel_hpc_files/libs/quarto-html/anchor.min.js"></script>
-<link href="01_ncsu_hazel_hpc_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="01_ncsu_hazel_hpc_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="01_ncsu_hazel_hpc_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="01_ncsu_hazel_hpc_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="01_ncsu_hazel_hpc_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="README_files/libs/clipboard/clipboard.min.js"></script>
+<script src="README_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="README_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="README_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="README_files/libs/quarto-html/popper.min.js"></script>
+<script src="README_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="README_files/libs/quarto-html/anchor.min.js"></script>
+<link href="README_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="README_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="README_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="README_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="README_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -83,130 +83,84 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="brc-documentation-introduction-to-hazel-hpc" class="level1">
-<h1>BRC Documentation: Introduction to Hazel-HPC</h1>
-<section id="first-steps-in-hazel-hpc" class="level2">
-<h2 class="anchored" data-anchor-id="first-steps-in-hazel-hpc">01. First steps in Hazel HPC</h2>
-</section>
-<section id="set-up-an-account" class="level2">
-<h2 class="anchored" data-anchor-id="set-up-an-account">Set up an account</h2>
-<p>Request access from your supervisor and in the mean time read and understand <a href="https://hpc.ncsu.edu/About/AUP.php">Acceptable Use Policy</a>. Obtain your UnityID credentials and ensure you have VPN access if working off-campus.</p>
-<hr>
-</section>
-<section id="log-in" class="level2">
-<h2 class="anchored" data-anchor-id="log-in">Log in</h2>
-<ol type="1">
-<li><strong>Web browser</strong> (OnDemand): <a href="https://servood.hpc.ncsu.edu" class="uri">https://servood.hpc.ncsu.edu</a></li>
-<li><strong>Terminal</strong>: To connect to the shared HPC login nodes, open a terminal window and type</li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="pp">[</span><span class="ss">UnityID</span><span class="pp">]</span>@login.hpc.ncsu.edu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>where user_name is the Unity ID.</p>
-<blockquote class="blockquote">
-<p><em>To allow Hazel to open a window on a local machine, e.g., for GUI applications, X11 forwarding must be enabled by adding the -X option (i.e.&nbsp;ssh -X user_name@login.hpc.ncsu.edu). On macOS, install XQuartz to use X11 forwarding. When using MobaXterm, X11 is enabled by default.</em></p>
-</blockquote>
-<ol start="3" type="1">
-<li><strong>VSCode</strong>: <a href="https://hpc.ncsu.edu/Documents/LoginUsingVSCode.php" class="uri">https://hpc.ncsu.edu/Documents/LoginUsingVSCode.php</a></li>
-</ol>
-<hr>
-</section>
-<section id="transfer-files" class="level2">
-<h2 class="anchored" data-anchor-id="transfer-files">Transfer files</h2>
-<section id="ondemand" class="level3">
-<h3 class="anchored" data-anchor-id="ondemand">OnDemand</h3>
-<p>Go to <a href="https://servood.hpc.ncsu.edu">OnDemand</a></p>
-<ul>
-<li>Under <strong><code>Files</code></strong>, using the <strong><code>Upload</code></strong> or <strong><code>Download</code></strong> buttons to transfer. Make sure you navigate to the destination/source directory on cluster using the <strong><code>Go To</code></strong> button before transferring files.</li>
-</ul>
+<section id="brc-hazel-training-materials" class="level1">
+<h1>BRC Hazel Training Materials</h1>
+<p>This repository contains training materials in Quarto markdown format (<code>.qmd</code> files) to learn how to use Hazel HPC for bioinformatics.</p>
+<p>These materials were developed by the Hurwitz Lab at North Carolina State University as part of the Bioinformatics Resource Center (BRC) training program. They accompanied live workshop sessions but can also be used for self-paced learning.</p>
+<p>The workshop presentations can be found int he <code>slides/</code> directory, while hands-on exercises and tutorials are in the <code>notebooks/</code> directory.</p>
+<p>This is table depicting the calendar of live training sessions associated with these materials. We recommend you follow along with the exercises in the order presented here:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./../images/ondemand_files.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+<p><img src="./images/workshop_schedule.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
 </figure>
 </div>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">🚀 Getting Started</h2>
+<ol type="1">
+<li>Clone or download this repository</li>
+<li>Choose your preferred viewing method from the options above</li>
+<li>Open the training materials and follow along with the exercises</li>
+</ol>
 </section>
-<section id="scp" class="level3">
-<h3 class="anchored" data-anchor-id="scp">SCP</h3>
-<p>For transferring a single file in one direction. Open a terminal on your local machine, and without login into the HPC do:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Local to HPC</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> scp filename <span class="pp">[</span><span class="ss">UnityID</span><span class="pp">]</span>@login.hpc.ncsu.edu:/rs1/researchers/<span class="pp">[</span><span class="ss">letter</span><span class="pp">]</span>/<span class="pp">[</span><span class="ss">name</span><span class="pp">]</span> local/path/to/stuff</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># HPC to local</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> scp <span class="pp">[</span><span class="ss">UnityID</span><span class="pp">]</span>@login.hpc.ncsu.edu:/rs1/researchers/<span class="pp">[</span><span class="ss">letter</span><span class="pp">]</span>/<span class="pp">[</span><span class="ss">name</span><span class="pp">]</span> local/path/to/stuff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="viewing-the-training-materials" class="level2">
+<h2 class="anchored" data-anchor-id="viewing-the-training-materials">👀 Viewing the Training Materials</h2>
+<p>There are several ways to view and interact with the training materials:</p>
+<section id="option-1-view-pre-rendered-html-files-easiest" class="level3">
+<h3 class="anchored" data-anchor-id="option-1-view-pre-rendered-html-files-easiest">Option 1: View Pre-rendered HTML Files (Easiest)</h3>
+<ol type="1">
+<li>Download the HTML files from the repository</li>
+<li>Open them directly in your web browser</li>
+<li>No additional software required</li>
+</ol>
 </section>
-<section id="sftp" class="level3">
-<h3 class="anchored" data-anchor-id="sftp">SFTP</h3>
-<p>To transfer multiple files or in multiple directions (local to HPC and viceversa) without needing to re-authenticate, or to be able to navigate the remote file system. From the local machine initiate an SFTP session:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sftp <span class="pp">[</span><span class="ss">UnityID</span><span class="pp">]</span>@login.hpc.ncsu.edu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>At the prompt do:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sftp</span><span class="op">&gt;</span> cd /path/to/stuff</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sftp</span><span class="op">&gt;</span> put filename</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">sftp</span><span class="op">&gt;</span> get filename</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="option-2-use-vs-code-with-quarto-extension-recommended-for-editing" class="level3">
+<h3 class="anchored" data-anchor-id="option-2-use-vs-code-with-quarto-extension-recommended-for-editing">Option 2: Use VS Code with Quarto Extension (Recommended for Editing)</h3>
+<p>If you want to edit or preview the materials while working on them:</p>
+<ol type="1">
+<li>Install <a href="https://code.visualstudio.com/">VS Code</a></li>
+<li>Install the <a href="https://marketplace.visualstudio.com/items?itemName=quarto.quarto">Quarto extension</a> for VS Code</li>
+<li>Open the <code>.qmd</code> files in VS Code</li>
+<li>Use the preview pane to see rendered output alongside your code</li>
+<li>Press <code>Ctrl+Shift+K</code> (or <code>Cmd+Shift+K</code> on Mac) to render the document</li>
+</ol>
 </section>
-<section id="globus" class="level3">
-<h3 class="anchored" data-anchor-id="globus">Globus</h3>
-<p>Globus is a point to point file syncing platform. It is very useful for transfering large files or large numbers of small files, since it allows for bacground scheduled transfers. See our <span style="color:purple;"><strong>Globus-ncsu tutorial</strong></span> to learn more about Globus and how to use it with the NCSU Hazel HPC.</p>
+<section id="option-3-render-with-quarto-cli" class="level3">
+<h3 class="anchored" data-anchor-id="option-3-render-with-quarto-cli">Option 3: Render with Quarto CLI</h3>
+<p>To render the Quarto documents yourself:</p>
+<ol type="1">
+<li><p>Install <a href="https://quarto.org/docs/get-started/">Quarto</a></p></li>
+<li><p>Clone this repository:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/hurwitzlab/brc_hazel_training.git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> brc_hazel_training</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Render individual documents:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render document.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Or render all documents:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Open the generated HTML files in your browser</p></li>
+</ol>
+</section>
+<section id="option-4-use-rstudio" class="level3">
+<h3 class="anchored" data-anchor-id="option-4-use-rstudio">Option 4: Use RStudio</h3>
+<p>If you’re familiar with RStudio:</p>
+<ol type="1">
+<li>Install <a href="https://posit.co/download/rstudio-desktop/">RStudio</a> (version 2022.07 or later includes Quarto)</li>
+<li>Open the <code>.qmd</code> files in RStudio</li>
+<li>Click the “Render” button to preview documents</li>
+</ol>
+</section>
+<section id="option-5-view-raw-files-on-github" class="level3">
+<h3 class="anchored" data-anchor-id="option-5-view-raw-files-on-github">Option 5: View raw files on GitHub</h3>
+<p>You can view the raw Quarto markdown files directly on GitHub, though formatting and code output won’t be rendered.</p>
 <hr>
 </section>
 </section>
-<section id="useful-commands" class="level2">
-<h2 class="anchored" data-anchor-id="useful-commands">Useful commands</h2>
-<section id="system-and-user-info" class="level3">
-<h3 class="anchored" data-anchor-id="system-and-user-info">System and user info</h3>
-<ul>
-<li>Check queues you have access to: <code>$ bqueues -u [UnityID]</code></li>
-<li>Check the groups you belong to (first one is your default): <code>$ groups</code></li>
-<li>To see what node you are in: <code>$ hostname</code> or <code>$ echo $HOSTNAME</code></li>
-</ul>
+<section id="contributing" class="level2">
+<h2 class="anchored" data-anchor-id="contributing">🤝 Contributing</h2>
+<p>If you find issues or have suggestions for improvements, please open an issue or submit a pull request.</p>
 </section>
-<section id="storage" class="level3">
-<h3 class="anchored" data-anchor-id="storage">Storage</h3>
-<ul>
-<li>Check size of the directory you are in: <code>$ du -sh .</code> &gt; Important for checking pipeline output size</li>
-<li>Check size of files in a directory: <code>$ du -sh [pathtodirectory]/*</code></li>
-<li>Check how much space is being used in your home directory: <code>$ quota</code></li>
-<li>Check space allocations for your group: <code>$ quota -s -g group_name</code></li>
-<li>Check files in reversed time order (most recently modified at the end): <code>$ ls -lrt</code></li>
-</ul>
-</section>
-<section id="software-and-resource-info" class="level3">
-<h3 class="anchored" data-anchor-id="software-and-resource-info">Software and resource info</h3>
-<ul>
-<li>Find available modules: <code>$ module avail</code></li>
-<li>Find path to executable: <code>$ wich [executablename]</code></li>
-</ul>
-<hr>
-</section>
-</section>
-<section id="resources" class="level2">
-<h2 class="anchored" data-anchor-id="resources">Resources</h2>
-<ul>
-<li>Getting started on Hazel: <a href="https://hpc.ncsu.edu/Documents/GetStarted.php" class="uri">https://hpc.ncsu.edu/Documents/GetStarted.php</a></li>
-<li>Cluster status: <a href="https://hpc.ncsu.edu/Monitor/ClusterStatusMemory.php" class="uri">https://hpc.ncsu.edu/Monitor/ClusterStatusMemory.php</a></li>
-<li>Support: <strong>oit_hpc@help.ncsu.edu</strong></li>
-<li>HPC-Henry2 moodle course on Reporter: <a href="https://moodle-projects.wolfware.ncsu.edu/course/view.php?id=6857" class="uri">https://moodle-projects.wolfware.ncsu.edu/course/view.php?id=6857</a></li>
-<li>Youtube channel for OIT with tutorial videos: <a href="https://www.youtube.com/@OITHPC" class="uri">https://www.youtube.com/@OITHPC</a></li>
-<li>To stay informed about Hazel-HPC news join the <strong>HPC Announcements Google Group</strong></li>
-</ul>
-<hr>
-</section>
-<section id="your-first-week-on-hazel-hpc" class="level2">
-<h2 class="anchored" data-anchor-id="your-first-week-on-hazel-hpc">Your First Week on Hazel HPC</h2>
-<section id="before-you-start" class="level3">
-<h3 class="anchored" data-anchor-id="before-you-start">Before You Start:</h3>
-<ul class="task-list">
-<li><label><input type="checkbox">Obtain your UnityID credentials and VPN access (if off-campus)</label></li>
-<li><label><input type="checkbox">Join your research group’s allocation/project space</label></li>
-<li><label><input type="checkbox">Review this documentation and bookmark it for reference</label></li>
-</ul>
-</section>
-<section id="getting-connected" class="level3">
-<h3 class="anchored" data-anchor-id="getting-connected">Getting Connected:</h3>
-<ul class="task-list">
-<li><label><input type="checkbox">SSH into the login node: <code>ssh [UnityID]@hazel.ncsu.edu</code></label></li>
-<li><label><input type="checkbox">Explore your home directory (<code>/home/[UnityID]</code>) - remember, only 1GB available!</label></li>
-<li><label><input type="checkbox">Locate your group’s scratch space</label></li>
-<li><label><input type="checkbox">Find your group’s RS1 storage</label></li>
-</ul>
-</section>
+<section id="contact" class="level2">
+<h2 class="anchored" data-anchor-id="contact">📧 Contact</h2>
+<p>For questions about the training materials, please contact the Hurwitz Lab (mtouced@ncsu.edu or blhurwit@ncsu.edu)</p>
 </section>
 </section>
 

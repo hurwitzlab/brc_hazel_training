@@ -1,5 +1,6 @@
+# BRC Documentation: Introduction to Hazel-HPC 
 
-## ⚡ BONUS!: Login node script with GNU Parallel
+## 03. Login node script with GNU Parallel
 
 In some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as: 
 - Downloading databases and data, which is sometimes embedded in a pipeline
@@ -17,6 +18,9 @@ This controlled parallelization is particularly valuable on login nodes, where w
 
 It also provides useful features like progress monitoring, automatic retry of failed jobs, and the ability to resume interrupted work—making it an essential tool for managing data-intensive tasks in restricted HPC environments.
 
+---
+
+\
 
 ### Example 1: Downloading data from SRA
 Let's see how to use GNU Parallel to download multiple datasets from the Sequence Read Archive (SRA) efficiently and responsibly on the login node.
@@ -77,15 +81,17 @@ Key options explained:
 - `--joblog $JOBLOG`: Create a log file (`download_log.txt`) tracking each job's status and timing
 - `&&` and `||`: Provide success/failure messages for each download
 
+---
+
+\
 
 ### Example 2: Run a list of commands
 Sometimes you need to execute multiple independent commands that all require internet access. GNU Parallel can read a list of these commands from a file and execute them in parallel on the login node. This is particularly useful for tasks like downloading reference genomes, databases, or datasets from different sources.
 
-#### Creating a Command List
+### Creating a Command List
 
 First, create a file called `all_commands.txt` with your internet-dependent commands. Here's an example with common bioinformatics download tasks:
 
-# NOTE TO ME: EXPLAIN COMMANDS!!!!
 
 ``` bash
 wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt -O bacteria_summary.txt
@@ -97,8 +103,51 @@ curl -O https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgeb
 aws s3 cp s3://1000genomes/data/sample1.vcf.gz . --no-sign-request
 aws s3 cp s3://1000genomes/data/sample2.vcf.gz . --no-sign-request
 ```
+These commands download various bioinformatics datasets and databases from different online repositories using appropriate tools for each source. The list includes bacterial genome summaries and BLAST databases from NCBI (using wget), human genome sequences and protein databases from Ensembl and UniProt (using curl), sequencing data from the Sequence Read Archive (using prefetch), and genomic variant files from the 1000 Genomes Project on AWS S3 (using aws s3 cp), all of which will be executed in parallel to efficiently retrieve multiple large files simultaneously.
 
-#### Running the Commands in Parallel
+
+##### `wget` commands
+```bash
+wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt -O bacteria_summary.txt
+```
+
+- **wget:** A command-line tool for downloading files from the web
+- The URL points to a bacterial genome assembly summary from NCBI
+- -O bacteria_summary.txt: Saves the downloaded file with a specific name (instead of using the original filename)
+
+##### `curl` commands
+```bash
+curl -O https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz
+```
+- **curl:** Another download tool (similar to wget but with different features)
+- -O: Saves the file with its original filename from the URL
+- Downloads human chromosome 1 sequence data in FASTA format from Ensembl
+
+##### `prefetch` commands
+```bash
+prefetch SRR123456
+prefetch SRR123457
+```
+
+- **prefetch:** Part of the SRA Toolkit for downloading sequencing data from NCBI's Sequence Read Archive
+- SRR123456 and SRR123457: Accession numbers for specific sequencing datasets
+- Automatically downloads and caches the data in the proper format
+
+##### `aws s3 cp`commands
+```bash
+aws s3 cp s3://1000genomes/data/sample1.vcf.gz . --no-sign-request
+aws s3 cp s3://1000genomes/data/sample2.vcf.gz . --no-sign-request
+```
+
+- **aws s3 cp:** AWS command-line tool for copying files from Amazon S3 storage
+- s3://1000genomes/data/sample1.vcf.gz: The source file location in S3
+- \.: Copies to the current directory
+- --no-sign-request: Accesses public S3 buckets without AWS credentials (for openly available data like the 1000 Genomes Project)
+
+---
+
+
+### Running the Commands in Parallel
 
 Now use this script to execute the commands with controlled parallelization:
 
@@ -132,6 +181,8 @@ cat all_commands.txt | $PARALLEL -j $CPUS --progress --joblog commands_log.txt
 
 This approach allows you to download multiple resources from different sources simultaneously while maintaining control over login node resource usage.
 
+---
+<br>
 
 ### Sending the processes to the background
 

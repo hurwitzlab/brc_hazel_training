@@ -30,7 +30,7 @@ where user_name is the Unity ID.
 
 - Under **`Files`**, using the **`Upload`** or **`Download`** buttons to transfer. Make sure you navigate to the destination/source directory on cluster using the **`Go To`** button before transferring files.
 
-![](ondemand_files.png){fig-align="center"}
+![](./../images/ondemand_files.png){fig-align="center"}
 
 
 ### SCP

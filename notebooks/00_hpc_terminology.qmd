@@ -136,7 +136,7 @@ Think of Memory (RAM) as your desk surface—fast, small, and used for what you'
 Hazel is a shared computing cluster at NC State, designed to allow many researchers to run computationally intensive analyses simultaneously. Understanding its architecture will help you use it efficiently and avoid common mistakes.
 
 ### Hazel HPC Structure
-![](hazel_structure.png){fig-align="center"}
+![](../images/hazel_structure.png){fig-align="center"}
 
 #### 1. Login Nodes - Your Gateway to HPC
 
