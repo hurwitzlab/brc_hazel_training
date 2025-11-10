@@ -1,6 +1,16 @@
-# BRC Documentation: Introduction to Hazel-HPC 
+---
+title: "BRC Documentation: Introduction to Hazel-HPC"
+author: "Mery Touceda-Suárez"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: false
+---
 
-## 01. First steps in Hazel HPC
+# 01. First steps in Hazel HPC
 
 ## Set up an account
 

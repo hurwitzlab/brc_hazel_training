@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Mery Touceda-Suárez">
+<meta name="dcterms.date" content="2025-11-10">
 
-<title>gnu_parallel</title>
+<title>BRC Documentation: Introduction to Hazel-HPC</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -69,24 +71,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="03_gnu_parallel_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="03_gnu_parallel_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="03_gnu_parallel_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="03_gnu_parallel_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="03_gnu_parallel_files/libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#login-node-script-with-gnu-parallel" id="toc-login-node-script-with-gnu-parallel" class="nav-link active" data-scroll-target="#login-node-script-with-gnu-parallel">03. Login node script with GNU Parallel</a>
+  <ul class="collapse">
+  <li><a href="#what-is-gnu-parallel" id="toc-what-is-gnu-parallel" class="nav-link" data-scroll-target="#what-is-gnu-parallel">What is GNU Parallel?</a></li>
+  <li><a href="#example-1-downloading-data-from-sra" id="toc-example-1-downloading-data-from-sra" class="nav-link" data-scroll-target="#example-1-downloading-data-from-sra">Example 1: Downloading data from SRA</a></li>
+  <li><a href="#example-2-run-a-list-of-commands" id="toc-example-2-run-a-list-of-commands" class="nav-link" data-scroll-target="#example-2-run-a-list-of-commands">Example 2: Run a list of commands</a></li>
+  <li><a href="#creating-a-command-list" id="toc-creating-a-command-list" class="nav-link" data-scroll-target="#creating-a-command-list">Creating a Command List</a></li>
+  <li><a href="#running-the-commands-in-parallel" id="toc-running-the-commands-in-parallel" class="nav-link" data-scroll-target="#running-the-commands-in-parallel">Running the Commands in Parallel</a></li>
+  <li><a href="#sending-the-processes-to-the-background" id="toc-sending-the-processes-to-the-background" class="nav-link" data-scroll-target="#sending-the-processes-to-the-background">Sending the processes to the background</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">BRC Documentation: Introduction to Hazel-HPC</h1>
+</div>
 
 
 
-<section id="brc-documentation-introduction-to-hazel-hpc" class="level1">
-<h1>BRC Documentation: Introduction to Hazel-HPC</h1>
-<section id="login-node-script-with-gnu-parallel" class="level2">
-<h2 class="anchored" data-anchor-id="login-node-script-with-gnu-parallel">03. Login node script with GNU Parallel</h2>
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mery Touceda-Suárez </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 10, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="login-node-script-with-gnu-parallel" class="level1">
+<h1>03. Login node script with GNU Parallel</h1>
 <p>In some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as: - Downloading databases and data, which is sometimes embedded in a pipeline - Installing tools that require internet connectivity</p>
 <p>When compute nodes lack internet access, these tasks must be performed on the login node. However, remember that we CANNOT run computationally intensive tasks on the login node. Some of these processes, like downloading large databases, can be resource-intensive and could violate cluster policies if executed directly on the login node without proper resource management.</p>
 <p>To address this challenge, we’ll learn how to use GNU Parallel to efficiently manage these tasks while respecting login node limitations.</p>
@@ -265,7 +309,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"To kill this process later, run: kill </span><span class="va">$(</span><span class="fu">cat</span> download.pid<span class="va">)</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This modification allows you to directly obtain the process ID and send it to the background.</p>
 <p>You can also kill the process manually by: 1. Finding the process id with: <code>ps -ef</code> 2. Killing the process using its process id with: <code>kill -9 [process_id]</code></p>
-</section>
 </section>
 </section>
 </section>

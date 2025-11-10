@@ -1,6 +1,16 @@
-# BRC Documentation: Introduction to Hazel-HPC 
+---
+title: "BRC Documentation: Introduction to Hazel-HPC"
+author: "Mery Touceda-Suárez"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: false
+---
 
-## 02. Running jobs on Hazel-HPC
+# 02. Running jobs on Hazel-HPC
 
 ### What is a job
 An HPC job is the unit of work that a user submits to the cluster's Workload Manager (or job scheduler) for execution. It's essentially your program, simulation code, or analysis script, bundled with all the necessary instructions for the system to run it. These instructions are typically contained within a job script (or submission script), which includes vital directives for the scheduler. By encapsulating the executable code, resource requirements, and runtime parameters, the job acts as a complete, self-contained package that the scheduler can manage and allocate hardware for, ensuring efficient use of the shared cluster resources.

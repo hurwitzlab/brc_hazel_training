@@ -1,8 +1,18 @@
-# BRC Documentation: Introduction to Hazel-HPC
+---
+title: "BRC Documentation: Introduction to Hazel-HPC"
+author: "Mery Touceda-Suárez"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: false
+---
+# 00. HPC Fundamentals
 
 Modern bioinformatics has outgrown the desktop computer. A single human genome contains 3 billion base pairs and generates hundreds of gigabytes of raw sequencing data. Aligning these reads, calling variants, assembling genomes, or training machine learning models for protein structure prediction often require specialized hardware and software. Tasks that would take weeks on your personal computer can complete in hours on a high-performance computing (HPC) cluster. Understanding HPC is no longer optional—it's essential for doing bioinformatics at scale. This workshop will introduce you to the Hazel HPC cluster and give you the skills to leverage these powerful resources for your research.
 
-## 00. HPC Fundamentals
 
 ## HPC Terminology
 

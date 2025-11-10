@@ -1,6 +1,16 @@
-# BRC Documentation: Introduction to Hazel-HPC 
+---
+title: "BRC Documentation: Introduction to Hazel-HPC"
+author: "Mery Touceda-Suárez"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: false
+---
 
-## 03. Login node script with GNU Parallel
+# 03. Login node script with GNU Parallel
 
 In some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as: 
 - Downloading databases and data, which is sometimes embedded in a pipeline

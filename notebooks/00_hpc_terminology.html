@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Mery Touceda-Suárez">
+<meta name="dcterms.date" content="2025-11-10">
 
-<title>hpc_terminology</title>
+<title>BRC Documentation: Introduction to Hazel-HPC</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,26 +36,73 @@ ul.task-list li input[type="checkbox"] {
 <link href="00_hpc_terminology_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="00_hpc_terminology_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="00_hpc_terminology_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="00_hpc_terminology_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="00_hpc_terminology_files/libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#hpc-fundamentals" id="toc-hpc-fundamentals" class="nav-link active" data-scroll-target="#hpc-fundamentals">00. HPC Fundamentals</a>
+  <ul class="collapse">
+  <li><a href="#hpc-terminology" id="toc-hpc-terminology" class="nav-link" data-scroll-target="#hpc-terminology">HPC Terminology</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-cluster" id="toc-what-is-a-cluster" class="nav-link" data-scroll-target="#what-is-a-cluster">What is a “Cluster”</a></li>
+  <li><a href="#cpu-gpu" id="toc-cpu-gpu" class="nav-link" data-scroll-target="#cpu-gpu">CPU vs GPU</a></li>
+  <li><a href="#node-vs.-core" id="toc-node-vs.-core" class="nav-link" data-scroll-target="#node-vs.-core">Node vs.&nbsp;core</a></li>
+  <li><a href="#memory-vs-storage" id="toc-memory-vs-storage" class="nav-link" data-scroll-target="#memory-vs-storage">Memory vs Storage</a></li>
+  </ul></li>
+  <li><a href="#hazel-overview" id="toc-hazel-overview" class="nav-link" data-scroll-target="#hazel-overview">Hazel Overview</a>
+  <ul class="collapse">
+  <li><a href="#hazel-hpc-structure" id="toc-hazel-hpc-structure" class="nav-link" data-scroll-target="#hazel-hpc-structure">Hazel HPC Structure</a></li>
+  <li><a href="#overview-of-the-storage-in-hazel" id="toc-overview-of-the-storage-in-hazel" class="nav-link" data-scroll-target="#overview-of-the-storage-in-hazel">Overview of the Storage in Hazel</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">BRC Documentation: Introduction to Hazel-HPC</h1>
+</div>
 
 
 
-<section id="brc-documentation-introduction-to-hazel-hpc" class="level1">
-<h1>BRC Documentation: Introduction to Hazel-HPC</h1>
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mery Touceda-Suárez </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 10, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <p>Modern bioinformatics has outgrown the desktop computer. A single human genome contains 3 billion base pairs and generates hundreds of gigabytes of raw sequencing data. Aligning these reads, calling variants, assembling genomes, or training machine learning models for protein structure prediction often require specialized hardware and software. Tasks that would take weeks on your personal computer can complete in hours on a high-performance computing (HPC) cluster. Understanding HPC is no longer optional—it’s essential for doing bioinformatics at scale. This workshop will introduce you to the Hazel HPC cluster and give you the skills to leverage these powerful resources for your research.</p>
-<section id="hpc-fundamentals" class="level2">
-<h2 class="anchored" data-anchor-id="hpc-fundamentals">00. HPC Fundamentals</h2>
-</section>
+<section id="hpc-fundamentals" class="level1">
+<h1>00. HPC Fundamentals</h1>
 <section id="hpc-terminology" class="level2">
 <h2 class="anchored" data-anchor-id="hpc-terminology">HPC Terminology</h2>
 <section id="what-is-a-cluster" class="level3">

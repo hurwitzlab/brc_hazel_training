@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Mery Touceda-Suárez">
+<meta name="dcterms.date" content="2025-11-10">
 
-<title>ncsu_hazel_hpc</title>
+<title>BRC Documentation: Introduction to Hazel-HPC</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -69,25 +71,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="01_ncsu_hazel_hpc_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="01_ncsu_hazel_hpc_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="01_ncsu_hazel_hpc_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="01_ncsu_hazel_hpc_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="01_ncsu_hazel_hpc_files/libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#first-steps-in-hazel-hpc" id="toc-first-steps-in-hazel-hpc" class="nav-link active" data-scroll-target="#first-steps-in-hazel-hpc">01. First steps in Hazel HPC</a>
+  <ul class="collapse">
+  <li><a href="#set-up-an-account" id="toc-set-up-an-account" class="nav-link" data-scroll-target="#set-up-an-account">Set up an account</a></li>
+  <li><a href="#log-in" id="toc-log-in" class="nav-link" data-scroll-target="#log-in">Log in</a></li>
+  <li><a href="#transfer-files" id="toc-transfer-files" class="nav-link" data-scroll-target="#transfer-files">Transfer files</a>
+  <ul class="collapse">
+  <li><a href="#ondemand" id="toc-ondemand" class="nav-link" data-scroll-target="#ondemand">OnDemand</a></li>
+  <li><a href="#scp" id="toc-scp" class="nav-link" data-scroll-target="#scp">SCP</a></li>
+  <li><a href="#sftp" id="toc-sftp" class="nav-link" data-scroll-target="#sftp">SFTP</a></li>
+  <li><a href="#globus" id="toc-globus" class="nav-link" data-scroll-target="#globus">Globus</a></li>
+  </ul></li>
+  <li><a href="#useful-commands" id="toc-useful-commands" class="nav-link" data-scroll-target="#useful-commands">Useful commands</a>
+  <ul class="collapse">
+  <li><a href="#system-and-user-info" id="toc-system-and-user-info" class="nav-link" data-scroll-target="#system-and-user-info">System and user info</a></li>
+  <li><a href="#storage" id="toc-storage" class="nav-link" data-scroll-target="#storage">Storage</a></li>
+  <li><a href="#software-and-resource-info" id="toc-software-and-resource-info" class="nav-link" data-scroll-target="#software-and-resource-info">Software and resource info</a></li>
+  </ul></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  <li><a href="#your-first-week-on-hazel-hpc" id="toc-your-first-week-on-hazel-hpc" class="nav-link" data-scroll-target="#your-first-week-on-hazel-hpc">Your First Week on Hazel HPC</a>
+  <ul class="collapse">
+  <li><a href="#before-you-start" id="toc-before-you-start" class="nav-link" data-scroll-target="#before-you-start">Before You Start:</a></li>
+  <li><a href="#getting-connected" id="toc-getting-connected" class="nav-link" data-scroll-target="#getting-connected">Getting Connected:</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">BRC Documentation: Introduction to Hazel-HPC</h1>
+</div>
 
 
 
-<section id="brc-documentation-introduction-to-hazel-hpc" class="level1">
-<h1>BRC Documentation: Introduction to Hazel-HPC</h1>
-<section id="first-steps-in-hazel-hpc" class="level2">
-<h2 class="anchored" data-anchor-id="first-steps-in-hazel-hpc">01. First steps in Hazel HPC</h2>
-</section>
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mery Touceda-Suárez </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 10, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="first-steps-in-hazel-hpc" class="level1">
+<h1>01. First steps in Hazel HPC</h1>
 <section id="set-up-an-account" class="level2">
 <h2 class="anchored" data-anchor-id="set-up-an-account">Set up an account</h2>
 <p>Request access from your supervisor and in the mean time read and understand <a href="https://hpc.ncsu.edu/About/AUP.php">Acceptable Use Policy</a>. Obtain your UnityID credentials and ensure you have VPN access if working off-campus.</p>
