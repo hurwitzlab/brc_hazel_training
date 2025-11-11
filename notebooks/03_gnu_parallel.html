@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Mery Touceda-Suárez">
-<meta name="dcterms.date" content="2025-11-10">
+<meta name="dcterms.date" content="2025-11-11">
 
 <title>BRC Documentation: Introduction to Hazel-HPC</title>
 <style>
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 10, 2025</p>
+      <p class="date">November 11, 2025</p>
     </div>
   </div>
   
@@ -208,12 +208,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>First, create a file called <code>all_commands.txt</code> with your internet-dependent commands. Here’s an example with common bioinformatics download tasks:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt <span class="at">-O</span> bacteria_summary.txt</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-O</span> https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">prefetch</span> SRR123456</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">prefetch</span> SRR123457</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://ftp.ncbi.nlm.nih.gov/blast/db/16S_ribosomal_RNA.tar.gz</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-O</span> https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp s3://1000genomes/data/sample1.vcf.gz . <span class="at">--no-sign-request</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp s3://1000genomes/data/sample2.vcf.gz . <span class="at">--no-sign-request</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="va">$SRA_CONTAINER</span> prefetch SRR123456</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="va">$SRA_CONTAINER</span> prefetch SRR123457</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://ftp.ncbi.nlm.nih.gov/blast/db/16S_ribosomal_RNA.tar.gz</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-O</span> https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp s3://1000genomes/data/sample1.vcf.gz . <span class="at">--no-sign-request</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp s3://1000genomes/data/sample2.vcf.gz . <span class="at">--no-sign-request</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>These commands download various bioinformatics datasets and databases from different online repositories using appropriate tools for each source. The list includes bacterial genome summaries and BLAST databases from NCBI (using wget), human genome sequences and protein databases from Ensembl and UniProt (using curl), sequencing data from the Sequence Read Archive (using prefetch), and genomic variant files from the 1000 Genomes Project on AWS S3 (using aws s3 cp), all of which will be executed in parallel to efficiently retrieve multiple large files simultaneously.</p>
 <section id="wget-commands" class="level5">
 <h5 class="anchored" data-anchor-id="wget-commands"><code>wget</code> commands</h5>
@@ -235,8 +236,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="prefetch-commands" class="level5">
 <h5 class="anchored" data-anchor-id="prefetch-commands"><code>prefetch</code> commands</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">prefetch</span> SRR123456</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">prefetch</span> SRR123457</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="va">$SRA_CONTAINER</span> prefetch SRR123456</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="va">$SRA_CONTAINER</span> prefetch SRR123457</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><strong>prefetch:</strong> Part of the SRA Toolkit for downloading sequencing data from NCBI’s Sequence Read Archive</li>
 <li>SRR123456 and SRR123457: Accession numbers for specific sequencing datasets</li>
@@ -263,8 +265,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create some variables for a more clean script</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>6</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># run a list of commands</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> all_commands.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="at">-a</span> <span class="at">-</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># load apptainer module</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># run a list of commands</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> all_commands.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="at">-a</span> <span class="at">-</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Script breakdown:</strong></p>
 <ul>
 <li><code>CPUS=6</code>: Limits execution to 6 concurrent downloads</li>

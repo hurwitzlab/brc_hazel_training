@@ -14,7 +14,7 @@ This is table depicting the calendar of live training sessions associated with t
 ## 🚀 Getting Started
 
 1. Clone or download this repository
-2. Choose your preferred viewing method from the options above
+2. Choose your preferred viewing method from the options below
 3. Open the training materials and follow along with the exercises
 
 

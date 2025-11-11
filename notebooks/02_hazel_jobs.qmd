@@ -12,7 +12,7 @@ format:
 
 # 02. Running jobs on Hazel-HPC
 
-### What is a job
+#### What is a job
 An HPC job is the unit of work that a user submits to the cluster's Workload Manager (or job scheduler) for execution. It's essentially your program, simulation code, or analysis script, bundled with all the necessary instructions for the system to run it. These instructions are typically contained within a job script (or submission script), which includes vital directives for the scheduler. By encapsulating the executable code, resource requirements, and runtime parameters, the job acts as a complete, self-contained package that the scheduler can manage and allocate hardware for, ensuring efficient use of the shared cluster resources.
 
 #### LSF Job Scheduler

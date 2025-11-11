@@ -106,8 +106,9 @@ First, create a file called `all_commands.txt` with your internet-dependent comm
 ``` bash
 wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt -O bacteria_summary.txt
 curl -O https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz
-prefetch SRR123456
-prefetch SRR123457
+SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
+apptainer exec $SRA_CONTAINER prefetch SRR123456
+apptainer exec $SRA_CONTAINER prefetch SRR123457
 wget https://ftp.ncbi.nlm.nih.gov/blast/db/16S_ribosomal_RNA.tar.gz
 curl -O https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
 aws s3 cp s3://1000genomes/data/sample1.vcf.gz . --no-sign-request
@@ -135,8 +136,9 @@ curl -O https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapi
 
 ##### `prefetch` commands
 ```bash
-prefetch SRR123456
-prefetch SRR123457
+SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
+apptainer exec $SRA_CONTAINER prefetch SRR123456
+apptainer exec $SRA_CONTAINER prefetch SRR123457
 ```
 
 - **prefetch:** Part of the SRA Toolkit for downloading sequencing data from NCBI's Sequence Read Archive
@@ -166,6 +168,10 @@ Now use this script to execute the commands with controlled parallelization:
 # create some variables for a more clean script
 CPUS=6
 PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
+
+# load apptainer module
+module load apptainer
+
 # run a list of commands
 cat all_commands.txt | $PARALLEL -j $CPUS -a -
 ```

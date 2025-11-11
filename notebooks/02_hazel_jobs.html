@@ -86,7 +86,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#running-jobs-on-hazel-hpc" id="toc-running-jobs-on-hazel-hpc" class="nav-link active" data-scroll-target="#running-jobs-on-hazel-hpc">02. Running jobs on Hazel-HPC</a>
   <ul class="collapse">
-  <li><a href="#what-is-a-job" id="toc-what-is-a-job" class="nav-link" data-scroll-target="#what-is-a-job">What is a job</a></li>
   <li><a href="#interactive-jobs" id="toc-interactive-jobs" class="nav-link" data-scroll-target="#interactive-jobs">🖥️ Interactive Jobs</a></li>
   <li><a href="#anatomy-of-a-job-script" id="toc-anatomy-of-a-job-script" class="nav-link" data-scroll-target="#anatomy-of-a-job-script">📋 Anatomy of a Job Script</a></li>
   <li><a href="#execute-commands-block-1" id="toc-execute-commands-block-1" class="nav-link" data-scroll-target="#execute-commands-block-1">3. Execute Commands Block</a></li>
@@ -135,15 +134,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="running-jobs-on-hazel-hpc" class="level1">
 <h1>02. Running jobs on Hazel-HPC</h1>
-<section id="what-is-a-job" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-a-job">What is a job</h3>
+<section id="what-is-a-job" class="level4">
+<h4 class="anchored" data-anchor-id="what-is-a-job">What is a job</h4>
 <p>An HPC job is the unit of work that a user submits to the cluster’s Workload Manager (or job scheduler) for execution. It’s essentially your program, simulation code, or analysis script, bundled with all the necessary instructions for the system to run it. These instructions are typically contained within a job script (or submission script), which includes vital directives for the scheduler. By encapsulating the executable code, resource requirements, and runtime parameters, the job acts as a complete, self-contained package that the scheduler can manage and allocate hardware for, ensuring efficient use of the shared cluster resources.</p>
+</section>
 <section id="lsf-job-scheduler" class="level4">
 <h4 class="anchored" data-anchor-id="lsf-job-scheduler">LSF Job Scheduler</h4>
 <p>Hazel uses the LSF (Load Sharing Facility) job scheduler, currently known as IBM Spectrum LSF. Users submit jobs using the <code>bsub</code> command and include specific directives (e.g., <code>#BSUB -n 16</code>) to communicate their resource needs to the scheduler. LSF then handles the entire lifecycle of the job—from submission to completion, including fault tolerance and output logging.</p>
 <hr>
 <p><br></p>
-</section>
 </section>
 <section id="interactive-jobs" class="level3">
 <h3 class="anchored" data-anchor-id="interactive-jobs">🖥️ Interactive Jobs</h3>
