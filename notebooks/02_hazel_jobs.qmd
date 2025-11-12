@@ -187,9 +187,6 @@ This section uses the `module load` command to prepare the job's environment. Th
 
 This is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s).This is where you place the executable commands that perform the job's core task. It's often wrapped with simple `echo` commands to log key steps, helping with debugging and monitoring.
 
-### 3. Execute Commands Block
-
-This is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s). It's often wrapped with simple `echo` commands to log key steps, helping with debugging and monitoring.
 
 | **Command** | **Example** | **Description** |
 |-------------|-------------|-----------------|
@@ -211,14 +208,16 @@ This is the main body of the script where your actual scientific or computationa
 - **Error handling**: Know immediately if something goes wrong
 - **Documentation**: Clear comments explain what each section does
 
-
-> Note: All images should be in `/rs1/shares/brc/admin/containers/images`, if your tool is not there feel free to contact us and request it.
-
+::: {.callout-important}
+All images should be in `/rs1/shares/brc/admin/containers/images`, if your tool is not there feel free to contact us and request it.
+:::
 ---
 
 <br>
 
 ### 🛠️ Job Monitoring and Management
+These are some of the most relevalt commands you will need to monitor your jobs: 
+
 | Command Category | Command Syntax | Description |
 | :--- | :--- | :--- |
 | **Submission** | `bsub < yourjob.sh` | **Submits** the job script (`yourjob.sh`) to the LSF scheduler. The scheduler processes the `#BSUB` directives within the script. |
@@ -275,8 +274,10 @@ To terminate all running and pending jobs, use `bkill 0`.
 
 To specify a queue, use `-q queue_name`.
 
+::: {.callout-note}
 In general, **users should not specify a queue**. When no queue is specified, LSF will choose the most appropriate queue based on the number of cores and time requested from the set of default queues.
 The exceptions are partner queues and specialty queues, which are queues with special resources.
+::: 
 
 #### Default Queues
 
@@ -328,10 +329,11 @@ serial           30  Open:Active    2048 1024    -    -   342    63   279     0
 ### 📤 Standard Output and Standard Error
 
 When you submit a job to the HPC, your program's output needs to go somewhere. By default, programs write to two streams:
+
 - **Standard Output (stdout)**: Normal program output and results
 - **Standard Error (stderr)**: Error messages and warnings
 
-### Specifying Output Files in LSF
+#### Specifying Output Files in LSF
 
 In your batch script, use these directives to control where output goes:
 ```bash

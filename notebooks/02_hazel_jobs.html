@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Mery Touceda-Suárez">
-<meta name="dcterms.date" content="2025-11-10">
+<meta name="dcterms.date" content="2025-11-12">
 
 <title>BRC Documentation: Introduction to Hazel-HPC</title>
 <style>
@@ -88,11 +88,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#interactive-jobs" id="toc-interactive-jobs" class="nav-link" data-scroll-target="#interactive-jobs">🖥️ Interactive Jobs</a></li>
   <li><a href="#anatomy-of-a-job-script" id="toc-anatomy-of-a-job-script" class="nav-link" data-scroll-target="#anatomy-of-a-job-script">📋 Anatomy of a Job Script</a></li>
-  <li><a href="#execute-commands-block-1" id="toc-execute-commands-block-1" class="nav-link" data-scroll-target="#execute-commands-block-1">3. Execute Commands Block</a></li>
   <li><a href="#job-monitoring-and-management" id="toc-job-monitoring-and-management" class="nav-link" data-scroll-target="#job-monitoring-and-management">🛠️ Job Monitoring and Management</a></li>
   <li><a href="#queues-on-hazel-from-hazelwiki" id="toc-queues-on-hazel-from-hazelwiki" class="nav-link" data-scroll-target="#queues-on-hazel-from-hazelwiki">🚦 Queues on Hazel (from HazelWiki)</a></li>
   <li><a href="#standard-output-and-standard-error" id="toc-standard-output-and-standard-error" class="nav-link" data-scroll-target="#standard-output-and-standard-error">📤 Standard Output and Standard Error</a></li>
-  <li><a href="#specifying-output-files-in-lsf" id="toc-specifying-output-files-in-lsf" class="nav-link" data-scroll-target="#specifying-output-files-in-lsf">Specifying Output Files in LSF</a></li>
   <li><a href="#common-errors-and-how-to-fix-them" id="toc-common-errors-and-how-to-fix-them" class="nav-link" data-scroll-target="#common-errors-and-how-to-fix-them">⚠️ Common Errors and How to Fix Them</a></li>
   <li><a href="#debugging-tips" id="toc-debugging-tips" class="nav-link" data-scroll-target="#debugging-tips">🐛 Debugging Tips</a></li>
   </ul></li>
@@ -120,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 10, 2025</p>
+      <p class="date">November 12, 2025</p>
     </div>
   </div>
   
@@ -388,11 +386,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="execute-commands-block" class="level4">
 <h4 class="anchored" data-anchor-id="execute-commands-block">3. Execute commands block</h4>
 <p>This is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s).This is where you place the executable commands that perform the job’s core task. It’s often wrapped with simple <code>echo</code> commands to log key steps, helping with debugging and monitoring.</p>
-</section>
-</section>
-<section id="execute-commands-block-1" class="level3">
-<h3 class="anchored" data-anchor-id="execute-commands-block-1">3. Execute Commands Block</h3>
-<p>This is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s). It’s often wrapped with simple <code>echo</code> commands to log key steps, helping with debugging and monitoring.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 30%">
@@ -453,14 +446,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Error handling</strong>: Know immediately if something goes wrong</li>
 <li><strong>Documentation</strong>: Clear comments explain what each section does</li>
 </ul>
-<blockquote class="blockquote">
-<p>Note: All images should be in <code>/rs1/shares/brc/admin/containers/images</code>, if your tool is not there feel free to contact us and request it.</p>
-</blockquote>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>All images should be in <code>/rs1/shares/brc/admin/containers/images</code>, if your tool is not there feel free to contact us and request it.</p>
+</div>
+</div>
 <hr>
 <p><br></p>
 </section>
+</section>
 <section id="job-monitoring-and-management" class="level3">
 <h3 class="anchored" data-anchor-id="job-monitoring-and-management">🛠️ Job Monitoring and Management</h3>
+<p>These are some of the most relevalt commands you will need to monitor your jobs:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -540,7 +545,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="queues-on-hazel-from-hazelwiki" class="level3">
 <h3 class="anchored" data-anchor-id="queues-on-hazel-from-hazelwiki">🚦 Queues on Hazel (from <a href="https://hpc.ncsu.edu/Documents/LSFResources.php">HazelWiki</a>)</h3>
 <p>To specify a queue, use&nbsp;<code>-q queue_name</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>In general, <strong>users&nbsp;should not&nbsp;specify a queue</strong>. When no queue is specified, LSF will choose the most appropriate queue based on the number of cores and time requested from the set of&nbsp;default queues. The exceptions are partner queues and&nbsp;specialty queues, which are queues with special resources.</p>
+</div>
+</div>
 <section id="default-queues" class="level4">
 <h4 class="anchored" data-anchor-id="default-queues">Default Queues</h4>
 <ul>
@@ -592,10 +609,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="standard-output-and-standard-error" class="level3">
 <h3 class="anchored" data-anchor-id="standard-output-and-standard-error">📤 Standard Output and Standard Error</h3>
-<p>When you submit a job to the HPC, your program’s output needs to go somewhere. By default, programs write to two streams: - <strong>Standard Output (stdout)</strong>: Normal program output and results - <strong>Standard Error (stderr)</strong>: Error messages and warnings</p>
-</section>
-<section id="specifying-output-files-in-lsf" class="level3">
-<h3 class="anchored" data-anchor-id="specifying-output-files-in-lsf">Specifying Output Files in LSF</h3>
+<p>When you submit a job to the HPC, your program’s output needs to go somewhere. By default, programs write to two streams:</p>
+<ul>
+<li><strong>Standard Output (stdout)</strong>: Normal program output and results</li>
+<li><strong>Standard Error (stderr)</strong>: Error messages and warnings</li>
+</ul>
+<section id="specifying-output-files-in-lsf" class="level4">
+<h4 class="anchored" data-anchor-id="specifying-output-files-in-lsf">Specifying Output Files in LSF</h4>
 <p>In your batch script, use these directives to control where output goes:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -o stdout.%J    # Standard output file</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -e stderr.%J    # Standard error file</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -605,6 +625,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -e logs/myanalysis_err.%J</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 <p><br></p>
+</section>
 </section>
 <section id="common-errors-and-how-to-fix-them" class="level3">
 <h3 class="anchored" data-anchor-id="common-errors-and-how-to-fix-them">⚠️ Common Errors and How to Fix Them</h3>
