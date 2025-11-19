@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Mery Touceda-Suárez">
-<meta name="dcterms.date" content="2025-11-11">
+<meta name="dcterms.date" content="2025-11-19">
 
 <title>BRC Documentation: Introduction to Hazel-HPC</title>
 <style>
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 11, 2025</p>
+      <p class="date">November 19, 2025</p>
     </div>
   </div>
   
@@ -131,9 +131,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="login-node-script-with-gnu-parallel" class="level1">
 <h1>03. Login node script with GNU Parallel</h1>
-<p>In some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as: - Downloading databases and data, which is sometimes embedded in a pipeline - Installing tools that require internet connectivity</p>
-<p>When compute nodes lack internet access, these tasks must be performed on the login node. However, remember that we CANNOT run computationally intensive tasks on the login node. Some of these processes, like downloading large databases, can be resource-intensive and could violate cluster policies if executed directly on the login node without proper resource management.</p>
-<p>To address this challenge, we’ll learn how to use GNU Parallel to efficiently manage these tasks while respecting login node limitations.</p>
+<p>In some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as:</p>
+<ul>
+<li>Downloading databases and data, which is sometimes embedded in a pipeline</li>
+<li>Installing tools that require internet connectivity</li>
+</ul>
+<p>When compute nodes lack internet access, these tasks must be performed on the login node. However, remember that we <strong>CANNOT run computationally intensive tasks on the login node</strong>. Some of these processes, like downloading large databases, can be resource-intensive and could violate cluster policies if executed directly on the login node without proper resource management.</p>
+<p>To address this challenge, we’ll learn how to use <strong>GNU Parallel</strong> to efficiently manage these tasks while respecting login node limitations.</p>
 <section id="what-is-gnu-parallel" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-gnu-parallel">What is GNU Parallel?</h3>
 <p>GNU Parallel is a <strong>command-line tool that allows you to execute multiple jobs simultaneously while controlling resource usage</strong>. Think of it as a way to run several commands at once, but with intelligent management of how many processes run at any given time. Instead of running tasks sequentially (one after another) or launching them all at once (which could overwhelm the system), GNU Parallel lets you specify how many jobs should run in parallel. For example, if you need to download 100 datasets, you could tell GNU Parallel to download 4 at a time—as soon as one download finishes, it automatically starts the next one until all are complete.</p>

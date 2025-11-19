@@ -13,12 +13,13 @@ format:
 # 03. Login node script with GNU Parallel
 
 In some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as: 
+
 - Downloading databases and data, which is sometimes embedded in a pipeline
 - Installing tools that require internet connectivity
 
-When compute nodes lack internet access, these tasks must be performed on the login node. However, remember that we CANNOT run computationally intensive tasks on the login node. Some of these processes, like downloading large databases, can be resource-intensive and could violate cluster policies if executed directly on the login node without proper resource management. 
+When compute nodes lack internet access, these tasks must be performed on the login node. However, remember that we **CANNOT run computationally intensive tasks on the login node**. Some of these processes, like downloading large databases, can be resource-intensive and could violate cluster policies if executed directly on the login node without proper resource management. 
 
-To address this challenge, we'll learn how to use GNU Parallel to efficiently manage these tasks while respecting login node limitations.
+To address this challenge, we'll learn how to use **GNU Parallel** to efficiently manage these tasks while respecting login node limitations.
 
 ### What is GNU Parallel?
 
@@ -190,9 +191,13 @@ For better monitoring, enhance the script with progress reporting:
 #!/bin/bash
 CPUS=6
 PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
+JOBLOG=/your_workdir/path/commands_log.txt
+
+# load apptainer module
+module load apptainer
 
 # Run commands with progress tracking and logging
-cat all_commands.txt | $PARALLEL -j $CPUS --progress --joblog commands_log.txt
+cat all_commands.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG
 ```
 
 This approach allows you to download multiple resources from different sources simultaneously while maintaining control over login node resource usage.
