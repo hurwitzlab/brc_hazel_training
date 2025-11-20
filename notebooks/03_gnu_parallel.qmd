@@ -63,11 +63,11 @@ SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-
 module load apptainer
 
 # run gnu parallel downloads
-cat sra_accessions.txt | $PARALLEL -j $CPUS "apptainer exec $SRA_CONTAINER prefetch {}"
+cat sra_accessions.txt | $PARALLEL -j $CPUS "apptainer exec $SRA_CONTAINER prefetch {}" > output.log 2> error.log
 ```
 > Note: Make sure that you use double quotes `"..."` instead of single quotes `'...'` so that the variable `$SRA_CONTAINER` gets expanded to its actual value.
 
-This command reads each accession number from the file and passes it to `prefetch`. The `-j 3` flag ensures only 3 downloads run simultaneously, preventing system overload.
+This command reads each accession number from the file and passes it to `prefetch`. The `-j 3` flag ensures only 3 downloads run simultaneously, preventing system overload. By using `> output.log 2> error.log` we redirect the standard output and standard error to separate files.
 
 
 #### More Robust Download with Progress Monitoring
@@ -82,7 +82,7 @@ JOBLOG=/your_workdir/path/download_log.txt
 SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
 
 # run gnu parallel downloads with joblog
-cat sra_accessions.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG "apptainer exec $SRA_CONTAINER prefetch {}"
+cat sra_accessions.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG "apptainer exec $SRA_CONTAINER prefetch {}" > output.log 2> error.log
 ```
 
 Key options explained:
@@ -90,7 +90,7 @@ Key options explained:
 - `-j $CPUS`: Run 3 (`$CPUS`) jobs in parallel
 - `--progress`: Display a progress bar showing completed/remaining jobs
 - `--joblog $JOBLOG`: Create a log file (`download_log.txt`) tracking each job's status and timing
-- `&&` and `||`: Provide success/failure messages for each download
+- `> output.log 2> error.log`: Redirect standard output and standard error to separate files
 
 ---
 
@@ -174,7 +174,7 @@ PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
 module load apptainer
 
 # run a list of commands
-cat all_commands.txt | $PARALLEL -j $CPUS -a -
+cat all_commands.txt | $PARALLEL -j $CPUS -a - > output.log 2> error.log
 ```
 
 **Script breakdown:**
@@ -197,7 +197,7 @@ JOBLOG=/your_workdir/path/commands_log.txt
 module load apptainer
 
 # Run commands with progress tracking and logging
-cat all_commands.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG
+cat all_commands.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG > output.log 2> error.log
 ```
 
 This approach allows you to download multiple resources from different sources simultaneously while maintaining control over login node resource usage.
