@@ -1,0 +1,85 @@
+#!/bin/bash
+# ==================================================
+# FastQC Job Script for Hazel HPC
+# ==================================================
+# This script runs FastQC quality control on sequencing data
+# using an Apptainer Container
+
+
+# --------------------------------------------------
+# Request resources here
+# --------------------------------------------------
+#BSUB -n 2                            # number of CPUs required per task
+#BSUB -q shared_memory                # the queue to run on
+#BSUB -R "span[hosts=1]"              # number of hosts to spread the jobs across, 1 host used here
+#BSUB -R "rusage[mem=4GB]"            # required total memory for the job 
+#BSUB -o "./output.%J_%I.log"         # standard output file (%J is job name)
+#BSUB -e "./error.%J_%I.log"          # standard error file (%I is job ID)
+#BSUB -W 10:00                        # time to run
+
+# --------------------------------------------------
+# Load modules here
+# --------------------------------------------------
+
+module load apptainer
+
+# --------------------------------------------------
+# Execute commands here
+# --------------------------------------------------
+
+# Print job start information
+echo "=================================================="
+echo "Job started: $(date)"
+echo "Job ID: $LSB_JOBID"
+echo "Running on host: $(hostname)"
+echo "Working directory: $(pwd)"
+echo "=================================================="
+
+# Source config file and get sample name from input list based on job array index
+source ./config.sh
+export SAMPLE=`head -n +${LSB_JOBINDEX} $IN_LIST | tail -n 1`
+
+
+# --------------------------------------------------
+# Validate inputs
+# --------------------------------------------------
+
+# Check if container exists
+if [ ! -f "${FASTQC_SIF}" ]; then
+    echo "ERROR: Container not found at ${FASTQC_SIF}"
+    exit 1
+fi
+
+# Check if input directory exists
+if [ ! -d "${IN_DIR}" ]; then
+    echo "ERROR: Input directory not found at ${IN_DIR}"
+    exit 1
+fi
+
+# --------------------------------------------------
+# Execute FastQC
+# --------------------------------------------------
+
+echo "Running FastQC on sample: ${SAMPLE}"
+
+apptainer exec --bind /rs1:/rs1 ${FASTQC_SIF} fastqc \
+    --threads 2 \
+    --outdir ${OUT_DIR} \
+    ${IN_DIR}/${SAMPLE}_*.fastq*
+
+# Check if FastQC completed successfully
+if [ $? -eq 0 ]; then
+    echo "FastQC completed successfully"
+else
+    echo "ERROR: FastQC failed with exit code $?"
+    exit 1
+fi
+
+# --------------------------------------------------
+# Job completion
+# --------------------------------------------------
+
+echo "=================================================="
+echo "Job completed: $(date)"
+echo "Results saved to: ${OUT_DIR}"
+echo "=================================================="
