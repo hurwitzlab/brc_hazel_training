@@ -23,4 +23,12 @@ export NUM_JOB=$(wc -l < "$IN_LIST")
 
 # submit job arrays for each step
 echo "launching ${JOB1}.lsf as a job."
-JOB_ID=`bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB" < ${JOB1}.lsf`
+JOB_ID=$(bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB"\
+    -n $CPUS \
+    -q $QUEUE \
+    -R "rusage[mem=$MEM]" \
+    -W $TIME \
+    -o $STD_OUT \
+    -e $STD_ERR \
+    < ./${JOB1}.lsf| awk '{print $2}' | tr -d '<>[]')
+echo "Submitted job array with ID $JOB_ID" 

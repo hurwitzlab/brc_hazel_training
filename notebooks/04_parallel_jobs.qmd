@@ -124,7 +124,7 @@ The `%N` syntax prevents overwhelming the filesystem or scheduler. For large arr
 :::
 
 
-### Component 3: The Job Script (`01_raw_fastqc.lsf`)
+### Component 3: The Job Script (`fastqc.lsf`)
 This script contains the actual work to be performed on the compute nodes.
 
 ```bash
@@ -242,7 +242,7 @@ There are multiple ways to specify compute resources. Choose based on your pipel
 **Cons**: Must edit job script to change resources
 
 
-### Approach 2: Variables from Config File (Recommended)
+### Approach 2: Command-Line Specification (Recommended)
 
 **In `config.sh`:**
 ```bash
@@ -256,26 +256,7 @@ export MEMORY="1GB"
 export TIME="02:00"
 ```
 
-**In job script:**
-```bash
-# --------------------------------------------------
-# Request resources here
-# --------------------------------------------------
-#BSUB -n $CPUS                         
-#BSUB -q $QUEUE             
-#BSUB -R "span[hosts=1]"              
-#BSUB -R "rusage[mem=$MEMORY]"  #use of "" might have to change here       
-#BSUB -o "./output.%J_%I.log"  
-#BSUB -e "./error.%J_%I.log"         
-#BSUB -W $TIME                   
-```
-**Pros**: Centralized control, easy to modify
-**Cons**: Requires careful variable naming
-
-This is the most common and recommended approach for flexibility. When the launcher script runs source `./config.sh`, it loads variables into the environment. When LSF reads the job script, the shell expands these variables before passing the final instruction to LSF.
-
-### Approach 3: Command-Line Specification (Most Flexible)
-Alternatively, you can skip the `#BSUB` directives entirely in your `.lsf` file and pass all resource requests directly to the bsub command in your launcher script. This is useful for pipelines where one launcher controls many different job scripts.
+We skip the `#BSUB` directives entirely in your `.lsf` file and pass all resource requests directly to the bsub command in your launcher script. This is useful for pipelines where one launcher controls many different job scripts.
 
 **In launcher script:**
 ```bash
@@ -297,7 +278,7 @@ JOBID3=$(bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB" \
 
 ::: {.callout-tip}
 ## Best Practice
-Use Approach 2 (variables from config) for most pipelines. It provides the best balance of flexibility and maintainability.
+Use Approach 2 (variables from config) for most pipelines. It provides the best balance of flexibility and maintainability. In fact this is what we have used in the example code found here.
 :::
 
 <br>

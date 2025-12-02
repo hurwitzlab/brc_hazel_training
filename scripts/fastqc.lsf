@@ -7,17 +7,6 @@
 
 
 # --------------------------------------------------
-# Request resources here
-# --------------------------------------------------
-#BSUB -n 2                            # number of CPUs required per task
-#BSUB -q shared_memory                # the queue to run on
-#BSUB -R "span[hosts=1]"              # number of hosts to spread the jobs across, 1 host used here
-#BSUB -R "rusage[mem=4GB]"            # required total memory for the job 
-#BSUB -o "./output.%J_%I.log"         # standard output file (%J is job name)
-#BSUB -e "./error.%J_%I.log"          # standard error file (%I is job ID)
-#BSUB -W 10:00                        # time to run
-
-# --------------------------------------------------
 # Load modules here
 # --------------------------------------------------
 
@@ -62,7 +51,7 @@ fi
 
 echo "Running FastQC on sample: ${SAMPLE}"
 
-apptainer exec --bind /rs1:/rs1 ${FASTQC_SIF} fastqc \
+apptainer exec $BIND ${FASTQC_SIF} fastqc \
     --threads 2 \
     --outdir ${OUT_DIR} \
     ${IN_DIR}/${SAMPLE}_*.fastq*
