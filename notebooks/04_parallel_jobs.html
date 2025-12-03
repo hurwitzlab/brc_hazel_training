@@ -104,6 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#job-dependencies" id="toc-job-dependencies" class="nav-link" data-scroll-target="#job-dependencies">Job Dependencies</a></li>
   <li><a href="#resubmitting-failed-jobs" id="toc-resubmitting-failed-jobs" class="nav-link" data-scroll-target="#resubmitting-failed-jobs">Resubmitting Failed Jobs</a></li>
   </ul></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -411,15 +412,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>In launcher script:</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Job 3: FastQC Before Trim</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Launching Job 1: FastQC"</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="va">JOBID3</span><span class="op">=</span><span class="va">$(</span><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"</span><span class="va">$JOB1</span><span class="st">[1-</span><span class="va">$NUM_JOB</span><span class="st">]%</span><span class="va">$NUM_JOB</span><span class="st">"</span> <span class="dt">\</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">-n</span> <span class="va">$CPUS</span> <span class="dt">\</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">-q</span> <span class="va">$QUEUE</span> <span class="dt">\</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">-R</span> <span class="st">"rusage[mem=</span><span class="va">$JOB3_MEMORY</span><span class="st">]"</span> <span class="dt">\</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">-M</span> <span class="va">$MEMORY</span> <span class="dt">\</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">-W</span> <span class="va">$TIME</span> <span class="dt">\</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">-o</span> <span class="st">"</span><span class="va">${FASTQC_LOGS}</span><span class="st">/output.%J_%I.log"</span> <span class="dt">\</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">-e</span> <span class="st">"</span><span class="va">${FASTQC_LOGS}</span><span class="st">/error.%J_%I.log"</span> <span class="dt">\</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span> ./<span class="va">${JOB1}</span>.sh </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="va">JOB_ID</span><span class="op">=</span><span class="va">$(</span><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"</span><span class="va">$JOB1</span><span class="st">[1-</span><span class="va">$NUM_JOB</span><span class="st">]%</span><span class="va">$NUM_JOB</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">-n</span> <span class="va">$CPUS</span> <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">-q</span> <span class="va">$QUEUE</span> <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">-R</span> <span class="st">"rusage[mem=</span><span class="va">$MEM</span><span class="st">]"</span> <span class="dt">\</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">-W</span> <span class="va">$TIME</span> <span class="dt">\</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">-o</span> <span class="va">$STD_OUT</span> <span class="dt">\</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">-e</span> <span class="va">$STD_ERR</span> <span class="dt">\</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span> ./<span class="va">${JOB1}</span>.lsf <span class="kw">|</span> <span class="fu">awk</span> <span class="st">'{print $2}'</span> <span class="kw">|</span> <span class="fu">tr</span> <span class="at">-d</span> <span class="st">'&lt;&gt;[]'</span><span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Pros</strong>: Complete control from launcher, no #BSUB directives needed <strong>Cons</strong>: Longer bsub commands, all jobs use same resources</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -456,6 +456,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If jobs 5, 12, and 23 failed</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"myjob[5,12,23]"</span> <span class="op">&lt;</span> myjob.lsf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
+</section>
+<section id="questions" class="level2">
+<h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<ul>
+<li>How to tell (properly) which job inside the array has failed</li>
+<li>What really is this: <code>"$JOB1[1-$NUM_JOB]%$NUM_JOB"</code></li>
+</ul>
 </section>
 </section>
 

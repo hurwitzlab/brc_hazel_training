@@ -262,15 +262,14 @@ We skip the `#BSUB` directives entirely in your `.lsf` file and pass all resourc
 ```bash
 # Job 3: FastQC Before Trim
 echo "Launching Job 1: FastQC"
-JOBID3=$(bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB" \
-    -n $CPUS \
-    -q $QUEUE \
-    -R "rusage[mem=$JOB3_MEMORY]" \
-    -M $MEMORY \
-    -W $TIME \
-    -o "${FASTQC_LOGS}/output.%J_%I.log" \
-    -e "${FASTQC_LOGS}/error.%J_%I.log" \
-    < ./${JOB1}.sh 
+JOB_ID=$(bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB" \
+      -n $CPUS \
+      -q $QUEUE \
+      -R "rusage[mem=$MEM]" \
+      -W $TIME \
+      -o $STD_OUT \
+      -e $STD_ERR \
+      < ./${JOB1}.lsf | awk '{print $2}' | tr -d '<>[]')
 ```
 
 **Pros**: Complete control from launcher, no #BSUB directives needed
@@ -304,3 +303,8 @@ JOB2_ID=$(bsub -w "done(step1)" < step2.lsf)
 # If jobs 5, 12, and 23 failed
 bsub -J "myjob[5,12,23]" < myjob.lsf
 ```
+
+
+## Questions 
+- How to tell (properly) which job inside the array has failed
+- What really is this: `"$JOB1[1-$NUM_JOB]%$NUM_JOB"`
