@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Mery Touceda-Suárez">
-<meta name="dcterms.date" content="2025-12-02">
+<meta name="dcterms.date" content="2025-12-03">
 
 <title>BRC Documentation: Parallel Jobs</title>
 <style>
@@ -91,13 +91,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#component-1-the-config-file-config.sh" id="toc-component-1-the-config-file-config.sh" class="nav-link" data-scroll-target="#component-1-the-config-file-config.sh">Component 1: The Config File (<code>config.sh</code>)</a></li>
   <li><a href="#component-2-the-launcher-script-run_fastqc.sh" id="toc-component-2-the-launcher-script-run_fastqc.sh" class="nav-link" data-scroll-target="#component-2-the-launcher-script-run_fastqc.sh">Component 2: The Launcher Script (<code>run_fastqc.sh</code>)</a></li>
-  <li><a href="#component-3-the-job-script-01_raw_fastqc.lsf" id="toc-component-3-the-job-script-01_raw_fastqc.lsf" class="nav-link" data-scroll-target="#component-3-the-job-script-01_raw_fastqc.lsf">Component 3: The Job Script (<code>01_raw_fastqc.lsf</code>)</a></li>
+  <li><a href="#component-3-the-job-script-fastqc.lsf" id="toc-component-3-the-job-script-fastqc.lsf" class="nav-link" data-scroll-target="#component-3-the-job-script-fastqc.lsf">Component 3: The Job Script (<code>fastqc.lsf</code>)</a></li>
   </ul></li>
   <li><a href="#resource-specification-three-approaches" id="toc-resource-specification-three-approaches" class="nav-link" data-scroll-target="#resource-specification-three-approaches">Resource Specification: Three Approaches</a>
   <ul class="collapse">
   <li><a href="#approach-1-hardcoded-in-job-script-simplest" id="toc-approach-1-hardcoded-in-job-script-simplest" class="nav-link" data-scroll-target="#approach-1-hardcoded-in-job-script-simplest">Approach 1: Hardcoded in Job Script (Simplest)</a></li>
-  <li><a href="#approach-2-variables-from-config-file-recommended" id="toc-approach-2-variables-from-config-file-recommended" class="nav-link" data-scroll-target="#approach-2-variables-from-config-file-recommended">Approach 2: Variables from Config File (Recommended)</a></li>
-  <li><a href="#approach-3-command-line-specification-most-flexible" id="toc-approach-3-command-line-specification-most-flexible" class="nav-link" data-scroll-target="#approach-3-command-line-specification-most-flexible">Approach 3: Command-Line Specification (Most Flexible)</a></li>
+  <li><a href="#approach-2-command-line-specification-recommended" id="toc-approach-2-command-line-specification-recommended" class="nav-link" data-scroll-target="#approach-2-command-line-specification-recommended">Approach 2: Command-Line Specification (Recommended)</a></li>
   </ul></li>
   <li><a href="#advanced-topics-this-hasnt-been-tested" id="toc-advanced-topics-this-hasnt-been-tested" class="nav-link" data-scroll-target="#advanced-topics-this-hasnt-been-tested">Advanced Topics (⚠️ This hasn’t been tested)</a>
   <ul class="collapse">
@@ -130,7 +129,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 2, 2025</p>
+      <p class="date">December 3, 2025</p>
     </div>
   </div>
   
@@ -277,8 +276,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="component-3-the-job-script-01_raw_fastqc.lsf" class="level3">
-<h3 class="anchored" data-anchor-id="component-3-the-job-script-01_raw_fastqc.lsf">Component 3: The Job Script (<code>01_raw_fastqc.lsf</code>)</h3>
+<section id="component-3-the-job-script-fastqc.lsf" class="level3">
+<h3 class="anchored" data-anchor-id="component-3-the-job-script-fastqc.lsf">Component 3: The Job Script (<code>fastqc.lsf</code>)</h3>
 <p>This script contains the actual work to be performed on the compute nodes.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 01_raw_fastqc.lsf - Job script for FastQC analysis</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
@@ -397,8 +396,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -W 10:00 </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Pros</strong>: Simple, self-contained <strong>Cons</strong>: Must edit job script to change resources</p>
 </section>
-<section id="approach-2-variables-from-config-file-recommended" class="level3">
-<h3 class="anchored" data-anchor-id="approach-2-variables-from-config-file-recommended">Approach 2: Variables from Config File (Recommended)</h3>
+<section id="approach-2-command-line-specification-recommended" class="level3">
+<h3 class="anchored" data-anchor-id="approach-2-command-line-specification-recommended">Approach 2: Command-Line Specification (Recommended)</h3>
 <p><strong>In <code>config.sh</code>:</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Job Parameters ---</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">JOB3</span><span class="op">=</span><span class="st">"03_fastqc_before"</span></span>
@@ -408,35 +407,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">QUEUE</span><span class="op">=</span><span class="st">"</span><span class="va">${QUEUE}</span><span class="st">"</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MEMORY</span><span class="op">=</span><span class="st">"1GB"</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TIME</span><span class="op">=</span><span class="st">"02:00"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>In job script:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Request resources here</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -n $CPUS                         </span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -q $QUEUE             </span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -R "span[hosts=1]"              </span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -R "rusage[mem=$MEMORY]"  #use of "" might have to change here       </span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -o "./output.%J_%I.log"  </span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -e "./error.%J_%I.log"         </span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#BSUB -W $TIME                   </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Pros</strong>: Centralized control, easy to modify <strong>Cons</strong>: Requires careful variable naming</p>
-<p>This is the most common and recommended approach for flexibility. When the launcher script runs source <code>./config.sh</code>, it loads variables into the environment. When LSF reads the job script, the shell expands these variables before passing the final instruction to LSF.</p>
-</section>
-<section id="approach-3-command-line-specification-most-flexible" class="level3">
-<h3 class="anchored" data-anchor-id="approach-3-command-line-specification-most-flexible">Approach 3: Command-Line Specification (Most Flexible)</h3>
-<p>Alternatively, you can skip the <code>#BSUB</code> directives entirely in your <code>.lsf</code> file and pass all resource requests directly to the bsub command in your launcher script. This is useful for pipelines where one launcher controls many different job scripts.</p>
+<p>We skip the <code>#BSUB</code> directives entirely in your <code>.lsf</code> file and pass all resource requests directly to the bsub command in your launcher script. This is useful for pipelines where one launcher controls many different job scripts.</p>
 <p><strong>In launcher script:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Job 3: FastQC Before Trim</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Launching Job 1: FastQC"</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="va">JOBID3</span><span class="op">=</span><span class="va">$(</span><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"</span><span class="va">$JOB1</span><span class="st">[1-</span><span class="va">$NUM_JOB</span><span class="st">]%</span><span class="va">$NUM_JOB</span><span class="st">"</span> <span class="dt">\</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">-n</span> <span class="va">$CPUS</span> <span class="dt">\</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">-q</span> <span class="va">$QUEUE</span> <span class="dt">\</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">-R</span> <span class="st">"rusage[mem=</span><span class="va">$JOB3_MEMORY</span><span class="st">]"</span> <span class="dt">\</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">-M</span> <span class="va">$MEMORY</span> <span class="dt">\</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">-W</span> <span class="va">$TIME</span> <span class="dt">\</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">-o</span> <span class="st">"</span><span class="va">${FASTQC_LOGS}</span><span class="st">/output.%J_%I.log"</span> <span class="dt">\</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">-e</span> <span class="st">"</span><span class="va">${FASTQC_LOGS}</span><span class="st">/error.%J_%I.log"</span> <span class="dt">\</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span> ./<span class="va">${JOB1}</span>.sh </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Job 3: FastQC Before Trim</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Launching Job 1: FastQC"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="va">JOBID3</span><span class="op">=</span><span class="va">$(</span><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"</span><span class="va">$JOB1</span><span class="st">[1-</span><span class="va">$NUM_JOB</span><span class="st">]%</span><span class="va">$NUM_JOB</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">-n</span> <span class="va">$CPUS</span> <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">-q</span> <span class="va">$QUEUE</span> <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">-R</span> <span class="st">"rusage[mem=</span><span class="va">$JOB3_MEMORY</span><span class="st">]"</span> <span class="dt">\</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">-M</span> <span class="va">$MEMORY</span> <span class="dt">\</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">-W</span> <span class="va">$TIME</span> <span class="dt">\</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">-o</span> <span class="st">"</span><span class="va">${FASTQC_LOGS}</span><span class="st">/output.%J_%I.log"</span> <span class="dt">\</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">-e</span> <span class="st">"</span><span class="va">${FASTQC_LOGS}</span><span class="st">/error.%J_%I.log"</span> <span class="dt">\</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span> ./<span class="va">${JOB1}</span>.sh </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Pros</strong>: Complete control from launcher, no #BSUB directives needed <strong>Cons</strong>: Longer bsub commands, all jobs use same resources</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -448,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Use Approach 2 (variables from config) for most pipelines. It provides the best balance of flexibility and maintainability.</p>
+<p>Use Approach 2 (variables from config) for most pipelines. It provides the best balance of flexibility and maintainability. In fact this is what we have used in the example code found here.</p>
 </div>
 </div>
 <p><br></p>
@@ -458,20 +441,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="advanced-topics-this-hasnt-been-tested">Advanced Topics (⚠️ This hasn’t been tested)</h2>
 <section id="non-sequential-arrays" class="level3">
 <h3 class="anchored" data-anchor-id="non-sequential-arrays">Non-Sequential Arrays</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Skip certain indices</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"myjob[1-100:2]"</span>  <span class="co"># Only odd numbers: 1,3,5...99</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"myjob[10,20,30,40]"</span>  <span class="co"># Specific indices only</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Skip certain indices</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"myjob[1-100:2]"</span>  <span class="co"># Only odd numbers: 1,3,5...99</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"myjob[10,20,30,40]"</span>  <span class="co"># Specific indices only</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="job-dependencies" class="level3">
 <h3 class="anchored" data-anchor-id="job-dependencies">Job Dependencies</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wait for array to complete before starting next job</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="va">JOB1_ID</span><span class="op">=</span><span class="va">$(</span><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"step1[1-100]"</span> <span class="op">&lt;</span> step1.lsf<span class="va">)</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="va">JOB2_ID</span><span class="op">=</span><span class="va">$(</span><span class="ex">bsub</span> <span class="at">-w</span> <span class="st">"done(step1)"</span> <span class="op">&lt;</span> step2.lsf<span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wait for array to complete before starting next job</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="va">JOB1_ID</span><span class="op">=</span><span class="va">$(</span><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"step1[1-100]"</span> <span class="op">&lt;</span> step1.lsf<span class="va">)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">JOB2_ID</span><span class="op">=</span><span class="va">$(</span><span class="ex">bsub</span> <span class="at">-w</span> <span class="st">"done(step1)"</span> <span class="op">&lt;</span> step2.lsf<span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="resubmitting-failed-jobs" class="level3">
 <h3 class="anchored" data-anchor-id="resubmitting-failed-jobs">Resubmitting Failed Jobs</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If jobs 5, 12, and 23 failed</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"myjob[5,12,23]"</span> <span class="op">&lt;</span> myjob.lsf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If jobs 5, 12, and 23 failed</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-J</span> <span class="st">"myjob[5,12,23]"</span> <span class="op">&lt;</span> myjob.lsf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
