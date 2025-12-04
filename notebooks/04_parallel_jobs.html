@@ -258,12 +258,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><code>source ./config.sh</code> Loads parameters (like the list of samples) from a separate configuration file.</li>
 <li><code>$(wc -l &lt; "$IN_LIST")</code> Calculates the number of tasks required (the end index of the array).</li>
-<li><strong><code>[1-$NUM_JOBS]%$NUM_JOBS</code></strong>: Array syntax with optional concurrency limit
-<ul>
-<li><code>[1-100]</code> would run jobs 1-100</li>
-<li><code>%20</code> limits to 20 concurrent jobs at once</li>
-</ul></li>
+<li><strong><code>-J "$JOB1[1-$NUM_JOBS]%$NUM_JOBS"</code></strong>: Array syntax with optional concurrency limit</li>
 </ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Component</th>
+<th style="text-align: left;">Example Value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">$JOB1</td>
+<td style="text-align: left;"><code>fastqc</code></td>
+<td style="text-align: left;">This is the <strong>base name</strong> for the job array. Individual sub-jobs will be named, for example, <code>fastqc[1]</code>, <code>fastqc[2]</code>, etc.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">[1-$NUM_JOBS]</td>
+<td style="text-align: left;">e.g., <code>[1-50]</code></td>
+<td style="text-align: left;">This defines the <strong>range</strong> of the job array. It means the array will consist of sub-jobs with indices starting from <strong>1</strong> up to the value of $NUM_JOB (which is the number of lines in your input file). Each sub-job will process one line/sample.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">%$NUM_JOBS</td>
+<td style="text-align: left;">e.g., <code>%50</code></td>
+<td style="text-align: left;">This is the crucial <strong>concurrency limit</strong>. It specifies the <strong>maximum number of sub-jobs</strong> from this array that LSF is allowed to run <strong>at the same time</strong> (concurrently).</td>
+</tr>
+</tbody>
+</table>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
