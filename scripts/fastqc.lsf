@@ -52,7 +52,7 @@ fi
 echo "Running FastQC on sample: ${SAMPLE}"
 
 apptainer exec $BIND ${FASTQC_SIF} fastqc \
-    --threads 2 \
+    --threads $CPUS \
     --outdir ${OUT_DIR} \
     ${IN_DIR}/${SAMPLE}_*.fastq*
 

@@ -49,6 +49,8 @@ Running a Job Array typically involves two primary scripts working together:
 2.  **The Launcher Script**: Submits the job to LSF and defines the array size
 3.  **The Job Script**: Uses `$LSB_JOBINDEX` to select and process a single item
 
+![](schematic_array.png)
+
 ### Component 1: The Config File (`config.sh`)
 
 The config file centralizes all variable elements of your pipeline, making it easy to modify parameters without editing multiple scripts.
@@ -101,7 +103,7 @@ if [[ ! -f "$IN_LIST" ]]; then
 fi
 
 # create a variable with the job name
-export JOB1="01_raw_fastqc"  # this is not necessary but will be useful for consistency in larger pipelines
+export JOB1="fastqc"  # this is not necessary but will be useful for consistency in larger pipelines
 
 # get number of samples to process
 # the number of samples will be used to set the range of the job array
@@ -128,7 +130,7 @@ The `%N` syntax prevents overwhelming the filesystem or scheduler. For large arr
 This script contains the actual work to be performed on the compute nodes.
 
 ```bash
-# 01_raw_fastqc.lsf - Job script for FastQC analysis
+# fastqc.lsf - Job script for FastQC analysis
 # --------------------------------------------------
 # Request resources here
 # --------------------------------------------------
@@ -211,9 +213,9 @@ echo "=================================================="
 
 ::: {.callout-important}
 ## The Magic of `$LSB_JOBINDEX`
-- Job 1 gets line 1: `sample_A`
-- Job 2 gets line 2: `sample_B`
-- Job 3 gets line 3: `sample_C`
+- Job 1 gets line 1: `sample_001`
+- Job 2 gets line 2: `sample_002`
+- Job 3 gets line 3: `sample_003`
 
 This allows one script to process all samples!
 :::
@@ -222,9 +224,11 @@ This allows one script to process all samples!
 
 ## Resource Specification: Three Approaches
 
-There are multiple ways to specify compute resources. Choose based on your pipeline's complexity and flexibility needs.
+There are multiple ways to specify compute resources. Up to now we have been **"hardcoding"** (typing the exact value) the resource request in the job script. While the simplest method, this is however not the recommended one. It is commonly accepted as best practice to **only modify the config file** when adapting a pipeline. In that case, we would want to create the necessary variables in the config file and then pass them to the job via the launcer. Let's see how this works.
+
 
 ### Approach 1: Hardcoded in Job Script (Simplest)
+This is the approach we have been using so far in this training. 
 ```bash
 # --------------------------------------------------
 # Request resources here
@@ -238,13 +242,14 @@ There are multiple ways to specify compute resources. Choose based on your pipel
 #BSUB -W 10:00 
 ```
 
-**Pros**: Simple, self-contained
-**Cons**: Must edit job script to change resources
+- **Pros**: Simple, self-contained
+- **Cons**: Must edit job script to change resources
 
 
 ### Approach 2: Command-Line Specification (Recommended)
+Here we first want to create the variables and populate them (give them values) in the `config.sh` file. 
 
-**In `config.sh`:**
+**`config.sh`:**
 ```bash
 # --- Job Parameters ---
 export JOB3="03_fastqc_before"
@@ -256,12 +261,19 @@ export MEMORY="1GB"
 export TIME="02:00"
 ```
 
-We skip the `#BSUB` directives entirely in your `.lsf` file and pass all resource requests directly to the bsub command in your launcher script. This is useful for pipelines where one launcher controls many different job scripts.
+This allows us to skip the `#BSUB` directives entirely in your `.lsf` file and **pass all resource requests directly to the bsub command in your launcher script**. This is useful for pipelines where one launcher controls many different job scripts.
 
-**In launcher script:**
+The command to launch the job changes from this: 
 ```bash
-# Job 3: FastQC Before Trim
-echo "Launching Job 1: FastQC"
+# submit job arrays for each step
+echo "launching ${JOB1}.lsf as a job."
+JOB_ID=`bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB" < ${JOB1}.lsf`
+```
+
+To this: 
+```bash
+# submit job arrays for each step
+echo "launching ${JOB1}.lsf as a job."
 JOB_ID=$(bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB" \
       -n $CPUS \
       -q $QUEUE \
@@ -272,13 +284,14 @@ JOB_ID=$(bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB" \
       < ./${JOB1}.lsf | awk '{print $2}' | tr -d '<>[]')
 ```
 
-**Pros**: Complete control from launcher, no #BSUB directives needed
-**Cons**: Longer bsub commands, all jobs use same resources
+- **Pros**: Complete control from launcher, no #BSUB directives needed
+- **Cons**: Longer bsub commands, all jobs use same resources
 
 ::: {.callout-tip}
 ## Best Practice
-Use Approach 2 (variables from config) for most pipelines. It provides the best balance of flexibility and maintainability. In fact this is what we have used in the example code found here.
+**We recommend you use Approach 2** (variables from config) for most pipelines. It provides the best balance of flexibility and maintainability. In fact this is what we have used in the **example code**. See: `brc_hazel_training/scripts`
 :::
+
 
 <br>
 
@@ -308,3 +321,5 @@ bsub -J "myjob[5,12,23]" < myjob.lsf
 ## Questions 
 - How to tell (properly) which job inside the array has failed
 - What really is this: `"$JOB1[1-$NUM_JOB]%$NUM_JOB"`
+- make a schematic figure of the config-job script-launcher
+
