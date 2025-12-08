@@ -116,13 +116,13 @@ JOB_ID=`bsub -J "$JOB1[1-$NUM_JOB]%$NUM_JOB" < ${JOB1}.lsf`
 
 - `source ./config.sh`	Loads parameters (like the list of samples) from a separate configuration file.
 - `$(wc -l < "$IN_LIST")`	Calculates the number of tasks required (the end index of the array).
-- `-J "$JOB1[1-$NUM_JOBS]%$NUM_JOBS"`: Array syntax with optional concurrency limit
+- `-J "$JOB1[1-$NUM_JOB]%$NUM_JOB"`: Array syntax with optional concurrency limit
 
 | Component | Example Value | Description |
 | :--- | :--- | :--- |
 | $JOB1 | `fastqc` | This is the **base name** for the job array. Individual sub-jobs will be named, for example, `fastqc[1]`, `fastqc[2]`, etc. |
-| [1-\$NUM\_JOBS] | e.g., `[1-50]` | This defines the **range** of the job array. It means the array will consist of sub-jobs with indices starting from **1** up to the value of $NUM\_JOB (which is the number of lines in your input file). Each sub-job will process one line/sample. |
-| %\$NUM\_JOBS | e.g., `%50` | This is the crucial **concurrency limit**. It specifies the **maximum number of sub-jobs** from this array that LSF is allowed to run **at the same time** (concurrently). |
+| [1-\$NUM\_JOB] | e.g., `[1-50]` | This defines the **range** of the job array. It means the array will consist of sub-jobs with indices starting from **1** up to the value of $NUM\_JOB (which is the number of lines in your input file). Each sub-job will process one line/sample. |
+| %\$NUM\_JOB | e.g., `%50` | This is the crucial **concurrency limit**. It specifies the **maximum number of sub-jobs** from this array that LSF is allowed to run **at the same time** (concurrently). |
 
 ::: {.callout-tip}
 ## Concurrency Limits
