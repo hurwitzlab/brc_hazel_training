@@ -1,0 +1,415 @@
+---
+title: "BRC Documentation: Job Performance Analysis"
+author: "Mery Touceda-Suárez"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: false
+---
+
+## Training Objectives
+
+By the end of this session, you will be able to:
+
+::: {.incremental}
+- Estimate computational resource requirements for jobs
+- Monitor and analyze job performance on Hazel
+- Conduct basic scaling analysis to optimize resource usage
+- Identify performance bottlenecks and inefficiencies
+:::
+
+# Part 1: Estimating Job Requirements {background-color="#4a90e2"}
+
+## Why Estimate Resources?
+
+**Underestimation:**
+
+- Jobs fail or timeout
+- Wasted computational time
+- Need to resubmit
+
+**Overestimation:**
+
+- Longer queue times
+- Wasted cluster resources
+- Reduced fair share priority
+
+::: {.callout-tip}
+Better estimates = faster completion + efficient resource use
+:::
+
+## Key Resources to Estimate
+
+| Resource | Question to Ask |
+|----------|----------------|
+| **Cores** | Is this parallel? How many can it use effectively? |
+| **Memory** | What's the dataset size? Algorithm requirements? |
+| **Time** | How long for a test case? How does it scale? |
+| **Storage** | Input/output file sizes? Temporary files? |
+
+::: {.callout-note}
+## Remember
+Memory = 
+Storage = 
+:::
+
+## Estimating Cores
+
+**Start with the application:**
+
+::: {.incremental}
+- Serial code → 1 core
+- OpenMP/threaded → typically 8-16 cores on one node
+- MPI → can span multiple nodes, test scaling
+- Hybrid MPI+OpenMP → combination approach
+:::
+
+**Rule of thumb:** Start small, measure, then scale up
+
+## Estimating Memory
+
+**Quick estimation methods:**
+
+1. **Documentation:** Check software requirements
+2. **Similar jobs:** Look at past jobs in your group
+3. **Test runs:** Run small version, check actual usage with `bjobs -l`
+4. **Data-driven:** Sum of input file sizes × safety factor (2-3x)
+
+::: {.callout-warning}
+Hazel nodes have 128GB-256GB RAM. Don't request more than available!
+:::
+
+## Estimating Wall Time
+
+**Strategies:**
+
+1. Run a small test problem
+```{.bash}
+# Run test
+bsub -W 0:30 -n 4 ./test_run
+
+# Check how long it took
+bjobs -l JOBID | grep "CPU time"
+```
+
+**Then extrapolate:**
+
+- Linear scaling: 2x data ≈ 2x time
+- Worse than linear: iterative algorithms, complex I/O
+- Consider adding 20-30% buffer
+
+---
+<br>
+
+# Part 2: Analyzing Job Performance
+
+## Monitoring Running Jobs
+
+**Basic monitoring:**
+
+```{.bash}
+# Check your jobs
+bjobs
+
+# Detailed information
+bjobs -l JOBID
+
+# Check specific queue
+bqueues shared_memory
+
+# Why is my job pending?
+bjobs -p JOBID
+```
+
+## Understanding Job Status
+
+```{.bash}
+JOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME
+123456  user01  RUN   shared_mem login01     node042     analysis
+123457  user01  PEND  medium     login01     -           bigrun
+```
+
+**Key states:**
+
+- **RUN** - Currently executing
+- **PEND** - Waiting in queue
+- **DONE** - Completed successfully
+- **EXIT** - Failed
+
+## Pending Job Analysis
+
+**Common reasons jobs wait:**
+
+```{.bash}
+bjobs -p JOBID
+```
+
+Typical outputs:
+
+- "Not enough processors" - cluster at capacity
+- "User has reached job limit"
+- "Queue has reached job limit"
+- "Resource requirements not satisfied"
+
+## Actual vs Requested Resources
+
+**Check what was actually used:**
+
+```{.bash}
+bjobs -l JOBID | grep -A 5 "CPU time"
+```
+
+Look for:
+
+- **CPU utilization** - Were cores actually busy?
+- **Memory usage** - Did you request too much/little?
+- **Run time** - Did it finish early or timeout?
+
+## Performance Red Flags
+
+::: {.columns}
+::: {.column width="50%"}
+**Inefficient Usage**
+
+- Requested 16 cores, used 2
+- 128GB RAM requested, 8GB used
+- Job finished in 10 min, requested 24 hrs
+:::
+
+::: {.column width="50%"}
+**Resource Issues**
+
+- Job killed for exceeding memory
+- Timeout before completion
+- High I/O wait times
+- Swapping to disk
+:::
+:::
+
+## Live Demo: Analyzing a Job
+
+```{.bash}
+# Submit a test job
+bsub -n 4 -W 0:10 ./test_program
+
+# Get job ID and monitor
+bjobs
+
+# After completion, check performance
+bjobs -l JOBID > job_analysis.txt
+
+# Look at the output
+less job_analysis.txt
+```
+
+::: {.notes}
+Instructor: Run actual demo showing job submission and analysis
+:::
+
+## Exercise 2: Performance Analysis
+
+You'll be given output from `bjobs -l` for three jobs:
+
+**Analyze each and identify:**
+
+1. Was the resource request appropriate?
+2. What would you change for the next run?
+3. Any red flags or issues?
+
+::: {.notes}
+Provide sample bjobs output files. Give 5-7 minutes.
+:::
+
+# Part 3: Scaling Analysis {background-color="#27ae60"}
+
+## What is Scaling?
+
+**Strong Scaling:**
+
+- Fixed problem size
+- Increase number of cores
+- Goal: reduce time to solution
+
+**Weak Scaling:**
+
+- Problem size grows with cores
+- Maintain time per core roughly constant
+- Goal: solve bigger problems
+
+## Why Care About Scaling?
+
+**Not all codes scale well:**
+
+```{r}
+#| echo: false
+#| eval: true
+cores <- c(1, 2, 4, 8, 16, 32)
+ideal_time <- 100 / cores
+actual_time <- c(100, 52, 28, 18, 14, 13)
+
+plot(cores, ideal_time, type="b", col="blue", 
+     ylim=c(0,100), pch=19,
+     xlab="Number of Cores", ylab="Time (minutes)",
+     main="Ideal vs Actual Scaling")
+lines(cores, actual_time, type="b", col="red", pch=19)
+legend("topright", c("Ideal", "Actual"), 
+       col=c("blue", "red"), lty=1, pch=19)
+```
+
+## Measuring Speedup
+
+**Speedup Formula:**
+
+$$S(n) = \frac{T_1}{T_n}$$
+
+Where:
+
+- $T_1$ = time with 1 core
+- $T_n$ = time with n cores
+- Ideal speedup: $S(n) = n$
+
+**Efficiency:**
+
+$$E(n) = \frac{S(n)}{n} \times 100\%$$
+
+## Scaling Experiment Design
+
+**Steps:**
+
+1. Choose a representative problem
+2. Run with: 1, 2, 4, 8, 16, (32) cores
+3. Record wall time for each
+4. Calculate speedup and efficiency
+5. Plot results
+
+::: {.callout-important}
+Keep everything else constant: same input, same node type, same compiler
+:::
+
+## Example Scaling Study
+
+| Cores | Time (sec) | Speedup | Efficiency |
+|-------|-----------|---------|-----------|
+| 1     | 1000      | 1.0     | 100%      |
+| 2     | 520       | 1.92    | 96%       |
+| 4     | 270       | 3.70    | 93%       |
+| 8     | 145       | 6.90    | 86%       |
+| 16    | 85        | 11.76   | 74%       |
+
+**Interpretation:** Good scaling up to 8 cores, diminishing returns after
+
+## Factors Limiting Scaling
+
+::: {.incremental}
+- **Serial portions** (Amdahl's Law)
+- **Communication overhead** (MPI)
+- **Memory bandwidth** saturation
+- **I/O bottlenecks**
+- **Load imbalance**
+:::
+
+::: {.callout-note}
+Most codes have an optimal core count beyond which adding more resources wastes time
+:::
+
+## Amdahl's Law
+
+$$\text{Speedup} \leq \frac{1}{(1-P) + \frac{P}{N}}$$
+
+Where:
+
+- P = fraction that parallelizes
+- N = number of cores
+
+**Example:** If 95% parallelizes, max speedup with infinite cores ≈ 20×
+
+## Finding Your Optimal Point
+
+**Cost-benefit analysis:**
+
+```{.bash}
+# Calculate core-hours for each run
+core_hours = cores × time_in_hours
+```
+
+| Cores | Time | Core-hours | Cost Efficiency |
+|-------|------|-----------|----------------|
+| 4     | 4h   | 16        | baseline       |
+| 8     | 2.5h | 20        | 25% more       |
+| 16    | 1.8h | 28.8      | 80% more       |
+
+**Sweet spot:** Where time savings justifies resource cost
+
+## Hazel-Specific Considerations
+
+**Node characteristics:**
+
+- Nodes are heterogeneous (different CPU generations)
+- Shared vs exclusive node access matters
+- Network topology affects MPI jobs
+- Memory per core varies by node type
+
+**Best practice:** Use `-R "span[hosts=1]"` for shared memory to avoid communication penalties
+
+## Exercise 3: Scaling Analysis
+
+**Given this data from a scaling study:**
+
+| Cores | Time (min) |
+|-------|-----------|
+| 1     | 480       |
+| 2     | 250       |
+| 4     | 135       |
+| 8     | 75        |
+| 16    | 50        |
+| 32    | 45        |
+
+Calculate speedup and efficiency. What's the optimal core count?
+
+::: {.notes}
+Give 5 minutes. Optimal is around 8-16 cores based on efficiency drop
+:::
+
+# Putting It All Together {background-color="#8e44ad"}
+
+## Workflow for Job Optimization
+
+1. **Start small:** Test with minimal resources
+2. **Measure:** Collect actual performance data
+3. **Analyze:** Check utilization and identify bottlenecks
+4. **Scale:** Run controlled scaling experiments
+5. **Optimize:** Choose resource configuration that balances time and cost
+6. **Document:** Record optimal settings for future runs
+
+## Common Patterns
+
+**CPU-bound jobs:**
+
+- Scale well with cores (up to a point)
+- Memory not a limiting factor
+- Focus on finding optimal core count
+
+**Memory-bound jobs:**
+
+- Limited by available RAM
+- May need fewer cores per node
+- Consider high-memory nodes
+
+**I/O-bound jobs:**
+
+- Don't scale well with cores
+- Focus on minimizing file operations
+- Use `/share/scratch` effectively
+
+## Practical Tips
+
+::: {.incremental}
+- **Start testing with short runs** - use subsets of data
+- **Check job output files** - they contain valuable timing info
+- **Compare similar jobs** - learn from past successes
+- **Don't over-optimize** - 80/20 rule applies
+- **Share findings** - help your research group
+:::

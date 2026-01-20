@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Mery Touceda-Suárez">
+<meta name="dcterms.date" content="2026-01-07">
+
+<title>BRC Documentation: Globus</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="globus_basics_files/libs/clipboard/clipboard.min.js"></script>
+<script src="globus_basics_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="globus_basics_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="globus_basics_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="globus_basics_files/libs/quarto-html/popper.min.js"></script>
+<script src="globus_basics_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="globus_basics_files/libs/quarto-html/anchor.min.js"></script>
+<link href="globus_basics_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="globus_basics_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="globus_basics_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="globus_basics_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="globus_basics_files/libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#key-terminology" id="toc-key-terminology" class="nav-link" data-scroll-target="#key-terminology">Key Terminology</a></li>
+  <li><a href="#why-use-globus" id="toc-why-use-globus" class="nav-link" data-scroll-target="#why-use-globus">Why Use Globus?</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#creating-a-globus-account" id="toc-creating-a-globus-account" class="nav-link" data-scroll-target="#creating-a-globus-account">Creating a Globus Account</a></li>
+  </ul></li>
+  <li><a href="#connecting-your-ncsu-google-drive" id="toc-connecting-your-ncsu-google-drive" class="nav-link" data-scroll-target="#connecting-your-ncsu-google-drive">Connecting Your NCSU Google Drive</a></li>
+  <li><a href="#conencting-your-local-machine" id="toc-conencting-your-local-machine" class="nav-link" data-scroll-target="#conencting-your-local-machine">Conencting Your Local Machine</a></li>
+  <li><a href="#transferring-files" id="toc-transferring-files" class="nav-link" data-scroll-target="#transferring-files">Transferring Files</a></li>
+  <li><a href="#scheduled-transfers" id="toc-scheduled-transfers" class="nav-link" data-scroll-target="#scheduled-transfers">Scheduled Transfers</a></li>
+  <li><a href="#sharing-data-with-collaborators" id="toc-sharing-data-with-collaborators" class="nav-link" data-scroll-target="#sharing-data-with-collaborators">Sharing Data with Collaborators</a>
+  <ul class="collapse">
+  <li><a href="#creating-a-shared-collection" id="toc-creating-a-shared-collection" class="nav-link" data-scroll-target="#creating-a-shared-collection">Creating a Shared Collection</a></li>
+  <li><a href="#accessing-shared-collections" id="toc-accessing-shared-collections" class="nav-link" data-scroll-target="#accessing-shared-collections">Accessing Shared Collections</a></li>
+  </ul></li>
+  <li><a href="#linking-multiple-institutional-identities" id="toc-linking-multiple-institutional-identities" class="nav-link" data-scroll-target="#linking-multiple-institutional-identities">Linking Multiple Institutional Identities</a></li>
+  <li><a href="#advanced-features" id="toc-advanced-features" class="nav-link" data-scroll-target="#advanced-features">Advanced Features</a>
+  <ul class="collapse">
+  <li><a href="#command-line-interface-cli" id="toc-command-line-interface-cli" class="nav-link" data-scroll-target="#command-line-interface-cli">Command Line Interface (CLI)</a></li>
+  <li><a href="#python-sdk" id="toc-python-sdk" class="nav-link" data-scroll-target="#python-sdk">Python SDK</a></li>
+  </ul></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a>
+  <ul class="collapse">
+  <li><a href="#common-issues-and-solutions" id="toc-common-issues-and-solutions" class="nav-link" data-scroll-target="#common-issues-and-solutions">Common Issues and Solutions</a></li>
+  </ul></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a>
+  <ul class="collapse">
+  <li><a href="#data-management" id="toc-data-management" class="nav-link" data-scroll-target="#data-management">Data Management</a></li>
+  <li><a href="#performance-optimization" id="toc-performance-optimization" class="nav-link" data-scroll-target="#performance-optimization">Performance Optimization</a></li>
+  <li><a href="#security" id="toc-security" class="nav-link" data-scroll-target="#security">Security</a></li>
+  </ul></li>
+  <li><a href="#frequently-asked-questions" id="toc-frequently-asked-questions" class="nav-link" data-scroll-target="#frequently-asked-questions">Frequently Asked Questions</a></li>
+  <li><a href="#additional-resources" id="toc-additional-resources" class="nav-link" data-scroll-target="#additional-resources">Additional Resources</a>
+  <ul class="collapse">
+  <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
+  <li><a href="#training-and-tutorials" id="toc-training-and-tutorials" class="nav-link" data-scroll-target="#training-and-tutorials">Training and Tutorials</a></li>
+  <li><a href="#support-channels" id="toc-support-channels" class="nav-link" data-scroll-target="#support-channels">Support Channels</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">BRC Documentation: Globus</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mery Touceda-Suárez </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 7, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>Globus is a secure, point-to-point file synchronization platform that orchestrates data transfers between endpoints. Unlike traditional file transfer methods, data never traverses through Globus servers—instead, Globus facilitates end-to-end encrypted communication between endpoints, allowing them to transfer files directly.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/globus_overview.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="key-terminology" class="level2">
+<h2 class="anchored" data-anchor-id="key-terminology">Key Terminology</h2>
+<dl>
+<dt><strong>Collection</strong></dt>
+<dd>
+A named set of files and folders that can be accessed through Globus
+</dd>
+<dt><strong>Endpoint</strong></dt>
+<dd>
+A computer or server that hosts files and can send or receive data via Globus
+</dd>
+<dt><strong>Globus Connect Server</strong></dt>
+<dd>
+Infrastructure deployed in front of storage platforms (e.g., Google Drive, research storage, HPC systems) to enable Globus transfers
+</dd>
+<dt><strong>Globus Connect Personal</strong></dt>
+<dd>
+A desktop application that transforms your local machine into a Globus endpoint for data transfers
+</dd>
+<dt><strong>Globus Plus</strong></dt>
+<dd>
+An enhanced subscription that provides additional features, including the ability to synchronize multiple endpoints and share data with external collaborators
+</dd>
+</dl>
+</section>
+<section id="why-use-globus" class="level2">
+<h2 class="anchored" data-anchor-id="why-use-globus">Why Use Globus?</h2>
+<p>Globus offers several advantages over traditional file transfer methods:</p>
+<ul>
+<li><strong>Reliability</strong>: Automatic retry and resume capabilities for interrupted transfers</li>
+<li><strong>Speed</strong>: Optimized for high-performance transfers, especially for large datasets</li>
+<li><strong>Convenience</strong>: Transfers continue in the background; no need to keep your browser open</li>
+<li><strong>Security</strong>: End-to-end encryption and authentication through institutional credentials</li>
+<li><strong>Scalability</strong>: Efficiently handles transfers from single files to millions of files</li>
+<li><strong>Sharing</strong>: Easy and secure data sharing with collaborators at other institutions</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>When to Use Globus
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Globus is particularly useful for:</p>
+<ul>
+<li>Transferring large datasets (&gt;1 GB)</li>
+<li>Moving data to/from HPC systems</li>
+<li>Sharing data with external collaborators</li>
+<li>Automated/scheduled transfers</li>
+<li>Transfers with many small files</li>
+</ul>
+<p>For quick transfers of small files (&lt;100 MB), traditional methods may be simpler.</p>
+</div>
+</div>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
+<section id="prerequisites" class="level3">
+<h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
+<p>Before you begin, ensure you have:</p>
+<ul>
+<li>Active NCSU credentials (Unity ID and password)</li>
+<li>Access to the systems you want to transfer data between</li>
+<li>A modern web browser (Chrome, Firefox, Safari, or Edge)</li>
+</ul>
+</section>
+<section id="creating-a-globus-account" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-globus-account">Creating a Globus Account</h3>
+<ol type="1">
+<li>Navigate to <a href="https://www.globus.org">https://www.globus.org</a></li>
+<li>Click <strong>Log In</strong> in the top right corner</li>
+<li>Search for “North Carolina State University” in the organization list</li>
+<li>Click <strong>Continue</strong> and authenticate with your NCSU credentials</li>
+<li>Complete any first-time setup prompts</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/step0_globus_login.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In my experience some of the first-time setup promts might take a couple of trys, you might need to refresh the page and do it again one of two times before it works</p>
+</div>
+</div>
+</section>
+</section>
+<section id="connecting-your-ncsu-google-drive" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-your-ncsu-google-drive">Connecting Your NCSU Google Drive</h2>
+<p>Follow these steps to make your NCSU Google Drive accessible through Globus:</p>
+<ol type="1">
+<li><p>Navigate to <strong>Collections</strong> on the <a href="https://www.globus.org">Globus website</a> <img src="images/step1_globus_collections.png" class="img-fluid quarto-figure quarto-figure-center" style="width:70.0%"></p></li>
+<li><p>Search for <code>ncsu google</code> in the search bar</p></li>
+<li><p>Locate and click on <strong>NC State Google Drive Connector</strong></p></li>
+<li><p>Click <strong>Collections</strong> in the top menu</p>
+<ul>
+<li>You may be prompted to grant permissions to Globus at this point</li>
+</ul></li>
+<li><p>Click the <strong>Add Guest Collection</strong> button (top right)</p>
+<ul>
+<li>A popup will appear requesting your NCSU credentials</li>
+</ul></li>
+<li><p>Configure your collection:</p>
+<ul>
+<li>Select the directory you want to share</li>
+<li>Enter a memorable <strong>Display Name</strong> (e.g., “My Research Data 2024”)</li>
+<li>Use the <strong>Description</strong> field to add details about the collection’s contents</li>
+</ul></li>
+<li><p>Click <strong>Create Collection</strong> and authorize in the popup window</p></li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Choose descriptive collection names that clearly indicate what data they contain. This will help you and collaborators quickly identify the correct collection during transfers.</p>
+</div>
+</div>
+</section>
+<section id="conencting-your-local-machine" class="level2">
+<h2 class="anchored" data-anchor-id="conencting-your-local-machine">Conencting Your Local Machine</h2>
+<p>To transfer files to/from your personal computer, you’ll need to install Globus Connect Personal.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a second set of instructions, see the <a href="https://hpcdocs.hpc.arizona.edu/storage_and_transfers/transfers/globus/#globus-connect-personal">University of Arizona HPC Globus guide</a>.</p>
+</div>
+</div>
+<ol type="1">
+<li>Download <strong>Globus Connect Personal</strong> from the Collections page (link in top right corner)</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/step6_connect_personal.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<ol start="2" type="1">
+<li>Install and launch the application</li>
+<li>Log in using your NCSU credentials
+<ul>
+<li>Authentication occurs via a browser popup</li>
+</ul></li>
+<li>Create a label for your local machine (e.g., “Meri-Laptop” or “Lab-Workstation”)</li>
+<li>Enter your preferred <strong>Display Name</strong> for this endpoint and click <strong>Save</strong></li>
+</ol>
+<p>Your local machine is now configured as a Globus endpoint and will appear under <strong>Collections</strong>.</p>
+</section>
+<section id="transferring-files" class="level2">
+<h2 class="anchored" data-anchor-id="transferring-files">Transferring Files</h2>
+<p>Once you have at least two collections set up, you can initiate transfers:</p>
+<ol type="1">
+<li>In the <strong>File Manager</strong>, select your <span style="color:purple"><strong>source collection</strong></span> (left panel) and <span style="color:green"><strong>destination collection</strong></span> (right panel)</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/step10_source_destination.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<ol start="2" type="1">
+<li>Navigate to and select the file(s) or folder(s) you want to transfer</li>
+<li>Configure <strong>Transfer &amp; Timer Options</strong>:
+<ul>
+<li>Sync options (sync only new/changed files)</li>
+<li>Transfer label for tracking</li>
+<li>Email notifications</li>
+</ul></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/step11_transfer_options.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<ol start="4" type="1">
+<li>Click <strong>Start</strong> to begin the transfer</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/step12_start_transfer.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<ol start="5" type="1">
+<li>Monitor progress in the <strong>Activity</strong> page (accessible from the left sidebar)</li>
+</ol>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Large transfers can take time. Globus will continue transfers even if you close your browser, and can send you an email notification when complete.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Transfer Best Practices
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Label your transfers</strong>: Use descriptive labels to identify transfers in your activity history</li>
+<li><strong>Enable email notifications</strong>: Get notified when large transfers complete</li>
+<li><strong>Use sync mode</strong> for ongoing projects to only transfer changed files</li>
+<li><strong>Verify transfers</strong>: Check the Activity log to confirm successful completion</li>
+<li><strong>Delete carefully</strong>: Use the delete function in Globus rather than local deletion to avoid sync issues</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="scheduled-transfers" class="level2">
+<h2 class="anchored" data-anchor-id="scheduled-transfers">Scheduled Transfers</h2>
+<p>Globus allows you to schedule transfers for specific times:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/step13_schedule_transfer.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<ol type="1">
+<li>When configuring a transfer, click <strong>Schedule Start</strong></li>
+<li>Select the date and time for the transfer to begin</li>
+<li>Complete the transfer setup as usual</li>
+</ol>
+</section>
+<section id="sharing-data-with-collaborators" class="level2">
+<h2 class="anchored" data-anchor-id="sharing-data-with-collaborators">Sharing Data with Collaborators</h2>
+<p>Globus makes it easy to share specific datasets with colleagues, even if they’re at different institutions.</p>
+<section id="creating-a-shared-collection" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-shared-collection">Creating a Shared Collection</h3>
+<ol type="1">
+<li>Navigate to your collection in the <strong>File Manager</strong></li>
+<li>Select the folder you want to share</li>
+<li>Click the <strong>Share</strong> button (or right-click and select “Share”)</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/step14_share_collection.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<ol start="4" type="1">
+<li>Configure sharing permissions:
+<ul>
+<li>Add email addresses or Globus IDs of collaborators</li>
+<li>Set permissions (read-only or read-write)</li>
+<li>Set expiration date (optional but recommended)</li>
+</ul></li>
+<li>Click <strong>Add Permission</strong></li>
+<li>Share the collection name with your collaborators</li>
+</ol>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Data Sharing Considerations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Before sharing data:</p>
+<ul>
+<li>Verify you have permission to share the data</li>
+<li>Ensure sensitive or confidential data is properly protected</li>
+<li>Consider setting expiration dates for temporary collaborations</li>
+<li>Use read-only permissions unless collaborators need to add/modify files</li>
+<li>Follow your institution’s data management policies</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="accessing-shared-collections" class="level3">
+<h3 class="anchored" data-anchor-id="accessing-shared-collections">Accessing Shared Collections</h3>
+<p>When someone shares a collection with you:</p>
+<ol type="1">
+<li>You’ll receive an email notification with the collection name</li>
+<li>Go to <strong>Collections</strong> and search for the shared collection name</li>
+<li>The collection will appear in your search results</li>
+<li>You may need to authenticate the first time you access it</li>
+</ol>
+</section>
+</section>
+<section id="linking-multiple-institutional-identities" class="level2">
+<h2 class="anchored" data-anchor-id="linking-multiple-institutional-identities">Linking Multiple Institutional Identities</h2>
+<p>If you’re affiliated with multiple universities or organizations that partner with Globus, you can link these identities to access endpoints from all institutions.</p>
+<ol type="1">
+<li>Click <strong>Settings</strong> in the left sidebar</li>
+<li>Navigate to the <strong>Accounts</strong> tab</li>
+<li>Click <strong>Link Another Identity</strong></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/step15_link_identity.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<ol start="4" type="1">
+<li>Complete the authentication process for your other institutional account</li>
+<li>Once linked, you can access and transfer between endpoints from both organizations</li>
+</ol>
+<p><strong>Example use case:</strong> Transfer data between NCSU’s HPC cluster and another university’s research storage system.</p>
+<p><br></p>
+<hr>
+<p><br></p>
+</section>
+<section id="advanced-features" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-features">Advanced Features</h2>
+<section id="command-line-interface-cli" class="level3">
+<h3 class="anchored" data-anchor-id="command-line-interface-cli">Command Line Interface (CLI)</h3>
+<p>For power users and automation, Globus offers a command-line interface:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Globus CLI</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install globus-cli</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Login</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">globus</span> login</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Transfer files</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">globus</span> transfer : <span class="dt">\</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                : <span class="dt">\</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">--label</span> <span class="st">"My Transfer"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="python-sdk" class="level3">
+<h3 class="anchored" data-anchor-id="python-sdk">Python SDK</h3>
+<p>Automate transfers programmatically using the Globus Python SDK:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> globus_sdk <span class="im">import</span> TransferClient, TransferData</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize client</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tc <span class="op">=</span> TransferClient()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create transfer</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>tdata <span class="op">=</span> TransferData(tc, source_endpoint_id, dest_endpoint_id,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                     label<span class="op">=</span><span class="st">"My automated transfer"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>tdata.add_item(<span class="st">"/source/path/file.txt"</span>, <span class="st">"/dest/path/file.txt"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit transfer</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>transfer_result <span class="op">=</span> tc.submit_transfer(tdata)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Transfer ID: </span><span class="sc">{</span>transfer_result[<span class="st">'task_id'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<section id="common-issues-and-solutions" class="level3">
+<h3 class="anchored" data-anchor-id="common-issues-and-solutions">Common Issues and Solutions</h3>
+<p><strong>Issue: “Permission Denied” errors</strong></p>
+<ul>
+<li><strong>Solution</strong>: Verify you have appropriate permissions on both source and destination</li>
+<li>Check that Globus Connect Personal has access to the folders you’re trying to access</li>
+<li>Ensure you’re authenticated to both endpoints</li>
+</ul>
+<p><strong>Issue: Transfer is very slow</strong></p>
+<ul>
+<li><strong>Solution</strong>: Check your network connection</li>
+<li>Verify both endpoints are online and responsive</li>
+<li>Consider scheduling the transfer during off-peak hours</li>
+<li>Large numbers of small files transfer slower than fewer large files</li>
+</ul>
+<p><strong>Issue: Cannot find my endpoint</strong></p>
+<ul>
+<li><strong>Solution</strong>: Ensure Globus Connect Personal is running on your local machine</li>
+<li>Check that your endpoint is set to “Public” visibility if trying to access from elsewhere</li>
+<li>Verify you’re logged in with the correct identity</li>
+</ul>
+<p><strong>Issue: Transfer fails or gets stuck</strong></p>
+<ul>
+<li><strong>Solution</strong>: Check the Activity log for specific error messages</li>
+<li>Verify both endpoints have sufficient storage space</li>
+<li>Try canceling and restarting the transfer</li>
+<li>Check for file permission issues or locked files</li>
+</ul>
+<p><strong>Issue: Authentication keeps timing out</strong></p>
+<ul>
+<li><strong>Solution</strong>: Refresh your credentials by clicking on the endpoint and re-authenticating</li>
+<li>Some endpoints require re-authentication after a certain period</li>
+<li>Check if your institutional credentials have expired</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Getting Help
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you encounter issues not covered here:</p>
+<ol type="1">
+<li>Check the detailed error message in the Activity log</li>
+<li>Consult the <a href="https://docs.globus.org/">Globus documentation</a></li>
+<li>Contact BRC support with your transfer ID and error details</li>
+<li>Include screenshots of any error messages</li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="best-practices" class="level2">
+<h2 class="anchored" data-anchor-id="best-practices">Best Practices</h2>
+<section id="data-management" class="level3">
+<h3 class="anchored" data-anchor-id="data-management">Data Management</h3>
+<ul>
+<li><strong>Organize before transferring</strong>: Well-organized source data transfers more efficiently</li>
+<li><strong>Use consistent naming conventions</strong>: Makes it easier to locate files after transfer</li>
+<li><strong>Document your transfers</strong>: Keep a log of what you transferred and when</li>
+<li><strong>Test with small datasets first</strong>: Verify your workflow before transferring large amounts of data</li>
+</ul>
+</section>
+<section id="performance-optimization" class="level3">
+<h3 class="anchored" data-anchor-id="performance-optimization">Performance Optimization</h3>
+<ul>
+<li><strong>Bundle small files</strong>: Compress many small files into archives (.tar.gz, .zip) before transferring</li>
+<li><strong>Transfer during off-peak hours</strong>: Network congestion can slow transfers</li>
+<li><strong>Use sync mode</strong>: Only transfers changed files, saving time and bandwidth</li>
+<li><strong>Avoid transferring unnecessary files</strong>: Filter out temporary files, caches, etc.</li>
+</ul>
+</section>
+<section id="security" class="level3">
+<h3 class="anchored" data-anchor-id="security">Security</h3>
+<ul>
+<li><strong>Review sharing permissions regularly</strong>: Remove access for completed collaborations</li>
+<li><strong>Use strong passwords</strong>: Protect your institutional credentials</li>
+<li><strong>Don’t share credentials</strong>: Each user should have their own Globus account</li>
+<li><strong>Be mindful of data sensitivity</strong>: Ensure appropriate security measures for sensitive data</li>
+<li><strong>Set expiration dates</strong>: For temporary data sharing arrangements</li>
+</ul>
+</section>
+</section>
+<section id="frequently-asked-questions" class="level2">
+<h2 class="anchored" data-anchor-id="frequently-asked-questions">Frequently Asked Questions</h2>
+<p><strong>Q: How long do transfers take?</strong></p>
+<p>A: Transfer time depends on file size, number of files, network speed, and endpoint performance. As a rough estimate, expect 50-100 MB/s on good connections. Globus provides time estimates in the Activity log.</p>
+<p><strong>Q: Can I pause and resume transfers?</strong></p>
+<p>A: Globus automatically handles interruptions. If a transfer is interrupted, it will automatically retry and resume from where it left off.</p>
+<p><strong>Q: Is there a file size limit?</strong></p>
+<p>A: Globus itself has no file size limits, but individual endpoints may have restrictions. Check with your system administrator for endpoint-specific limits.</p>
+<p><strong>Q: Can I transfer files from my phone?</strong></p>
+<p>A: While there’s no official mobile app, you can initiate and monitor transfers through a mobile web browser. The actual transfer happens between endpoints, not through your device.</p>
+<p><strong>Q: How much does Globus cost?</strong></p>
+<p>A: Basic Globus access is free for all NCSU users. Globus Plus ($50/year) offers additional features like sharing and synchronization.</p>
+<p><strong>Q: Can I use Globus for backups?</strong></p>
+<p>A: Yes! Use sync mode with scheduled transfers to create automated backup workflows. However, Globus should supplement, not replace, your institutional backup solutions.</p>
+<p><strong>Q: What happens if I close my browser during a transfer?</strong></p>
+<p>A: Nothing! Transfers continue running on Globus servers. You can close your browser, shut down your computer (if not a source/destination), and the transfer will complete.</p>
+</section>
+<section id="additional-resources" class="level2">
+<h2 class="anchored" data-anchor-id="additional-resources">Additional Resources</h2>
+<section id="documentation" class="level3">
+<h3 class="anchored" data-anchor-id="documentation">Documentation</h3>
+<ul>
+<li><a href="https://docs.globus.org/">Globus Documentation</a></li>
+<li><a href="https://www.globus.org/support">Globus Support</a></li>
+<li><a href="https://docs.globus.org/cli/">Globus CLI Documentation</a></li>
+<li><a href="https://globus-sdk-python.readthedocs.io/">Globus Python SDK</a></li>
+</ul>
+</section>
+<section id="training-and-tutorials" class="level3">
+<h3 class="anchored" data-anchor-id="training-and-tutorials">Training and Tutorials</h3>
+<ul>
+<li><a href="https://www.globus.org/videos">Globus Video Tutorials</a></li>
+<li><a href="https://www.globus.org/events">Globus Webinars</a></li>
+<li><a href="https://projects.ncsu.edu/hpc/Training/Workshops.php">NCSU Research Computing Workshops</a></li>
+</ul>
+</section>
+<section id="support-channels" class="level3">
+<h3 class="anchored" data-anchor-id="support-channels">Support Channels</h3>
+<ul>
+<li><strong>BRC Support</strong>: ncsate_brc@ncsu.edu</li>
+<li><strong>NCSU OIT Help Desk</strong>: 919-515-HELP (4357)</li>
+<li><strong>Globus Support</strong>: support@globus.org</li>
+</ul>
+<hr>
+<p><em>Document version: 1.0 | Last updated: 11/19/2025 | For questions or assistance, contact the BRC support team at ncsate_brc@ncsu.edu</em></p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
