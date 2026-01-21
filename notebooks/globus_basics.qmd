@@ -14,7 +14,7 @@ format:
 
 Globus is a secure, point-to-point file synchronization platform that orchestrates data transfers between endpoints. Unlike traditional file transfer methods, data never traverses through Globus servers—instead, Globus facilitates end-to-end encrypted communication between endpoints, allowing them to transfer files directly.
 
-![](images/globus_overview.png){fig-align="center"}
+![](../images/globus_overview.png){fig-align="center"}
 
 ## Key Terminology
 **Collection**
@@ -75,7 +75,7 @@ Before you begin, ensure you have:
 4. Click **Continue** and authenticate with your NCSU credentials
 5. Complete any first-time setup prompts
 
-![](images/step0_globus_login.png){fig-align="center" width="70%"}
+![](../images/step0_globus_login.png){fig-align="center" width="70%"}
 
 ::: {.callout-warning}
 In my experience some of the first-time setup promts might take a couple of trys, you might need to refresh the page and do it again one of two times before it works
@@ -86,7 +86,7 @@ In my experience some of the first-time setup promts might take a couple of trys
 Follow these steps to make your NCSU Google Drive accessible through Globus:
 
 1. Navigate to **Collections** on the [Globus website](https://www.globus.org)
-![](images/step1_globus_collections.png){fig-align="center" width="70%"}
+![](../images/step1_globus_collections.png){fig-align="center" width="70%"}
 
 2. Search for `ncsu google` in the search bar
 3. Locate and click on **NC State Google Drive Connector**
@@ -114,7 +114,7 @@ For a second set of instructions, see the [University of Arizona HPC Globus guid
 
 1. Download **Globus Connect Personal** from the Collections page (link in top right corner)
 
-![](images/step6_connect_personal.png){fig-align="center" width="70%"}
+![](../images/step6_connect_personal.png){fig-align="center" width="70%"}
 
 2. Install and launch the application
 3. Log in using your NCSU credentials
@@ -132,7 +132,7 @@ Once you have at least two collections set up, you can initiate transfers:
 
 1. In the **File Manager**, select your [**source collection**]{style="color:purple"} (left panel) and [**destination collection**]{style="color:green"} (right panel)
 
-![](images/step10_source_destination.png){fig-align="center" width="70%"}
+![](../images/step10_source_destination.png){fig-align="center" width="70%"}
 
 2. Navigate to and select the file(s) or folder(s) you want to transfer
 3. Configure **Transfer & Timer Options**:
@@ -140,11 +140,11 @@ Once you have at least two collections set up, you can initiate transfers:
    - Transfer label for tracking
    - Email notifications
 
-![](images/step11_transfer_options.png){fig-align="center" width="70%"}
+![](../images/step11_transfer_options.png){fig-align="center" width="70%"}
 
 4. Click **Start** to begin the transfer
 
-![](images/step12_start_transfer.png){fig-align="center" width="70%"}
+![](../images/step12_start_transfer.png){fig-align="center" width="70%"}
 
 5. Monitor progress in the **Activity** page (accessible from the left sidebar)
 
@@ -166,7 +166,7 @@ Large transfers can take time. Globus will continue transfers even if you close 
 
 Globus allows you to schedule transfers for specific times:
 
-![](images/step13_schedule_transfer.png){fig-align="center" width="70%"}
+![](../images/step13_schedule_transfer.png){fig-align="center" width="70%"}
 
 
 1. When configuring a transfer, click **Schedule Start**
@@ -183,7 +183,7 @@ Globus makes it easy to share specific datasets with colleagues, even if they're
 2. Select the folder you want to share
 3. Click the **Share** button (or right-click and select "Share")
 
-![](images/step14_share_collection.png){fig-align="center" width="70%"}
+![](../images/step14_share_collection.png){fig-align="center" width="70%"}
 
 4. Configure sharing permissions:
    - Add email addresses or Globus IDs of collaborators
@@ -222,7 +222,7 @@ If you're affiliated with multiple universities or organizations that partner wi
 2. Navigate to the **Accounts** tab
 3. Click **Link Another Identity**
 
-![](images/step15_link_identity.png){fig-align="center" width="70%"}
+![](../images/step15_link_identity.png){fig-align="center" width="70%"}
 
 4. Complete the authentication process for your other institutional account
 5. Once linked, you can access and transfer between endpoints from both organizations
