@@ -81,6 +81,9 @@ PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
 JOBLOG=/your_workdir/path/download_log.txt
 SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
 
+# load apptainer module
+module load apptainer
+
 # run gnu parallel downloads with joblog
 cat sra_accessions.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG "apptainer exec $SRA_CONTAINER prefetch {}" > output.log 2> error.log
 ```

@@ -156,7 +156,7 @@ The "Request Resources Block" is the most critical section, as it uses LSF direc
 | :--- | :--- | :--- |
 | **Job Name** | `#BSUB -J fastqc` | Sets the **job name** to `fastqc`. This is used to identify the job in the queue and in output files. |
 | **CPU Cores** | `#BSUB -n 2` | Requests **2 CPU cores** per task. For a parallel job, this is the number of cores dedicated to that single task. |
-| **Queue** | `#BSUB -q shared_memory` | Specifies the **queue** (or partition) where the job should run. The `shared_memory` queue suggests this job runs on a single node. |
+| **Queue** | `#BSUB -q shared_memory` | Specifies the **queue** (or partition) where the job should run|
 | **Host Span** | `#BSUB -R "span[hosts=1]"` | Requests that all required resources (the 2 cores) for the task must reside on a **single computing host** (node). |
 | **Memory** | `#BSUB -R "rusage[mem=4GB]"` | Requests **4 GB of total memory** (RAM) for the job task. The job will be scheduled only on a node with at least this much available memory. |
 | **Output File** | `#BSUB -o "./output.%J.log"` | Directs **standard output** (`stdout`) to this file. |
