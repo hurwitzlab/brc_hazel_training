@@ -94,7 +94,7 @@ The "Request Resources Block" is the most critical section, as it uses LSF direc
 
 | Directive | Command | Description |
 | :--- | :--- | :--- |
-| **Job Name** | `#BSUB -J fastqc` | Sets the **job name** to `fastqc`. This is used to identify the job in the queue and in output files. |
+| **Job Name** | `#BSUB -J hello` | Sets the **job name** to `hello`. This is used to identify the job in the queue and in output files. |
 | **CPU Cores** | `#BSUB -n 2` | Requests **2 CPU cores** per task. For a parallel job, this is the number of cores dedicated to that single task. |
 | **Queue** | `#BSUB -q shared_memory` | Specifies the **queue** (or partition) where the job should run|
 | **Host Span** | `#BSUB -R "span[hosts=1]"` | Requests that all required resources (the 2 cores) for the task must reside on a **single computing host** (node). |
@@ -109,13 +109,17 @@ The "Request Resources Block" is the most critical section, as it uses LSF direc
 #### 2. Load modules block
 This block is crucial for setting up the software environment your specific job requires. HPC systems use a tool called Modules to manage different versions of software, compilers, and libraries without conflicts. 
 
-This section uses the `module load` command to prepare the job's environment. This avoids conflicts by allowing different users and different jobs to use specific, isolated versions of software on the shared cluster.
+This section uses the `module load` command to prepare the job's environment. This avoids conflicts by allowing different users and different jobs to use specific, isolated versions of software on the shared cluster. 
+
+Sometimes the **sofware you need won't be available as a pre-installed module** in the HPC, in that case you will need to **install it yourself** before you run it. We recommend trying to use **containers** first, and if that is not possible try to install the software using an virtual environment manager like **conda**. 
+
+There will be more information on this in later documentation but in case you installed your software with any of these options **this is how you would load/activate them in your job script**:
 
 
 | Command | Example | Description |
 | :--- | :--- | :--- |
 | **Setup Option 1** | `module load conda` | Loads the **Conda** module, which manages virtual environments. This makes the `conda` command available for use. |
-| **Activation** | `source activate my_env` | *If using Conda*, this line activates the specific virtual environment containing your job's required tools (like `fastqc`). |
+| **Activation** | `conda activate my_env` | *If using Conda*, this line activates the specific virtual environment containing your job's required tools. |
 | **Setup Option 2** | `module load apptainer` | Loads the **Apptainer** module for running containerized applications. Containers package software with all its dependencies. |
 
 **Key Principle:** Always load the modules your job needs *before* trying to run the main command.
@@ -127,6 +131,89 @@ This section uses the `module load` command to prepare the job's environment. Th
 
 This is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s).This is where you place the executable commands that perform the job's core task. It's often wrapped with simple `echo` commands to log key steps, helping with debugging and monitoring.
 
+The example above has a very simplified execution compared to what one would normally make or encounter in bioinformatics. This is a more realistic example of execution of the software **fastqc**: 
+
+```bash
+
+# --------------------------------------------------
+# Load modules here
+# --------------------------------------------------
+
+module load apptainer
+
+# --------------------------------------------------
+# Execute commands here
+# --------------------------------------------------
+
+# Print job start information
+echo "=================================================="
+echo "Job started: $(date)"
+echo "Job ID: $LSB_JOBID"
+echo "Running on host: $(hostname)"
+echo "Working directory: $(pwd)"
+echo "=================================================="
+
+FASTQC_SIF="/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_fastqc:0.12.1--hdfd78af_0.sif"
+IN_DIR="/rs1/shares/brc/trainings/hazel_hpc/data"
+SAMPLE="sample_001”
+
+mkdir -p /path/to/working/dir/fastqc_results
+OUT_DIR="/path/to/working/dir/fastqc_results"
+
+# --------------------------------------------------
+# Validate inputs
+# --------------------------------------------------
+
+# Check if container exists
+if [ ! -f "${FASTQC_SIF}" ]; then
+    echo "ERROR: Container not found at ${FASTQC_SIF}"
+    exit 1
+fi
+
+# Check if input directory exists
+if [ ! -d "${IN_DIR}" ]; then
+    echo "ERROR: Input directory not found at ${IN_DIR}"
+    exit 1
+fi
+
+# --------------------------------------------------
+# Execute FastQC
+# --------------------------------------------------
+
+echo "Running FastQC on sample: ${SAMPLE}"
+
+apptainer exec $BIND ${FASTQC_SIF} fastqc \
+    --threads $CPUS \
+    --outdir ${OUT_DIR} \
+    ${IN_DIR}/${SAMPLE}_*.fastq*
+
+# Check if FastQC completed successfully
+if [ $? -eq 0 ]; then
+    echo "FastQC completed successfully"
+else
+    echo "ERROR: FastQC failed with exit code $?"
+    exit 1
+fi
+
+# --------------------------------------------------
+# Job completion
+# --------------------------------------------------
+
+echo "=================================================="
+echo "Job completed: $(date)"
+echo "Results saved to: ${OUT_DIR}"
+echo "=================================================="
+```
+
+As you can see here we have included **examples of commonly used techniques in job scripting**: 
+
+- Variable creation and value setting
+- Passing of job information to the standard output to help debugging and monitoring
+- Creation of output directories
+- Error checking
+Additionally, note that the the software **fastqc** is executed from an Apptainer container, not a module, so we also had to include paths to the container image, apart from input, output, etc.  
+
+Here is a detailed explanation of each line in case you would like to include any of these tools to your job scripts:
 
 | **Command** | **Example** | **Description** |
 |-------------|-------------|-----------------|

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Mery Touceda-Suárez">
-<meta name="dcterms.date" content="2026-04-13">
+<meta name="dcterms.date" content="2026-04-15">
 
 <title>BRC Documentation: Job Performance Analysis</title>
 <style>
@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 13, 2026</p>
+      <p class="date">April 15, 2026</p>
     </div>
   </div>
   
@@ -157,8 +157,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </div>
 </section>
-<section id="part-1-estimating-job-requirements" class="level1" data-background-color="#4a90e2">
-<h1 data-background-color="#4a90e2">Part 1: Estimating Job Requirements</h1>
+<section id="part-1-estimating-job-requirements" class="level1">
+<h1>Part 1: Estimating Job Requirements</h1>
 <section id="why-estimate-resources" class="level2">
 <h2 class="anchored" data-anchor-id="why-estimate-resources">Why Estimate Resources?</h2>
 <p><strong>Underestimation:</strong></p>
@@ -379,6 +379,46 @@ Tip
 </ul>
 </div>
 </div>
+<p>Note that LSF outputs some job performance information at the end of the SDOUT. This resource usage summary is a standard output from IBM Spectrum LSF (Load Sharing Facility). It provides a post-job analysis of how efficiently your task used the hardware resources it was allocated.</p>
+<p>Here is a breakdown of what each metric means using the example of our <code>fastqc.lsf</code> job:</p>
+<div id="fig-usage" class="quarto-float quarto-figure quarto-figure-center anchored" width="300px">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-usage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../images/resource_usage_fastqc.png" id="fig-usage" class="img-fluid figure-img" width="300">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-usage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1
+</figcaption>
+</figure>
+</div>
+<p><strong>Memory Utilization:</strong></p>
+<ul>
+<li>Max Memory (1 GB): The peak amount of physical RAM (resident set size) your job used at any single point during its execution.</li>
+<li>Average Memory (0.80 GB): The mean memory usage over the entire duration of the job.</li>
+<li>Total Requested Memory (4.00 GB): The amount of RAM you specifically asked for in your submission script (e.g., via <code>#BSUB -R "rusage[mem=4000]"</code>).</li>
+<li>Delta Memory (3.00 GB): The difference between what you requested and what you actually used.
+<ul>
+<li>Observation: We over-requested memory by 3 GB. In a shared cluster, reducing your request to 1.5 GB or 2 GB would help your jobs start faster and be more “neighborly” to other users.</li>
+</ul></li>
+<li>Max Swap (-): The maximum amount of swap space (disk-based virtual memory) used. A dash usually means zero swap was used, which is good for performance.</li>
+</ul>
+<p><strong>Processing &amp; Parallelism:</strong></p>
+<ul>
+<li>CPU time (173.09 sec): The total time spent by all CPU cores executing your job’s instructions.</li>
+<li>Max Processes (6): The peak number of simultaneous processes created by your job.</li>
+<li>Max Threads (41): The peak number of simultaneous threads running within those processes.</li>
+</ul>
+<p><strong>Time Metrics:</strong></p>
+<ul>
+<li>Run time (103 sec): The “wall clock” time. This is the actual time that passed from the moment the job started until it finished.
+<ul>
+<li>Note: Since our CPU time (173s) is higher than your Run time (103s), it confirms our job was multi-threaded or multi-process, utilizing more than one core’s worth of processing power.</li>
+</ul></li>
+<li>Turnaround time (94 sec): This usually represents the time from when the job was dispatched to when it finished.
+<ul>
+<li>Note: In some LSF configurations, if Turnaround is shorter than Run time, it may indicate how LSF tracks the cleanup phase or specific reporting intervals, but generally, these two will be very close.</li>
+</ul></li>
+</ul>
 </section>
 <section id="exercise-1-analyzing-a-job" class="level2">
 <h2 class="anchored" data-anchor-id="exercise-1-analyzing-a-job">Exercise 1: Analyzing a Job</h2>
@@ -412,8 +452,8 @@ Tip
 <p><strong>Best practice:</strong> Use <code>-R "span[hosts=1]"</code> for shared memory to avoid communication penalties</p>
 </section>
 </section>
-<section id="putting-it-all-together" class="level1" data-background-color="#8e44ad">
-<h1 data-background-color="#8e44ad">Putting It All Together</h1>
+<section id="putting-it-all-together" class="level1">
+<h1>Putting It All Together</h1>
 <section id="workflow-for-job-optimization" class="level2">
 <h2 class="anchored" data-anchor-id="workflow-for-job-optimization">Workflow for Job Optimization</h2>
 <ol type="1">

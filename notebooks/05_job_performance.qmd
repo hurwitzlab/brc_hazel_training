@@ -21,7 +21,7 @@ By the end of this session, you will be able to:
 - Identify performance bottlenecks and inefficiencies
 :::
 
-# Part 1: Estimating Job Requirements {background-color="#4a90e2"}
+# Part 1: Estimating Job Requirements 
 
 ## Why Estimate Resources?
 
@@ -204,6 +204,35 @@ Look for:
 :::
 :::
 
+Note that LSF outputs some job performance information at the end of the SDOUT. This resource usage summary is a standard output from IBM Spectrum LSF (Load Sharing Facility). It provides a post-job analysis of how efficiently your task used the hardware resources it was allocated.
+
+Here is a breakdown of what each metric means using the example of our `fastqc.lsf` job:
+
+![](../images/resource_usage_fastqc.png)
+
+**Memory Utilization:** 
+
+- Max Memory (1 GB): The peak amount of physical RAM (resident set size) your job used at any single point during its execution.
+- Average Memory (0.80 GB): The mean memory usage over the entire duration of the job.
+- Total Requested Memory (4.00 GB): The amount of RAM you specifically asked for in your submission script (e.g., via `#BSUB -R "rusage[mem=4000]"`).
+- Delta Memory (3.00 GB): The difference between what you requested and what you actually used. 
+  - Observation: We over-requested memory by 3 GB. In a shared cluster, reducing your request to 1.5 GB or 2 GB would help your jobs start faster and be more "neighborly" to other users.
+- Max Swap (-): The maximum amount of swap space (disk-based virtual memory) used. A dash usually means zero swap was used, which is good for performance.
+
+**Processing & Parallelism:** 
+
+- CPU time (173.09 sec): The total time spent by all CPU cores executing your job's instructions.
+- Max Processes (6): The peak number of simultaneous processes created by your job.
+- Max Threads (41): The peak number of simultaneous threads running within those processes.
+
+**Time Metrics:**
+
+- Run time (103 sec): The "wall clock" time. This is the actual time that passed from the moment the job started until it finished.
+  - Note: Since our CPU time (173s) is higher than your Run time (103s), it confirms our job was multi-threaded or multi-process, utilizing more than one core's worth of processing power.
+
+- Turnaround time (94 sec): This usually represents the time from when the job was dispatched to when it finished.
+  - Note: In some LSF configurations, if Turnaround is shorter than Run time, it may indicate how LSF tracks the cleanup phase or specific reporting intervals, but generally, these two will be very close.
+
 ## Exercise 1: Analyzing a Job
 
 ```{.bash}
@@ -243,7 +272,7 @@ less job_analysis.txt
 
 
 
-# Putting It All Together {background-color="#8e44ad"}
+# Putting It All Together 
 
 ## Workflow for Job Optimization
 
