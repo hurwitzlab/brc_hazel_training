@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Mery Touceda-Suárez">
-<meta name="dcterms.date" content="2026-01-07">
+<meta name="dcterms.date" content="2026-04-13">
 
 <title>BRC Documentation: Job Performance Analysis</title>
 <style>
@@ -73,35 +73,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="05_job_performance_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="05_job_performance_files/libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -129,21 +100,8 @@ window.Quarto = {
   <li><a href="#pending-job-analysis" id="toc-pending-job-analysis" class="nav-link" data-scroll-target="#pending-job-analysis">Pending Job Analysis</a></li>
   <li><a href="#actual-vs-requested-resources" id="toc-actual-vs-requested-resources" class="nav-link" data-scroll-target="#actual-vs-requested-resources">Actual vs Requested Resources</a></li>
   <li><a href="#performance-red-flags" id="toc-performance-red-flags" class="nav-link" data-scroll-target="#performance-red-flags">Performance Red Flags</a></li>
-  <li><a href="#live-demo-analyzing-a-job" id="toc-live-demo-analyzing-a-job" class="nav-link" data-scroll-target="#live-demo-analyzing-a-job">Live Demo: Analyzing a Job</a></li>
-  <li><a href="#exercise-2-performance-analysis" id="toc-exercise-2-performance-analysis" class="nav-link" data-scroll-target="#exercise-2-performance-analysis">Exercise 2: Performance Analysis</a></li>
-  </ul></li>
-  <li><a href="#part-3-scaling-analysis" id="toc-part-3-scaling-analysis" class="nav-link" data-scroll-target="#part-3-scaling-analysis">Part 3: Scaling Analysis</a>
-  <ul class="collapse">
-  <li><a href="#what-is-scaling" id="toc-what-is-scaling" class="nav-link" data-scroll-target="#what-is-scaling">What is Scaling?</a></li>
-  <li><a href="#why-care-about-scaling" id="toc-why-care-about-scaling" class="nav-link" data-scroll-target="#why-care-about-scaling">Why Care About Scaling?</a></li>
-  <li><a href="#measuring-speedup" id="toc-measuring-speedup" class="nav-link" data-scroll-target="#measuring-speedup">Measuring Speedup</a></li>
-  <li><a href="#scaling-experiment-design" id="toc-scaling-experiment-design" class="nav-link" data-scroll-target="#scaling-experiment-design">Scaling Experiment Design</a></li>
-  <li><a href="#example-scaling-study" id="toc-example-scaling-study" class="nav-link" data-scroll-target="#example-scaling-study">Example Scaling Study</a></li>
-  <li><a href="#factors-limiting-scaling" id="toc-factors-limiting-scaling" class="nav-link" data-scroll-target="#factors-limiting-scaling">Factors Limiting Scaling</a></li>
-  <li><a href="#amdahls-law" id="toc-amdahls-law" class="nav-link" data-scroll-target="#amdahls-law">Amdahl’s Law</a></li>
-  <li><a href="#finding-your-optimal-point" id="toc-finding-your-optimal-point" class="nav-link" data-scroll-target="#finding-your-optimal-point">Finding Your Optimal Point</a></li>
+  <li><a href="#exercise-1-analyzing-a-job" id="toc-exercise-1-analyzing-a-job" class="nav-link" data-scroll-target="#exercise-1-analyzing-a-job">Exercise 1: Analyzing a Job</a></li>
   <li><a href="#hazel-specific-considerations" id="toc-hazel-specific-considerations" class="nav-link" data-scroll-target="#hazel-specific-considerations">Hazel-Specific Considerations</a></li>
-  <li><a href="#exercise-3-scaling-analysis" id="toc-exercise-3-scaling-analysis" class="nav-link" data-scroll-target="#exercise-3-scaling-analysis">Exercise 3: Scaling Analysis</a></li>
   </ul></li>
   <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting It All Together</a>
   <ul class="collapse">
@@ -175,7 +133,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 7, 2026</p>
+      <p class="date">April 13, 2026</p>
     </div>
   </div>
   
@@ -267,7 +225,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Memory = Storage =</p>
+<p>Memory = RAM used during computation (temporary, in-node) Storage = Disk space for input/output files (persistent)</p>
 </div>
 </div>
 </section>
@@ -283,6 +241,19 @@ Tip
 </ul>
 </div>
 <p><strong>Rule of thumb:</strong> Start small, measure, then scale up</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Hazel Node Types
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Hazel nodes vary in CPU generation and core count. For shared-memory parallel jobs, keep all tasks on a single node to avoid inter-node communication overhead. Use <code>--nodes=1</code> in your job script to enforce this.</p>
+</div>
+</div>
 </section>
 <section id="estimating-memory" class="level2">
 <h2 class="anchored" data-anchor-id="estimating-memory">Estimating Memory</h2>
@@ -291,7 +262,11 @@ Tip
 <li><strong>Documentation:</strong> Check software requirements</li>
 <li><strong>Similar jobs:</strong> Look at past jobs in your group</li>
 <li><strong>Test runs:</strong> Run small version, check actual usage with <code>bjobs -l</code></li>
-<li><strong>Data-driven:</strong> Sum of input file sizes × safety factor (2-3x)</li>
+<li><strong>Data-driven:</strong> Estimate based on your input data structure:
+<ul>
+<li>If the code reads input as a matrix and makes copies: memory ≈ <strong>N × file size</strong> (where N = number of matrix copies held simultaneously)</li>
+<li>Number of grid points × number of variables × size of data type</li>
+</ul></li>
 </ol>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -299,11 +274,14 @@ Tip
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+<span class="screen-reader-only">Warning</span>Hazel Node Memory Sizes
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Hazel nodes have 128GB-256GB RAM. Don’t request more than available!</p>
+<p>Hazel nodes have the following memory configurations (in GB):</p>
+<p><code>64 / 128 / 192 / 256 / 512* / 1024**</code></p>
+<p>* Higher memory nodes are limited outside of partner queues. ** Very few nodes; may not be available in every partition and will incur longer wait times.</p>
+<p><strong>Important:</strong> Request memory slightly below the node maximum — OS processes also consume RAM. For example, to target a 128 GB node, request <code>--mem=120G</code>.</p>
 </div>
 </div>
 </section>
@@ -402,8 +380,8 @@ Warning
 </div>
 </div>
 </section>
-<section id="live-demo-analyzing-a-job" class="level2">
-<h2 class="anchored" data-anchor-id="live-demo-analyzing-a-job">Live Demo: Analyzing a Job</h2>
+<section id="exercise-1-analyzing-a-job" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-1-analyzing-a-job">Exercise 1: Analyzing a Job</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit a test job</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bsub</span> <span class="at">-n</span> 4 <span class="at">-W</span> 0:10 ./test_program</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -415,208 +393,12 @@ Warning
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the output</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> job_analysis.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="notes">
-<p>Instructor: Run actual demo showing job submission and analysis</p>
-</div>
-</section>
-<section id="exercise-2-performance-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="exercise-2-performance-analysis">Exercise 2: Performance Analysis</h2>
-<p>You’ll be given output from <code>bjobs -l</code> for three jobs:</p>
-<p><strong>Analyze each and identify:</strong></p>
+<p><strong>Analyze and identify:</strong></p>
 <ol type="1">
 <li>Was the resource request appropriate?</li>
 <li>What would you change for the next run?</li>
 <li>Any red flags or issues?</li>
 </ol>
-<div class="notes">
-<p>Provide sample bjobs output files. Give 5-7 minutes.</p>
-</div>
-</section>
-</section>
-<section id="part-3-scaling-analysis" class="level1" data-background-color="#27ae60">
-<h1 data-background-color="#27ae60">Part 3: Scaling Analysis</h1>
-<section id="what-is-scaling" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-scaling">What is Scaling?</h2>
-<p><strong>Strong Scaling:</strong></p>
-<ul>
-<li>Fixed problem size</li>
-<li>Increase number of cores</li>
-<li>Goal: reduce time to solution</li>
-</ul>
-<p><strong>Weak Scaling:</strong></p>
-<ul>
-<li>Problem size grows with cores</li>
-<li>Maintain time per core roughly constant</li>
-<li>Goal: solve bigger problems</li>
-</ul>
-</section>
-<section id="why-care-about-scaling" class="level2">
-<h2 class="anchored" data-anchor-id="why-care-about-scaling">Why Care About Scaling?</h2>
-<p><strong>Not all codes scale well:</strong></p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="05_job_performance_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="measuring-speedup" class="level2">
-<h2 class="anchored" data-anchor-id="measuring-speedup">Measuring Speedup</h2>
-<p><strong>Speedup Formula:</strong></p>
-<p><span class="math display">\[S(n) = \frac{T_1}{T_n}\]</span></p>
-<p>Where:</p>
-<ul>
-<li><span class="math inline">\(T_1\)</span> = time with 1 core</li>
-<li><span class="math inline">\(T_n\)</span> = time with n cores</li>
-<li>Ideal speedup: <span class="math inline">\(S(n) = n\)</span></li>
-</ul>
-<p><strong>Efficiency:</strong></p>
-<p><span class="math display">\[E(n) = \frac{S(n)}{n} \times 100\%\]</span></p>
-</section>
-<section id="scaling-experiment-design" class="level2">
-<h2 class="anchored" data-anchor-id="scaling-experiment-design">Scaling Experiment Design</h2>
-<p><strong>Steps:</strong></p>
-<ol type="1">
-<li>Choose a representative problem</li>
-<li>Run with: 1, 2, 4, 8, 16, (32) cores</li>
-<li>Record wall time for each</li>
-<li>Calculate speedup and efficiency</li>
-<li>Plot results</li>
-</ol>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Keep everything else constant: same input, same node type, same compiler</p>
-</div>
-</div>
-</section>
-<section id="example-scaling-study" class="level2">
-<h2 class="anchored" data-anchor-id="example-scaling-study">Example Scaling Study</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Cores</th>
-<th>Time (sec)</th>
-<th>Speedup</th>
-<th>Efficiency</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>1000</td>
-<td>1.0</td>
-<td>100%</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>520</td>
-<td>1.92</td>
-<td>96%</td>
-</tr>
-<tr class="odd">
-<td>4</td>
-<td>270</td>
-<td>3.70</td>
-<td>93%</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>145</td>
-<td>6.90</td>
-<td>86%</td>
-</tr>
-<tr class="odd">
-<td>16</td>
-<td>85</td>
-<td>11.76</td>
-<td>74%</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Interpretation:</strong> Good scaling up to 8 cores, diminishing returns after</p>
-</section>
-<section id="factors-limiting-scaling" class="level2">
-<h2 class="anchored" data-anchor-id="factors-limiting-scaling">Factors Limiting Scaling</h2>
-<div class="incremental">
-<ul class="incremental">
-<li><strong>Serial portions</strong> (Amdahl’s Law)</li>
-<li><strong>Communication overhead</strong> (MPI)</li>
-<li><strong>Memory bandwidth</strong> saturation</li>
-<li><strong>I/O bottlenecks</strong></li>
-<li><strong>Load imbalance</strong></li>
-</ul>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Most codes have an optimal core count beyond which adding more resources wastes time</p>
-</div>
-</div>
-</section>
-<section id="amdahls-law" class="level2">
-<h2 class="anchored" data-anchor-id="amdahls-law">Amdahl’s Law</h2>
-<p><span class="math display">\[\text{Speedup} \leq \frac{1}{(1-P) + \frac{P}{N}}\]</span></p>
-<p>Where:</p>
-<ul>
-<li>P = fraction that parallelizes</li>
-<li>N = number of cores</li>
-</ul>
-<p><strong>Example:</strong> If 95% parallelizes, max speedup with infinite cores ≈ 20×</p>
-</section>
-<section id="finding-your-optimal-point" class="level2">
-<h2 class="anchored" data-anchor-id="finding-your-optimal-point">Finding Your Optimal Point</h2>
-<p><strong>Cost-benefit analysis:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate core-hours for each run</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">core_hours</span> = cores × time_in_hours</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Cores</th>
-<th>Time</th>
-<th>Core-hours</th>
-<th>Cost Efficiency</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>4</td>
-<td>4h</td>
-<td>16</td>
-<td>baseline</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>2.5h</td>
-<td>20</td>
-<td>25% more</td>
-</tr>
-<tr class="odd">
-<td>16</td>
-<td>1.8h</td>
-<td>28.8</td>
-<td>80% more</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Sweet spot:</strong> Where time savings justifies resource cost</p>
 </section>
 <section id="hazel-specific-considerations" class="level2">
 <h2 class="anchored" data-anchor-id="hazel-specific-considerations">Hazel-Specific Considerations</h2>
@@ -628,48 +410,6 @@ Note
 <li>Memory per core varies by node type</li>
 </ul>
 <p><strong>Best practice:</strong> Use <code>-R "span[hosts=1]"</code> for shared memory to avoid communication penalties</p>
-</section>
-<section id="exercise-3-scaling-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="exercise-3-scaling-analysis">Exercise 3: Scaling Analysis</h2>
-<p><strong>Given this data from a scaling study:</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Cores</th>
-<th>Time (min)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>480</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>250</td>
-</tr>
-<tr class="odd">
-<td>4</td>
-<td>135</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>75</td>
-</tr>
-<tr class="odd">
-<td>16</td>
-<td>50</td>
-</tr>
-<tr class="even">
-<td>32</td>
-<td>45</td>
-</tr>
-</tbody>
-</table>
-<p>Calculate speedup and efficiency. What’s the optimal core count?</p>
-<div class="notes">
-<p>Give 5 minutes. Optimal is around 8-16 cores based on efficiency drop</p>
-</div>
 </section>
 </section>
 <section id="putting-it-all-together" class="level1" data-background-color="#8e44ad">

@@ -52,8 +52,8 @@ Better estimates = faster completion + efficient resource use
 
 ::: {.callout-note}
 ## Remember
-Memory = 
-Storage = 
+Memory = RAM used during computation (temporary, in-node)
+Storage = Disk space for input/output files (persistent)
 :::
 
 ## Estimating Cores
@@ -69,6 +69,11 @@ Storage =
 
 **Rule of thumb:** Start small, measure, then scale up
 
+::: {.callout-tip}
+## Hazel Node Types
+Hazel nodes vary in CPU generation and core count. For shared-memory parallel jobs, keep all tasks on a single node to avoid inter-node communication overhead. Use `--nodes=1` in your job script to enforce this.
+:::
+
 ## Estimating Memory
 
 **Quick estimation methods:**
@@ -76,10 +81,20 @@ Storage =
 1. **Documentation:** Check software requirements
 2. **Similar jobs:** Look at past jobs in your group
 3. **Test runs:** Run small version, check actual usage with `bjobs -l`
-4. **Data-driven:** Sum of input file sizes × safety factor (2-3x)
+4. **Data-driven:** Estimate based on your input data structure:
+   - If the code reads input as a matrix and makes copies: memory ≈ **N × file size** (where N = number of matrix copies held simultaneously)
+   - Number of grid points × number of variables × size of data type
 
 ::: {.callout-warning}
-Hazel nodes have 128GB-256GB RAM. Don't request more than available!
+## Hazel Node Memory Sizes
+Hazel nodes have the following memory configurations (in GB):
+
+`64 / 128 / 192 / 256 / 512* / 1024**`
+
+\* Higher memory nodes are limited outside of partner queues.
+\*\* Very few nodes; may not be available in every partition and will incur longer wait times.
+
+**Important:** Request memory slightly below the node maximum — OS processes also consume RAM. For example, to target a 128 GB node, request `--mem=120G`.
 :::
 
 ## Estimating Wall Time
@@ -189,7 +204,7 @@ Look for:
 :::
 :::
 
-## Live Demo: Analyzing a Job
+## Exercise 1: Analyzing a Job
 
 ```{.bash}
 # Submit a test job
@@ -205,143 +220,15 @@ bjobs -l JOBID > job_analysis.txt
 less job_analysis.txt
 ```
 
-::: {.notes}
-Instructor: Run actual demo showing job submission and analysis
-:::
 
-## Exercise 2: Performance Analysis
-
-You'll be given output from `bjobs -l` for three jobs:
-
-**Analyze each and identify:**
+**Analyze and identify:**
 
 1. Was the resource request appropriate?
 2. What would you change for the next run?
 3. Any red flags or issues?
 
-::: {.notes}
-Provide sample bjobs output files. Give 5-7 minutes.
-:::
 
-# Part 3: Scaling Analysis {background-color="#27ae60"}
 
-## What is Scaling?
-
-**Strong Scaling:**
-
-- Fixed problem size
-- Increase number of cores
-- Goal: reduce time to solution
-
-**Weak Scaling:**
-
-- Problem size grows with cores
-- Maintain time per core roughly constant
-- Goal: solve bigger problems
-
-## Why Care About Scaling?
-
-**Not all codes scale well:**
-
-```{r}
-#| echo: false
-#| eval: true
-cores <- c(1, 2, 4, 8, 16, 32)
-ideal_time <- 100 / cores
-actual_time <- c(100, 52, 28, 18, 14, 13)
-
-plot(cores, ideal_time, type="b", col="blue", 
-     ylim=c(0,100), pch=19,
-     xlab="Number of Cores", ylab="Time (minutes)",
-     main="Ideal vs Actual Scaling")
-lines(cores, actual_time, type="b", col="red", pch=19)
-legend("topright", c("Ideal", "Actual"), 
-       col=c("blue", "red"), lty=1, pch=19)
-```
-
-## Measuring Speedup
-
-**Speedup Formula:**
-
-$$S(n) = \frac{T_1}{T_n}$$
-
-Where:
-
-- $T_1$ = time with 1 core
-- $T_n$ = time with n cores
-- Ideal speedup: $S(n) = n$
-
-**Efficiency:**
-
-$$E(n) = \frac{S(n)}{n} \times 100\%$$
-
-## Scaling Experiment Design
-
-**Steps:**
-
-1. Choose a representative problem
-2. Run with: 1, 2, 4, 8, 16, (32) cores
-3. Record wall time for each
-4. Calculate speedup and efficiency
-5. Plot results
-
-::: {.callout-important}
-Keep everything else constant: same input, same node type, same compiler
-:::
-
-## Example Scaling Study
-
-| Cores | Time (sec) | Speedup | Efficiency |
-|-------|-----------|---------|-----------|
-| 1     | 1000      | 1.0     | 100%      |
-| 2     | 520       | 1.92    | 96%       |
-| 4     | 270       | 3.70    | 93%       |
-| 8     | 145       | 6.90    | 86%       |
-| 16    | 85        | 11.76   | 74%       |
-
-**Interpretation:** Good scaling up to 8 cores, diminishing returns after
-
-## Factors Limiting Scaling
-
-::: {.incremental}
-- **Serial portions** (Amdahl's Law)
-- **Communication overhead** (MPI)
-- **Memory bandwidth** saturation
-- **I/O bottlenecks**
-- **Load imbalance**
-:::
-
-::: {.callout-note}
-Most codes have an optimal core count beyond which adding more resources wastes time
-:::
-
-## Amdahl's Law
-
-$$\text{Speedup} \leq \frac{1}{(1-P) + \frac{P}{N}}$$
-
-Where:
-
-- P = fraction that parallelizes
-- N = number of cores
-
-**Example:** If 95% parallelizes, max speedup with infinite cores ≈ 20×
-
-## Finding Your Optimal Point
-
-**Cost-benefit analysis:**
-
-```{.bash}
-# Calculate core-hours for each run
-core_hours = cores × time_in_hours
-```
-
-| Cores | Time | Core-hours | Cost Efficiency |
-|-------|------|-----------|----------------|
-| 4     | 4h   | 16        | baseline       |
-| 8     | 2.5h | 20        | 25% more       |
-| 16    | 1.8h | 28.8      | 80% more       |
-
-**Sweet spot:** Where time savings justifies resource cost
 
 ## Hazel-Specific Considerations
 
@@ -354,24 +241,7 @@ core_hours = cores × time_in_hours
 
 **Best practice:** Use `-R "span[hosts=1]"` for shared memory to avoid communication penalties
 
-## Exercise 3: Scaling Analysis
 
-**Given this data from a scaling study:**
-
-| Cores | Time (min) |
-|-------|-----------|
-| 1     | 480       |
-| 2     | 250       |
-| 4     | 135       |
-| 8     | 75        |
-| 16    | 50        |
-| 32    | 45        |
-
-Calculate speedup and efficiency. What's the optimal core count?
-
-::: {.notes}
-Give 5 minutes. Optimal is around 8-16 cores based on efficiency drop
-:::
 
 # Putting It All Together {background-color="#8e44ad"}
 
