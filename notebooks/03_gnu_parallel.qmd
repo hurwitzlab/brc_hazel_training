@@ -61,7 +61,7 @@ To download these datasets with GNU Parallel, limiting to 3 concurrent downloads
 #! /bin/bash
 
 # create some variables for a more clean script
-CPUS=3
+TASKS=3
 PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
 SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
 
@@ -69,7 +69,7 @@ SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-
 module load apptainer
 
 # run gnu parallel downloads
-cat sra_accessions.txt | $PARALLEL -j $CPUS "apptainer exec $SRA_CONTAINER prefetch {}" > output.log 2> error.log
+cat sra_accessions.txt | $PARALLEL -j $TASKS "apptainer exec $SRA_CONTAINER prefetch {}" > output.log 2> error.log
 ```
 > Note: Make sure that you use double quotes `"..."` instead of single quotes `'...'` so that the variable `$SRA_CONTAINER` gets expanded to its actual value.
 
@@ -82,7 +82,7 @@ For a more informative and robust approach:
 ```bash
 #! /bin/bash
 # create some variables for a more clean script
-CPUS=3
+TASKS=3
 PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
 JOBLOG=/your_workdir/path/download_log.txt
 SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
@@ -91,12 +91,12 @@ SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-
 module load apptainer
 
 # run gnu parallel downloads with joblog
-cat sra_accessions.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG "apptainer exec $SRA_CONTAINER prefetch {}" > output.log 2> error.log
+cat sra_accessions.txt | $PARALLEL -j $TASKS --progress --joblog $JOBLOG "apptainer exec $SRA_CONTAINER prefetch {}" > output.log 2> error.log
 ```
 
 Key options explained:
 
-- `-j $CPUS`: Run 3 (`$CPUS`) jobs in parallel
+- `-j $TASKS`: Run 3 (`$TASKS`) tasks in parallel
 - `--progress`: Display a progress bar showing completed/remaining jobs
 - `--joblog $JOBLOG`: Create a log file (`download_log.txt`) tracking each job's status and timing
 - `> output.log 2> error.log`: Redirect standard output and standard error to separate files
@@ -176,21 +176,21 @@ Now use this script to execute the commands with controlled parallelization:
 ```bash
 #! /bin/bash
 # create some variables for a more clean script
-CPUS=6
+TASKS=6
 PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
 
 # load apptainer module
 module load apptainer
 
 # run a list of commands
-cat all_commands.txt | $PARALLEL -j $CPUS -a - > output.log 2> error.log
+cat all_commands.txt | $PARALLEL -j $TASKS -a - > output.log 2> error.log
 ```
 
 **Script breakdown:**
 
-- `CPUS=6`: Limits execution to 6 concurrent downloads
+- `TASKS=6`: Limits execution to 6 concurrent downloads
 - `PARALLEL`: Variable storing the path to the GNU Parallel executable (adjust for your system)
-- `-j $CPUS`: Run up to 6 jobs simultaneously
+- `-j $TASKS`: Run up to 6 tasks simultaneously
 - `-a -`: Read commands from standard input (stdin), which comes from the `cat` command
 
 #### Adding Progress Tracking
@@ -198,7 +198,7 @@ cat all_commands.txt | $PARALLEL -j $CPUS -a - > output.log 2> error.log
 For better monitoring, enhance the script with progress reporting:
 ```bash
 #!/bin/bash
-CPUS=6
+TASKS=6
 PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
 JOBLOG=/your_workdir/path/commands_log.txt
 
@@ -206,7 +206,7 @@ JOBLOG=/your_workdir/path/commands_log.txt
 module load apptainer
 
 # Run commands with progress tracking and logging
-cat all_commands.txt | $PARALLEL -j $CPUS --progress --joblog $JOBLOG > output.log 2> error.log
+cat all_commands.txt | $PARALLEL -j $TASKS --progress --joblog $JOBLOG > output.log 2> error.log
 ```
 
 This approach allows you to download multiple resources from different sources simultaneously while maintaining control over login node resource usage.

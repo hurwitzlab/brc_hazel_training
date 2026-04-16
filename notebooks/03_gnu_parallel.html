@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Mery Touceda-Suárez">
-<meta name="dcterms.date" content="2026-04-13">
+<meta name="dcterms.date" content="2026-04-16">
 
 <title>BRC Documentation: Introduction to Hazel-HPC</title>
 <style>
@@ -94,7 +94,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sending-the-processes-to-the-background" id="toc-sending-the-processes-to-the-background" class="nav-link" data-scroll-target="#sending-the-processes-to-the-background">Sending the processes to the background</a></li>
   </ul></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="03_gnu_parallel.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="../03_gnu_parallel.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 13, 2026</p>
+      <p class="date">April 16, 2026</p>
     </div>
   </div>
   
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! /bin/bash</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create some variables for a more clean script</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>3</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">TASKS</span><span class="op">=</span>3</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -173,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># run gnu parallel downloads</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> sra_accessions.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="st">"apptainer exec </span><span class="va">$SRA_CONTAINER</span><span class="st"> prefetch {}"</span> <span class="op">&gt;</span> output.log <span class="dv">2</span><span class="op">&gt;</span> error.log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> sra_accessions.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$TASKS</span> <span class="st">"apptainer exec </span><span class="va">$SRA_CONTAINER</span><span class="st"> prefetch {}"</span> <span class="op">&gt;</span> output.log <span class="dv">2</span><span class="op">&gt;</span> error.log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p>Note: Make sure that you use double quotes <code>"..."</code> instead of single quotes <code>'...'</code> so that the variable <code>$SRA_CONTAINER</code> gets expanded to its actual value.</p>
 </blockquote>
@@ -184,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>For a more informative and robust approach:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! /bin/bash</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create some variables for a more clean script</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>3</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">TASKS</span><span class="op">=</span>3</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="va">JOBLOG</span><span class="op">=</span>/your_workdir/path/download_log.txt</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
@@ -193,10 +193,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># run gnu parallel downloads with joblog</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> sra_accessions.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="at">--progress</span> <span class="at">--joblog</span> <span class="va">$JOBLOG</span> <span class="st">"apptainer exec </span><span class="va">$SRA_CONTAINER</span><span class="st"> prefetch {}"</span> <span class="op">&gt;</span> output.log <span class="dv">2</span><span class="op">&gt;</span> error.log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> sra_accessions.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$TASKS</span> <span class="at">--progress</span> <span class="at">--joblog</span> <span class="va">$JOBLOG</span> <span class="st">"apptainer exec </span><span class="va">$SRA_CONTAINER</span><span class="st"> prefetch {}"</span> <span class="op">&gt;</span> output.log <span class="dv">2</span><span class="op">&gt;</span> error.log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Key options explained:</p>
 <ul>
-<li><code>-j $CPUS</code>: Run 3 (<code>$CPUS</code>) jobs in parallel</li>
+<li><code>-j $TASKS</code>: Run 3 (<code>$TASKS</code>) tasks in parallel</li>
 <li><code>--progress</code>: Display a progress bar showing completed/remaining jobs</li>
 <li><code>--joblog $JOBLOG</code>: Create a log file (<code>download_log.txt</code>) tracking each job’s status and timing</li>
 <li><code>&gt; output.log 2&gt; error.log</code>: Redirect standard output and standard error to separate files</li>
@@ -270,26 +270,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Now use this script to execute the commands with controlled parallelization:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! /bin/bash</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create some variables for a more clean script</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>6</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">TASKS</span><span class="op">=</span>6</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># load apptainer module</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># run a list of commands</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> all_commands.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="at">-a</span> <span class="at">-</span> <span class="op">&gt;</span> output.log <span class="dv">2</span><span class="op">&gt;</span> error.log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> all_commands.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$TASKS</span> <span class="at">-a</span> <span class="at">-</span> <span class="op">&gt;</span> output.log <span class="dv">2</span><span class="op">&gt;</span> error.log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Script breakdown:</strong></p>
 <ul>
-<li><code>CPUS=6</code>: Limits execution to 6 concurrent downloads</li>
+<li><code>TASKS=6</code>: Limits execution to 6 concurrent downloads</li>
 <li><code>PARALLEL</code>: Variable storing the path to the GNU Parallel executable (adjust for your system)</li>
-<li><code>-j $CPUS</code>: Run up to 6 jobs simultaneously</li>
+<li><code>-j $TASKS</code>: Run up to 6 tasks simultaneously</li>
 <li><code>-a -</code>: Read commands from standard input (stdin), which comes from the <code>cat</code> command</li>
 </ul>
 <section id="adding-progress-tracking" class="level4">
 <h4 class="anchored" data-anchor-id="adding-progress-tracking">Adding Progress Tracking</h4>
 <p>For better monitoring, enhance the script with progress reporting:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="va">CPUS</span><span class="op">=</span>6</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="va">TASKS</span><span class="op">=</span>6</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="va">JOBLOG</span><span class="op">=</span>/your_workdir/path/commands_log.txt</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
@@ -297,7 +297,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Run commands with progress tracking and logging</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> all_commands.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$CPUS</span> <span class="at">--progress</span> <span class="at">--joblog</span> <span class="va">$JOBLOG</span> <span class="op">&gt;</span> output.log <span class="dv">2</span><span class="op">&gt;</span> error.log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> all_commands.txt <span class="kw">|</span> <span class="va">$PARALLEL</span> <span class="at">-j</span> <span class="va">$TASKS</span> <span class="at">--progress</span> <span class="at">--joblog</span> <span class="va">$JOBLOG</span> <span class="op">&gt;</span> output.log <span class="dv">2</span><span class="op">&gt;</span> error.log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This approach allows you to download multiple resources from different sources simultaneously while maintaining control over login node resource usage.</p>
 <hr>
 <p><br></p>
