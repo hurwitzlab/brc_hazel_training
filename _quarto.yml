@@ -1,0 +1,45 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "BRC Hazel HPC Training"
+  author: "Mery Touceda-Suárez"
+  date: today
+  repo-url: https://github.com/hurwitzlab/brc_hazel_training
+  repo-actions: [issue]
+  search: true
+  chapters:
+    - index.qmd
+    - part: "Day 1"
+      chapters:
+        - notebooks/00_hpc_terminology.qmd
+        - notebooks/01_ncsu_hazel_hpc.qmd
+        - notebooks/02_hazel_jobs.qmd
+    - part: "Day 2"
+      chapters:
+        - notebooks/04_parallel_jobs.qmd
+    - part: "Day 3"
+      chapters:
+        - notebooks/03_gnu_parallel.qmd
+        - notebooks/05_job_performance.qmd
+    - part: "Day 4"
+      chapters:
+        - notebooks/globus_basics.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-overflow: wrap
+  pdf:
+    documentclass: scrbook
+    colorlinks: true
+    toc: true
+    toc-depth: 3
+    geometry: margin=1in
+
+execute:
+  freeze: true
