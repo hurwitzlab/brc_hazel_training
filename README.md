@@ -8,8 +8,12 @@ The workshop presentations can be found int he `slides/` directory, while hands-
 
 This is table depicting the calendar of live training sessions associated with these materials. We recommend you follow along with the exercises in the order presented here:
 
+Semester-long workshop: 
 ![](./images/workshop_schedule.png)
 
+
+Week-long workshop: 
+![](./images/week_schedule.png)
 
 ## 🚀 Getting Started
 
