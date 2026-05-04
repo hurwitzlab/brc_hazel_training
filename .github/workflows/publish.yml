@@ -17,14 +17,13 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Set up TeX (for PDF output)
-        uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          tinytex: true
+      - name: Render HTML only
+        run: quarto render --to html
 
-      - name: Render and publish to gh-pages
+      - name: Publish to gh-pages
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages
+          render: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
