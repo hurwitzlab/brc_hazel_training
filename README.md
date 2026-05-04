@@ -26,6 +26,10 @@ Week-long workshop:
 
 There are several ways to view and interact with the training materials:
 
+### Option 0: View the handbook online (Easiest)
+
+<https://hurwitzlab.github.io/brc_hazel_training/>
+
 ### Option 1: View Pre-rendered HTML Files (Easiest)
 
 1. Download the HTML files from the repository
