@@ -1,0 +1,592 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "BRC Hazel HPC Training",
+    "section": "",
+    "text": "Preface\nThis handbook accompanies the NC State Bioinformatics Resource Center (BRC) week-long training workshop on Hazel HPC. It covers everything from HPC fundamentals and job submission to parallel workflows and large-scale data transfer.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#workshop-schedule",
+    "href": "index.html#workshop-schedule",
+    "title": "BRC Hazel HPC Training",
+    "section": "Workshop Schedule",
+    "text": "Workshop Schedule\n\n\n\nDay\nTopics\n\n\n\n\nDay 1\nHPC terminology, getting started on Hazel, running jobs\n\n\nDay 2\nParallel job arrays\n\n\nDay 3\nGNU Parallel, job performance\n\n\nDay 4\nGlobus data transfer\n\n\n\nMaterials can also be followed in order for self-paced learning outside of the live workshop.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#conventions",
+    "href": "index.html#conventions",
+    "title": "BRC Hazel HPC Training",
+    "section": "Conventions",
+    "text": "Conventions\nShell commands are shown in code blocks. Commands you type at a prompt begin with $; omit the $ when copying. Expected output appears below without a leading $.\n$ echo \"hello world!\"\nhello world!\n\n\n\n\n\n\nImportant\n\n\n\nNever run computationally intensive work on the login nodes. Always submit jobs through the LSF scheduler.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#support",
+    "href": "index.html#support",
+    "title": "BRC Hazel HPC Training",
+    "section": "Support",
+    "text": "Support\n\nBRC support: mtouced@ncsu.edu | blhurwit@ncsu.edu\nOIT HPC help: https://hpc.ncsu.edu",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "notebooks/00_hpc_terminology.html",
+    "href": "notebooks/00_hpc_terminology.html",
+    "title": "1  HPC Terminology",
+    "section": "",
+    "text": "2 00. HPC Fundamentals\nModern bioinformatics has outgrown the desktop computer. A single human genome contains 3 billion base pairs and generates hundreds of gigabytes of raw sequencing data. Aligning these reads, calling variants, assembling genomes, or training machine learning models for protein structure prediction often require specialized hardware and software. Tasks that would take weeks on your personal computer can complete in hours on a high-performance computing (HPC) cluster. Understanding HPC is no longer optional—it’s essential for doing bioinformatics at scale. This workshop will introduce you to the Hazel HPC cluster and give you the skills to leverage these powerful resources for your research.",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>HPC Terminology</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/00_hpc_terminology.html#hpc-terminology",
+    "href": "notebooks/00_hpc_terminology.html#hpc-terminology",
+    "title": "1  HPC Terminology",
+    "section": "2.1 HPC Terminology",
+    "text": "2.1 HPC Terminology\n\n2.1.1 What is a “Cluster”\nA computer cluster is a set of loosely or tightly connected computers (Nodes) that work together so that, in many respects, they can be viewed as a single system. Computer clusters have each computing unit set to perform the same/similar tasks, controlled and scheduled by software.\n\n\n\n2.1.2 CPU vs GPU\n\nCPU – Central Processing Unit\n\nThink of a CPU as a small team of highly skilled experts. Each core can tackle complex, diverse tasks independently and make sophisticated decisions.\n\nA CPU can never be fully replaced by a GPU\nA computer can’t function without a CPU\nCan be thought of as the taskmaster of the entire system, coordinating a wide range of general-purpose computing tasks\nOptimized for sequential processing\nGenerally between 8-64 cores\n\n\nCPUs handle most bioinformatics workflows like alignment and variant calling\n\n\nGPU – Graphics Processing Unit\n\nA GPU is like having thousands of workers who can all do the same simple task simultaneously.\n\nGPUs were originally designed to create images for computer graphics and video game consoles\nGPGPU (General-Purpose computing on Graphics Processing Units)\nPerforming a narrower range of more specialized tasks\nExcels at highly parallel processing (many calculations simultaneously)\nGPU is like the turbo boost to a car’s engine, the CPU\nNot all computers have GPUs\nThousands of cores\n\n\nGPUs excel at deep learning tasks like protein structure prediction\n\n&lt;img src=\"https://raw.githubusercontent.com/DelilahYM/ImageHost/master/CPUGPU.png\" alt=\"CPU-GPU\" width=\"60%\"/&gt;\n\n\n\n2.1.3 Node vs. core\nA node is a single, self-contained computer in the cluster, connected to the others via a high-speed network. Each node has a number of computing units, cores.\n\n2.1.3.0.1 Node – The complete Workstation\nA node is an entire computer within the HPC cluster. Think of a node as a complete office workspace with everything needed to function independently. Each node contains:\n\nOne or more CPUs (each with multiple cores)\nMemory (RAM)\nStorage connection\nNetwork connection to other nodes\n\n\n\n2.1.3.0.2 Core – The Individual Worker\nA core is a single processing unit within a CPU. It’s the fundamental unit that executes instructions. Think of a core as one individual worker who can complete tasks.\n\nModern CPUs contain multiple cores (typically 8-64 cores per CPU)\nEach core can run its own thread of execution independently\nMore cores = more tasks can run simultaneously\nExample: A 32-core CPU can theoretically run 32 different calculations at the same time\n\n\n\n2.1.3.1 Why is this important?\nSingle-node jobs: Your program uses multiple cores on ONE node\n\nFaster communication between cores (they share memory)\nLimited by one node’s resources (if a node has 32 cores and 128GB RAM, that’s your max) Example: Most alignment tools (BWA, STAR) run on a single node\n\nMulti-node jobs: Your program uses cores across MULTIPLE nodes\n\nAccess to more total resources (hundreds of cores, terabytes of RAM)\nSlower communication (data must travel over network between nodes)\nOnly works if your software supports it (needs MPI or similar) Example: Large-scale genome assembly, distributed machine learning\n\n\nNote: Not all programs can utilize CPU cores allocated across nodes. Please check your program’s specifics before submitting jobs. For instance, tools like BLAST can use multiple cores on one node, while MPI-based programs like distributed genome assemblers can span multiple nodes\n\n\n\n\n\n\n2.1.4 Memory vs Storage\nThe central processing unit (CPU) of a computer is what manipulates data by performing computations. In practice, almost all computers use a storage hierarchy, which puts fast but expensive and small storage options close to the CPU and slower but less expensive and larger options further away. Generally the fast volatile technologies (which lose data when off power) are referred to as “memory”, while slower persistent technologies are referred to as “storage”.\n\n2.1.4.1 Memory (RAM - Random Access Memory)\n\nSmall - Typically 16-512 GB per node on HPC systems\nFast - Nanosecond access times; data transfer at 100+ GB/second\nExpensive - Costs significantly more per GB than storage\nVolatile - All data is lost when the computer powers off or your job ends\n\nPurpose: Memory is your active workspace. When your program runs, it loads data from storage into memory where the CPU can access it extremely quickly. Think of memory as your desk surface—limited space, but everything is immediately at hand.\nWhat lives in memory:\n\nCurrently running programs and their instructions\nData being actively processed (sequence reads being aligned RIGHT NOW)\nIntermediate calculations\nVariables and temporary results\n\n\n\n2.1.4.2 Storage (Disk - Hard Drives or SSDs)\n\nLarge - Terabytes to petabytes on HPC systems\nSlower - Millisecond access times; data transfer at 1-10 GB/second\nCheaper - Costs much less per GB than memory\nNon-volatile - Data persists even when powered off\n\nPurpose: Storage is your filing cabinet. It holds all your data long-term: raw sequencing files, reference genomes, analysis results, scripts, and software. You can’t work directly from storage—data must be copied into memory first.\nWhat lives in storage: - Raw data files (FASTQ, FASTA) - Reference genomes and annotations - Final analysis results (BAM, VCF, counts tables) - Your scripts and programs - Everything you want to keep after the job finishes\nThink of Memory (RAM) as your desk surface—fast, small, and used for what you’re actively working on. Storage (Disk) is your filing cabinet—slower, massive, and where you keep everything long-term.\n\nFor example: A typical RNA-seq alignment might need 32GB of memory but only 5GB of storage for the final BAM file",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>HPC Terminology</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/00_hpc_terminology.html#hazel-overview",
+    "href": "notebooks/00_hpc_terminology.html#hazel-overview",
+    "title": "1  HPC Terminology",
+    "section": "2.2 Hazel Overview",
+    "text": "2.2 Hazel Overview\nHazel is a shared computing cluster at NC State, designed to allow many researchers to run computationally intensive analyses simultaneously. Understanding its architecture will help you use it efficiently and avoid common mistakes.\n\n2.2.1 Hazel HPC Structure\n\n\n\n\n\n\n2.2.1.1 1. Login Nodes - Your Gateway to HPC\n\nWhat they are: Special computers that you connect to via SSH from your laptop\nPurpose: Entry point to Hazel; where you prepare your work, write scripts, organize files, and submit jobs\nWhat you CAN do: Edit files, organize directories, install software, submit jobs to the scheduler, check job status\nWhat you CANNOT do: Run computationally intensive analyses\n\n⚠️ CRITICAL RULE: Do not run jobs on login nodes! Login nodes are shared by everyone logging into Hazel. Running analyses here slows down the system for all users and may get your account suspended. Think of login nodes as the lobby of a building—you check in here, but you don’t set up your lab equipment in the lobby.\n\n\n2.2.1.2 2. Compute Nodes - Where the Real Work Happens\n\nWhat they are: Hundreds of powerful computers, each with many CPU cores and large amounts of memory\nPurpose: Execute your analyses (alignments, assemblies, variant calling, etc.)\nAccess: You never directly log into compute nodes; the scheduler assigns them to your jobs\nResources: Each node typically has 32-64 cores and 128-512 GB of RAM\n\n\n\n2.2.1.3 3. Scheduler (LSF) - The Traffic Controller\n\nWhat it is: Software that manages all job submissions and resource allocation\nPurpose: Ensures fair resource distribution among all users; prevents conflicts\nHow it works:\n\nYou submit a job with resource requirements (cores, memory, time)\nLSF queues your job\nWhen resources become available, LSF assigns your job to appropriate compute nodes\nYour job runs on those nodes until completion\n\n\n\n\n2.2.1.4 4. Storage (Filesystems) - Where Everything Lives\n\nMultiple storage systems, each optimized for different purposes\nAll compute nodes can access these filesystems\nYour data stays in one place; compute nodes read from and write to these shared filesystems\n\n\n\n\n\n\n2.2.2 Overview of the Storage in Hazel\nThis is a summary from the information found here.\n\nHome directory (1G per user, /home/[UnityID]): store here only small scripts and configuration files.\nScratch (20Tb per group, 30 day expiration, /share/\\$GROUP/$USER): This is the place for pipeline intermediate files or as a temporary storage in case you run out of storage anywhere else (i.e. .conda/pkgs and other installation side products). Because of its high speed and temporary nature, this is the recommended place to run jobs and store large intermediate files that are generated during the analysis (e.g., alignment temporary files)\nApplications (varied size per group,usr/local/usrapps/$GROUP): Our conda environments, containers, and other software will live here.\n\nNote: Can’t write to it from a compute node (it also won’t make an error file when it tries and fails), only from head node; but a compute node can read from usrapps.\n\nResearch storage - RS1 (40Tb per project; individual: /rs1/researchers/[letter]/[name]; project: /rsstu/users/[letter]/[projectname]): Data for alive projects must be stored here. All scripts and cloned GitHub repositories with pipelines must be stored here too. RS1 documentation can be found here.\n\nNote: No network problems. The protocol that scratch uses is different from RS1, hard drives are mounted with a specific protocol. Technically RS1 is slower if you have small files running parallel, scratch is better for that. Every PI gets one project. As you get any funded projects you can request another project space, with up to 40Tb. If you lose the grant you lose the free project space. Or you get more space on your original project.\n\n\n\n2.2.2.1 Recommendation:\nStore your raw FASTQ files in RS1, run analyses using Scratch for intermediate files, and copy final results back to RS1",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>HPC Terminology</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/01_ncsu_hazel_hpc.html",
+    "href": "notebooks/01_ncsu_hazel_hpc.html",
+    "title": "2  Getting Started on Hazel",
+    "section": "",
+    "text": "3 01. First steps in Hazel HPC",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started on Hazel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/01_ncsu_hazel_hpc.html#set-up-an-account",
+    "href": "notebooks/01_ncsu_hazel_hpc.html#set-up-an-account",
+    "title": "2  Getting Started on Hazel",
+    "section": "3.1 Set up an account",
+    "text": "3.1 Set up an account\nRequest access from your supervisor and in the mean time read and understand Acceptable Use Policy. Obtain your UnityID credentials and ensure you have VPN access if working off-campus.",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started on Hazel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/01_ncsu_hazel_hpc.html#log-in",
+    "href": "notebooks/01_ncsu_hazel_hpc.html#log-in",
+    "title": "2  Getting Started on Hazel",
+    "section": "3.2 Log in",
+    "text": "3.2 Log in\n\nWeb browser (OnDemand): https://servood.hpc.ncsu.edu\nTerminal: To connect to the shared HPC login nodes, open a terminal window and type\n\nssh [UnityID]@login.hpc.ncsu.edu\nwhere user_name is the Unity ID.\n\nTo allow Hazel to open a window on a local machine, e.g., for GUI applications, X11 forwarding must be enabled by adding the -X option (i.e. ssh -X user_name@login.hpc.ncsu.edu). On macOS, install XQuartz to use X11 forwarding. When using MobaXterm, X11 is enabled by default.\n\n\nVSCode: https://hpc.ncsu.edu/Documents/LoginUsingVSCode.php",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started on Hazel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/01_ncsu_hazel_hpc.html#transfer-files",
+    "href": "notebooks/01_ncsu_hazel_hpc.html#transfer-files",
+    "title": "2  Getting Started on Hazel",
+    "section": "3.3 Transfer files",
+    "text": "3.3 Transfer files\n\n3.3.1 OnDemand\nGo to OnDemand\n\nUnder Files, using the Upload or Download buttons to transfer. Make sure you navigate to the destination/source directory on cluster using the Go To button before transferring files.\n\n\n\n\n\n\n\n\n3.3.2 SCP\nFor transferring a single file in one direction. Open a terminal on your local machine, and without login into the HPC do:\n# Local to HPC\n$ scp filename [UnityID]@login.hpc.ncsu.edu:/rs1/researchers/[letter]/[name] local/path/to/stuff\n\n# HPC to local\n$ scp [UnityID]@login.hpc.ncsu.edu:/rs1/researchers/[letter]/[name] local/path/to/stuff\n\n\n3.3.3 SFTP\nTo transfer multiple files or in multiple directions (local to HPC and viceversa) without needing to re-authenticate, or to be able to navigate the remote file system. From the local machine initiate an SFTP session:\n$ sftp [UnityID]@login.hpc.ncsu.edu\nAt the prompt do:\nsftp&gt; cd /path/to/stuff\nsftp&gt; put filename\nsftp&gt; get filename\n\n\n3.3.4 Globus\nGlobus is a point to point file syncing platform. It is very useful for transfering large files or large numbers of small files, since it allows for bacground scheduled transfers. See our Globus-ncsu tutorial to learn more about Globus and how to use it with the NCSU Hazel HPC.",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started on Hazel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/01_ncsu_hazel_hpc.html#useful-commands",
+    "href": "notebooks/01_ncsu_hazel_hpc.html#useful-commands",
+    "title": "2  Getting Started on Hazel",
+    "section": "3.4 Useful commands",
+    "text": "3.4 Useful commands\n\n3.4.1 System and user info\n\nCheck queues you have access to: $ bqueues -u [UnityID]\nCheck the groups you belong to (first one is your default): $ groups\nTo see what node you are in: $ hostname or $ echo $HOSTNAME\n\n\n\n3.4.2 Storage\n\nCheck size of the directory you are in: $ du -sh . &gt; Important for checking pipeline output size\nCheck size of files in a directory: $ du -sh [pathtodirectory]/*\nCheck how much space is being used in your home directory: $ quota\nCheck space allocations for your group: $ quota -s -g group_name\nCheck files in reversed time order (most recently modified at the end): $ ls -lrt\n\n\n\n3.4.3 Software and resource info\n\nFind available modules: $ module avail\nFind path to executable: $ wich [executablename]",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started on Hazel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/01_ncsu_hazel_hpc.html#resources",
+    "href": "notebooks/01_ncsu_hazel_hpc.html#resources",
+    "title": "2  Getting Started on Hazel",
+    "section": "3.5 Resources",
+    "text": "3.5 Resources\n\nGetting started on Hazel: https://hpc.ncsu.edu/Documents/GetStarted.php\nCluster status: https://hpc.ncsu.edu/Monitor/ClusterStatusMemory.php\nSupport: oit_hpc@help.ncsu.edu\nHPC-Henry2 moodle course on Reporter: https://moodle-projects.wolfware.ncsu.edu/course/view.php?id=6857\nYoutube channel for OIT with tutorial videos: https://www.youtube.com/@OITHPC\nTo stay informed about Hazel-HPC news join the HPC Announcements Google Group",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started on Hazel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/01_ncsu_hazel_hpc.html#your-first-week-on-hazel-hpc",
+    "href": "notebooks/01_ncsu_hazel_hpc.html#your-first-week-on-hazel-hpc",
+    "title": "2  Getting Started on Hazel",
+    "section": "3.6 Your First Week on Hazel HPC",
+    "text": "3.6 Your First Week on Hazel HPC\n\n3.6.1 Before You Start:\n\nObtain your UnityID credentials and VPN access (if off-campus)\nJoin your research group’s allocation/project space\nReview this documentation and bookmark it for reference\n\n\n\n3.6.2 Getting Connected:\n\nSSH into the login node: ssh [UnityID]@hazel.ncsu.edu\nExplore your home directory (/home/[UnityID]) - remember, only 1GB available!\nLocate your group’s scratch space\nFind your group’s RS1 storage",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started on Hazel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/02_hazel_jobs.html",
+    "href": "notebooks/02_hazel_jobs.html",
+    "title": "3  Running Jobs on Hazel",
+    "section": "",
+    "text": "4 02. Running jobs on Hazel-HPC\n\n4.0.0.1 What is a job\nAn HPC job is the unit of work that a user submits to the cluster’s Workload Manager (or job scheduler) for execution. It’s essentially your program, simulation code, or analysis script, bundled with all the necessary instructions for the system to run it. These instructions are typically contained within a job script (or submission script), which includes vital directives for the scheduler. By encapsulating the executable code, resource requirements, and runtime parameters, the job acts as a complete, self-contained package that the scheduler can manage and allocate hardware for, ensuring efficient use of the shared cluster resources.\n\n\n4.0.0.2 LSF Job Scheduler\nHazel uses the LSF (Load Sharing Facility) job scheduler, currently known as IBM Spectrum LSF. Users submit jobs using the bsub command and include specific directives (e.g., #BSUB -n 16) to communicate their resource needs to the scheduler. LSF then handles the entire lifecycle of the job—from submission to completion, including fault tolerance and output logging.\n\n\n\n\n4.0.1 🖥️ Interactive Jobs\nFor quick testing, debugging, or running applications that require a graphical interface (GUI), you must request a temporary allocation on a compute node using an interactive job.\n$ bsub -Is -n 1 -W 10 bash\n\n\n\nOption\nMeaning\n\n\n\n\n-I\nRequests an interactive session.\n\n\n-s\nSends a signal to the job shell upon termination.\n\n\n-n 1\nRequests 1 CPU core.\n\n\n-W 10\nRequests 10 minutes of wall-clock time.\n\n\nbash\nThe shell to run on the allocated node.\n\n\n\n\n\n\n4.0.1.1 Requesting multiple cores on Interactive\nIt is possible to request multiple cores for an interactive node. For example, to request an interactive session using 4 cores (-n 4), with all cores on the same node (-R \"span[hosts=1]\"), and 10 minutes of wall clock time (-W 10) use:\nbsub -Is -n 4 -R \"span[hosts=1]\" -W 10 bash\n\n\n\n\n\n4.0.2 📋 Anatomy of a Job Script (testing changes)\nJob scheduling software. LSF (Load sharing facility) Job contains: the script you want to run and information about the resources you need to run it.\n\n4.0.2.1 0. Example of a job script:\n#!/bin/bash\n# ==================================================\n# Hello World python Job Script for Hazel HPC\n# ==================================================\n# This job script submits a python program to print \"Hello World\"\n\n\n# --------------------------------------------------\n# Request resources here\n# --------------------------------------------------\n#BSUB -J hello                        # job name\n#BSUB -n 2                            # number of CPUs required per task\n#BSUB -q shared_memory                # the queue to run on\n#BSUB -R \"span[hosts=1]\"              # number of hosts to spread the jobs across, 1 host used here\n#BSUB -R \"rusage[mem=4GB]\"            # required total memory for the job \n#BSUB -o \"./output.%J.log\"            # standard output file (%J is job name)\n#BSUB -e \"./error.%J.log\"             # standard error file (%J is job ID)\n#BSUB -W 10:00                        # time to run\n\n# --------------------------------------------------\n# Load modules here\n# --------------------------------------------------\n\nmodule load python\n\n# --------------------------------------------------\n# Execute commands here\n# --------------------------------------------------\n\npython hello.py\n\n\n\n4.0.2.2 1. Request resources block\nThe “Request Resources Block” is the most critical section, as it uses LSF directives (lines starting with #BSUB) to tell the Workload Manager exactly how much computing power and time your job needs.\n\n\n\n\n\n\n\n\nDirective\nCommand\nDescription\n\n\n\n\nJob Name\n#BSUB -J hello\nSets the job name to hello. This is used to identify the job in the queue and in output files.\n\n\nCPU Cores\n#BSUB -n 2\nRequests 2 CPU cores per task. For a parallel job, this is the number of cores dedicated to that single task.\n\n\nQueue\n#BSUB -q shared_memory\nSpecifies the queue (or partition) where the job should run\n\n\nHost Span\n#BSUB -R \"span[hosts=1]\"\nRequests that all required resources (the 2 cores) for the task must reside on a single computing host (node).\n\n\nMemory\n#BSUB -R \"rusage[mem=4GB]\"\nRequests 4 GB of total memory (RAM) for the job task. The job will be scheduled only on a node with at least this much available memory.\n\n\nOutput File\n#BSUB -o \"./output.%J.log\"\nDirects standard output (stdout) to this file.\n\n\nError File\n#BSUB -e \"./error.%J.log\"\nDirects standard error (stderr) to this file.\n\n\nWall Time\n#BSUB -W 10:00\nSets the maximum wall-clock time (actual time elapsed) to 10 minutes. If the job runs longer, LSF will terminate it.\n\n\n\n\n\n\n4.0.2.3 2. Load modules block\nThis block is crucial for setting up the software environment your specific job requires. HPC systems use a tool called Modules to manage different versions of software, compilers, and libraries without conflicts.\nThis section uses the module load command to prepare the job’s environment. This avoids conflicts by allowing different users and different jobs to use specific, isolated versions of software on the shared cluster.\nSometimes the sofware you need won’t be available as a pre-installed module in the HPC, in that case you will need to install it yourself before you run it. We recommend trying to use containers first, and if that is not possible try to install the software using an virtual environment manager like conda.\nThere will be more information on this in later documentation but in case you installed your software with any of these options this is how you would load/activate them in your job script:\n\n\n\n\n\n\n\n\nCommand\nExample\nDescription\n\n\n\n\nSetup Option 1\nmodule load conda\nLoads the Conda module, which manages virtual environments. This makes the conda command available for use.\n\n\nActivation\nconda activate my_env\nIf using Conda, this line activates the specific virtual environment containing your job’s required tools.\n\n\nSetup Option 2\nmodule load apptainer\nLoads the Apptainer module for running containerized applications. Containers package software with all its dependencies.\n\n\n\nKey Principle: Always load the modules your job needs before trying to run the main command.\n\n\n\n4.0.2.4 3. Execute commands block\nThis is the main body of the script where your actual scientific or computational work takes place. These are standard shell commands that will be executed sequentially on the allocated compute node(s).This is where you place the executable commands that perform the job’s core task. It’s often wrapped with simple echo commands to log key steps, helping with debugging and monitoring.\nThe example above has a very simplified execution compared to what one would normally make or encounter in bioinformatics. This is a more realistic example of execution of the software fastqc:\n\n# --------------------------------------------------\n# Load modules here\n# --------------------------------------------------\n\nmodule load apptainer\n\n# --------------------------------------------------\n# Execute commands here\n# --------------------------------------------------\n\n# Print job start information\necho \"==================================================\"\necho \"Job started: $(date)\"\necho \"Job ID: $LSB_JOBID\"\necho \"Running on host: $(hostname)\"\necho \"Working directory: $(pwd)\"\necho \"==================================================\"\n\nFASTQC_SIF=\"/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_fastqc:0.12.1--hdfd78af_0.sif\"\nIN_DIR=\"/rs1/shares/brc/trainings/hazel_hpc/data\"\nSAMPLE=\"sample_001”\n\nmkdir -p /path/to/working/dir/fastqc_results\nOUT_DIR=\"/path/to/working/dir/fastqc_results\"\n\n# --------------------------------------------------\n# Validate inputs\n# --------------------------------------------------\n\n# Check if container exists\nif [ ! -f \"${FASTQC_SIF}\" ]; then\n    echo \"ERROR: Container not found at ${FASTQC_SIF}\"\n    exit 1\nfi\n\n# Check if input directory exists\nif [ ! -d \"${IN_DIR}\" ]; then\n    echo \"ERROR: Input directory not found at ${IN_DIR}\"\n    exit 1\nfi\n\n# --------------------------------------------------\n# Execute FastQC\n# --------------------------------------------------\n\necho \"Running FastQC on sample: ${SAMPLE}\"\n\napptainer exec $BIND ${FASTQC_SIF} fastqc \\\n    --threads $CPUS \\\n    --outdir ${OUT_DIR} \\\n    ${IN_DIR}/${SAMPLE}_*.fastq*\n\n# Check if FastQC completed successfully\nif [ $? -eq 0 ]; then\n    echo \"FastQC completed successfully\"\nelse\n    echo \"ERROR: FastQC failed with exit code $?\"\n    exit 1\nfi\n\n# --------------------------------------------------\n# Job completion\n# --------------------------------------------------\n\necho \"==================================================\"\necho \"Job completed: $(date)\"\necho \"Results saved to: ${OUT_DIR}\"\necho \"==================================================\"\nAs you can see here we have included examples of commonly used techniques in job scripting:\n\nVariable creation and value setting\nPassing of job information to the standard output to help debugging and monitoring\nCreation of output directories\nError checking Additionally, note that the the software fastqc is executed from an Apptainer container, not a module, so we also had to include paths to the container image, apart from input, output, etc.\n\nHere is a detailed explanation of each line in case you would like to include any of these tools to your job scripts:\n\n\n\n\n\n\n\n\nCommand\nExample\nDescription\n\n\n\n\nStart Log\necho \"Job started: $(date)\"echo \"Job ID: $LSB_JOBID\"echo \"Running on host: $(hostname)\"echo \"Working directory: $(pwd)\"\nLogs the start time and environment details into your standard output (output.%J.log) file:• date - records when the job started• $LSB_JOBID - shows the unique job ID assigned by LSF• hostname - shows which compute node is running the job• pwd - prints current working directory\n\n\nSet Variables\nFASTQC_SIF=\"/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_fastqc:0.12.1--hdfd78af_0.sif\"IN_DIR=\"/rs1/shares/brc/trainings/hazel_hpc/data\"SAMPLE=\"sample_001\"\nDefines paths and parameters used throughout the script:• Container image location• Input data directory• Output directory for results• Sample identifier to process\n\n\nCreate Directories\nmkdir -p /path/to/working/dir/fastqc_resultsOUT_DIR=\"/path/to/working/dir/fastqc_results\"\nCreates the output directory if it doesn’t already exist. The -p flag prevents errors if the directory already exists.\n\n\nValidate Inputs\nif [ ! -f \"${FASTQC_SIF}\" ]; then  echo \"ERROR: Container not found\"  exit 1fi\nChecks that required files and directories exist before running the main task:• Verifies the container image exists• Confirms the input directory is accessible• Exits with error code if validation fails\n\n\nCore Task\napptainer exec ${FASTQC_SIF} fastqc \\  --threads 2 \\  --outdir ${OUT_DIR} \\  ${IN_DIR}/${SAMPLE}_*.fastq*\nRuns the main application using Apptainer to execute fastqc within the container:• --threads 2 - uses 2 CPU cores (matches #BSUB -n 2)• --outdir - specifies where to save results• Processes all FASTQ files matching the sample pattern\n\n\nError Checking\nif [ $? -eq 0 ]; then  echo \"FastQC completed successfully\"else  echo \"ERROR: FastQC failed\"  exit 1fi\nChecks the exit status of the previous command:• $? contains the exit code (0 = success)• Logs whether the task completed successfully• Exits with error code if the task failed\n\n\nEnd Log\necho \"Job completed: $(date)\"echo \"Results saved to: ${OUT_DIR}\"\nLogs the end time and output location. This helps you:• Calculate actual runtime• Confirm the job completed• Know where to find results\n\n\n\nKey Principle: Every command listed here runs on the allocated compute resources, not on the login node. This ensures your intensive computations don’t overload the shared login environment.\nBest Practices Shown:\n\nLogging: Track when and where your job runs\nVariables: Make paths easy to change and reuse\nValidation: Catch problems before wasting compute time\nError handling: Know immediately if something goes wrong\nDocumentation: Clear comments explain what each section does\n\n\n\n\n\n\n\nImportant\n\n\n\nAll images should be in /rs1/shares/brc/admin/containers/images, if your tool is not there feel free to contact us and request it.\n\n\n\n\n\n\n\n4.0.3 🛠️ Job Monitoring and Management\nThese are some of the most relevalt commands you will need to monitor your jobs:\n\n\n\n\n\n\n\n\nCommand Category\nCommand Syntax\nDescription\n\n\n\n\nSubmission\nbsub &lt; yourjob.sh\nSubmits the job script (yourjob.sh) to the LSF scheduler. The scheduler processes the #BSUB directives within the script.\n\n\nStatus Check\nbjobs\nDisplays a list of all your jobs (running, pending, suspended, etc.) and their current status.\n\n\nDetailed Status\nbjobs -l [JOBID]\nProvides a detailed report on a specific job, including the execution host, resource usage, and waiting reasons (if pending).\n\n\nTermination\nbkill [JOBID]\nTerminates (kills) a running or pending job instantly. Use this if your job is faulty or you no longer need the results.\n\n\nResource Inquiry\nbhosts\nShows the status of the compute nodes in the cluster, indicating which are available, busy, or otherwise unavailable.\n\n\n\n\n4.0.3.1 1. Get job information with bjobs\nThe bjobs command is used to monitor the status of jobs after they are submitted to LSF. An LSF job status is usually in one of two states (STAT): PEND means that the job is queued and waiting for resources to become available and RUN means that the job is currently executing.\nA typical bjobs output looks like:\n[unityID@login01 ~]$ bjobs\nJOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME\n948851  unityID  RUN   standard   login01.hpc bc2j6       myjob1 \nOnce you have the JOBID you can obtain more information about the job using:\nbjobs -l JOBID\nFor jobs in a pending state, this will give information about why the job is pending. It is possible to make resource requests that are impossible to satisfy; jobs that have been pending for a long time may have made that type of request. It is possible that the chosen resources are currently being used, but it is also possible that the specified resources do not exist on the system. For example, LSF will not give an error message upon requesting a 64 core node with 500 GB of memory; it will simply wait until such a node is installed, leaving the job in a forever pending state.\nOther job information commands:\n\nbjobs -l: get more detailed information on the jobs than bjobs\nbjobs -lp -p3: will include a list of reasons the job is pending, and it may include an estimate of when the job will start (e.g., Job will start no sooner than indicated time stamp).\nbjobs -u all | grep gpu: find jobs running in a particular queue\nbjobs -r -X -o \"jobid queue cpu_used run_time avg_mem max_mem slots delimiter=','\": return a CSV formatted list of your jobs showing the job ID, queue, total CPU time, elapsed wall clock time, average memory utilized, maximum memory utilized, and the number of cores reserved\n\n\nNote: Job priority is determined by several factors including fair share priority, queue priority, and time of submission.\n\n\n\n4.0.3.2 2. Modify job requests with bmod\nFor example, to change the wall clock limit for a pending or running job, use\nbmod -W [new time] [job ID].\n\n\n4.0.3.3 3. Kill jobs with bkill\nA pending job may be removed from the queue or a running job may be terminated by using the bkill command. The job ID is used to specify which job to remove.\nbkill JOBID\nTo terminate all running and pending jobs, use bkill 0.\n\n\n\n\n\n4.0.4 🚦 Queues on Hazel (from HazelWiki)\nTo specify a queue, use -q queue_name.\n\n\n\n\n\n\nNote\n\n\n\nIn general, users should not specify a queue. When no queue is specified, LSF will choose the most appropriate queue based on the number of cores and time requested from the set of default queues. The exceptions are partner queues and specialty queues, which are queues with special resources.\n\n\n\n4.0.4.1 Default Queues\n\ndebug\nserial\nshort\nsingle_chassis\nstandard\nlong\n\n\n\n4.0.4.2 Specialty Queues\n\nshared_memory - Nodes intended for running OpenMP or other shared memory executables particularly if have large memory requirements\ngpu - Nodes with attached NVIDIA GPUs\nshort_gpu - Access to partner GPU nodes for up to 2 hour run time\n\nThe queues available to a user can be displayed by using bqueues -u user_name, and the properties of a queue can be displayed by using bqueues -l queue_name. For help interpreting the output of bqueues, see this example\n(base) [mtouced@login03 ~]$ bqueues -u mtouced\nQUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP \ndebug            80  Open:Active       -   64    -    -    64    64     0     0\nshort            75  Open:Active    2560 1024    -    -  4229  2792  1237     0\nshared_memory    70  Open:Active       -  256    -    -  2164  1086  1028     0\nsingle_chassis   65  Open:Active       - 1024    -    -  6090  2759  2595     0\nstandard         64  Open:Active       - 1024    -    -   112   112     0     0\nlong             63  Open:Active    1536  512    -    -  1167   644   523     0\nshort_gpu        62  Open:Active       -   64    -    -    78    20    58     0\ngpu              60  Open:Active       -   64    -    -   380   100   280     0\nserial           30  Open:Active    2048 1024    -    -   342    63   279     0\n\n4.0.4.2.1 bqueues output:\n\nNJOBS: number of total jobs in the queue\nRUN: Number of jobs actually running\nPEND: Number of jobs pending\nMAX: The maximum number of cores available. For some queues, like gpu, the MAX is not shown.\n\n\n\n\n4.0.4.3 Other commands to get queue information\n\nlshosts | grep gpu or bqueues -l gpu: find which hosts have GPUs\n\n\n\n\n\n\n4.0.5 📤 Standard Output and Standard Error\nWhen you submit a job to the HPC, your program’s output needs to go somewhere. By default, programs write to two streams:\n\nStandard Output (stdout): Normal program output and results\nStandard Error (stderr): Error messages and warnings\n\n\n4.0.5.1 Specifying Output Files in LSF\nIn your batch script, use these directives to control where output goes:\n#BSUB -o stdout.%J    # Standard output file\n#BSUB -e stderr.%J    # Standard error file\nThe %J is automatically replaced by your job ID when the job starts. For example, if your job ID is 948851, the files will be named: - stdout.948851 - stderr.948851\nYou can customize the names:\n#BSUB -o logs/myanalysis_out.%J\n#BSUB -e logs/myanalysis_err.%J\n\n\n\n\n\n4.0.6 ⚠️ Common Errors and How to Fix Them\n\n4.0.6.1 1. File or Directory Missing\nError message in stderr:\n/bin/bash: line 12: reads_R1.fastq: No such file or directory\nor\ncannot access 'data/samples.txt': No such file or directory\nCauses:\n\nThe file doesn’t exist where you think it does\nYou’re using a relative path, but the job runs from a different directory\nTypo in the filename\n\nSolutions:\n\nUse absolute paths: /path/to/your/data/reads_R1.fastq\nVerify the file exists before submitting: ls -l reads_R1.fastq\nCheck your current directory: pwd (jobs run from the directory where you submit)\nUse #BSUB -cwd /path/to/working/directory to specify working directory\n\n\n\n4.0.6.2 2. Out of Memory (OOM)\nError message in stderr:\nslurmstepd: error: Detected 1 oom-kill event(s)\nor\nKilled\njava.lang.OutOfMemoryError: Java heap space\nCause: Your job exceeded the memory allocated or available on the node.\nSolutions:\n\nRequest more memory using -R \"rusage[mem=XXXX]\" (memory in MB per core)\nCheck if your program has memory limit options\nUse a memory-efficient algorithm or subsample your data\n\n\n\n4.0.6.3 3. Wall Time Exceeded\nError message in stderr:\nTERM_RUNLIMIT: job killed after reaching LSF run time limit\nCause: Your job ran longer than the time specified with -W.\nSolutions:\n\nIncrease the wall time: -W 480 (for 8 hours)\nOptimize your code or reduce input size\nBreak the job into smaller tasks\nUse checkpointing if your program supports it\n\n\n\n4.0.6.4 4. Wrong Type (WT) - Incorrect Resource Specification\nError message:\nJob not started: requested resource [avx512] not available\nCause: You requested a resource (CPU instruction set, GPU, specific node type) that doesn’t exist or isn’t available.\nSolutions:\n\nCheck available resources at the cluster status page\nRemove or modify the resource specification\nUse more general resource requests\n\nCommon resource specifications on NCSU HPC:\n#BSUB -R \"select[avx2]\"     # AVX2 instruction set\n#BSUB -R \"select[qc]\"       # 8-core nodes\n#BSUB -R \"select[sc]\"       # 16-core nodes\n#BSUB -R \"select[dc]\"       # 32-core nodes\n#BSUB -q gpu                # GPU queue\n\n\n4.0.6.5 5. Module Not Found\nError message in stderr:\nmodule: command not found\nor\nLmod has detected the following error: The following module(s) are unknown: \"blast\"\nCauses:\n\nModule system not initialized (rarely on NCSU HPC)\nModule name is incorrect or doesn’t exist\nModule is not available on the compute nodes\n\nSolutions:\n\nCheck available modules: module avail\nSearch for the module: module spider blast\nVerify correct module name and version\nLoad prerequisite modules first\n\n\n\n4.0.6.6 6. Permission Denied\nError message in stderr:\n./my_script.sh: Permission denied\nCause: The script or executable doesn’t have execute permissions.\nSolution: Make the file executable before submitting:\nchmod +x my_script.sh\n\n\n\n\n4.0.7 🐛 Debugging Tips\n\nCheck your error file first: Most problems will show up in the stderr file\n\n   cat error.JOBID\n   tail -50 error.JOBID  # Last 50 lines often contain the error\n\nTest your script interactively first: Request an interactive session and run commands manually\n\n   bsub -Is -n 1 -W 30 bash\n   # Test your commands here before submitting a batch job\n\nUse verbose/debug flags: Many programs have options for detailed output\n\n   my_program --verbose input.txt\n\nAdd checks in your script:\n\n   #!/bin/bash\n   #BSUB -n 1\n   #BSUB -W 30\n   #BSUB -J mytest\n   #BSUB -o output.%J\n   #BSUB -e error.%J\n   \n   # Exit on any error\n   set -e\n   \n   # Print commands as they execute\n   set -x\n   \n   # Check if input file exists\n   if [ ! -f \"input.txt\" ]; then\n       echo \"ERROR: input.txt not found!\"\n       exit 1\n   fi\n   \n   # Your analysis here\n   my_program input.txt\n\nMonitor your job: Check on running jobs regularly\n\n   bjobs -l JOBID  # Detailed job info",
+    "crumbs": [
+      "Day 1",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Running Jobs on Hazel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/04_parallel_jobs.html",
+    "href": "notebooks/04_parallel_jobs.html",
+    "title": "4  Parallel Job Arrays",
+    "section": "",
+    "text": "5 04. Scaling Up: Running Parallel Jobs with Job Arrays\nWhen you have hundreds of independent tasks—like processing a long list of sequencing samples—submitting them one by one is inefficient. A Job Array allows you to submit one job to the scheduler, which then launches many instances (sub-jobs) concurrently, each tailored to process a different item.",
+    "crumbs": [
+      "Day 2",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Parallel Job Arrays</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/04_parallel_jobs.html#the-core-concept-the-job-index",
+    "href": "notebooks/04_parallel_jobs.html#the-core-concept-the-job-index",
+    "title": "4  Parallel Job Arrays",
+    "section": "5.1 The Core Concept: The Job Index",
+    "text": "5.1 The Core Concept: The Job Index\nThe key to a Job Array is the environment variable that the scheduler automatically sets for each sub-job: $LSB_JOBINDEX.\n\n$LSB_JOBID: The unique ID for the entire array (the parent job)\n$LSB_JOBINDEX: The index number for each individual sub-job (e.g., 1, 2, 3…)\nArray ID Format: When running, a sub-job’s ID appears as JOBID[JOBINDEX], e.g., 12345[1], 12345[2], etc.\n\n\n\n\n\n\n\nTipUnderstanding the Index\n\n\n\nIf you submit an array with #BSUB -J \"myjob[1-100]\", LSF will create 100 sub-jobs. The first will have $LSB_JOBINDEX=1, the second $LSB_JOBINDEX=2, and so on through 100.",
+    "crumbs": [
+      "Day 2",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Parallel Job Arrays</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/04_parallel_jobs.html#anatomy-of-the-array-system",
+    "href": "notebooks/04_parallel_jobs.html#anatomy-of-the-array-system",
+    "title": "4  Parallel Job Arrays",
+    "section": "5.2 Anatomy of the Array System",
+    "text": "5.2 Anatomy of the Array System\nRunning a Job Array typically involves two primary scripts working together:\n\nThe Config File: Stores environmental variables and paths\nThe Launcher Script: Submits the job to LSF and defines the array size\nThe Job Script: Uses $LSB_JOBINDEX to select and process a single item\n\n\n\n5.2.1 Component 1: The Config File (config.sh)\nThe config file centralizes all variable elements of your pipeline, making it easy to modify parameters without editing multiple scripts.\nWhat belongs in the config file:\n\nFile paths (input lists, output directories)\nResource requirements (CPUs, memory, time limits)\nSoftware parameters (trimming thresholds, quality cutoffs)\nJob names and dependencies\n\nexport ID=MY_ID\nexport IN_LIST=\"/your/path/to/repo/sample_list.txt\"  \nexport IN_DIR=\"/path/to/raw_reads\"                 \nexport FASTQC_SIF=\"/path/to/container/image\"                                           \n\n# Create output directory if it doesn't exist\nmkdir -p /path/to/working/dir/01_raw_fastqc_results\nexport OUT_DIR=\"/path/to/working/dir/01_raw_fastqc_results\"\n\n\n\n\n\n\nWarningPath Validation\n\n\n\nAlways validate that critical files exist before launching jobs. This prevents wasting compute time on jobs that will fail immediately.\n\n\n\n\n5.2.2 Component 2: The Launcher Script (run_fastqc.sh)\nThis script runs on the login node and orchestrates job submission.\n$ ./run_fastqc.sh\nIts primary function is to calculate the total number of tasks needed and submit the array definition using the bsub -J directive.\n#! /bin/bash\n\n# load job configuration\nsource ./config.sh\n\n\n# make sure sample file is in the right place\nif [[ ! -f \"$IN_LIST\" ]]; then\n    echo \"$IN_LIST does not exist. Please provide the path for a list of datasets to process. Job terminated.\"\n    exit 1\nfi\n\n# create a variable with the job name\nexport JOB1=\"fastqc\"  # this is not necessary but will be useful for consistency in larger pipelines\n\n# get number of samples to process\n# the number of samples will be used to set the range of the job array\nexport NUM_JOB=$(wc -l &lt; \"$IN_LIST\")\n\n# submit job arrays for each step\necho \"launching ${JOB1}.lsf as a job.\"\nJOB_ID=`bsub -J \"$JOB1[1-$NUM_JOB]%$NUM_JOB\" &lt; ${JOB1}.lsf`\n\nsource ./config.sh Loads parameters (like the list of samples) from a separate configuration file.\n$(wc -l &lt; \"$IN_LIST\") Calculates the number of tasks required (the end index of the array).\n-J \"$JOB1[1-$NUM_JOB]%$NUM_JOB\": Array syntax with optional concurrency limit\n\n\n\n\n\n\n\n\n\nComponent\nExample Value\nDescription\n\n\n\n\n$JOB1\nfastqc\nThis is the base name for the job array. Individual sub-jobs will be named, for example, fastqc[1], fastqc[2], etc.\n\n\n[1-$NUM_JOB]\ne.g., [1-50]\nThis defines the range of the job array. It means the array will consist of sub-jobs with indices starting from 1 up to the value of $NUM_JOB (which is the number of lines in your input file). Each sub-job will process one line/sample.\n\n\n%$NUM_JOB\ne.g., %50\nThis is the crucial concurrency limit. It specifies the maximum number of sub-jobs from this array that LSF is allowed to run at the same time (concurrently).\n\n\n\n\n\n\n\n\n\nTipConcurrency Limits\n\n\n\nThe %N syntax prevents overwhelming the filesystem or scheduler. For large arrays (&gt;100 jobs), consider limiting to 20-50 concurrent jobs.\n\n\n\n\n5.2.3 Component 3: The Job Script (fastqc.lsf)\nThis script contains the actual work to be performed on the compute nodes.\n# fastqc.lsf - Job script for FastQC analysis\n# --------------------------------------------------\n# Request resources here\n# --------------------------------------------------\n#BSUB -n 2                            # number of CPUs required per task\n#BSUB -q shared_memory                # the queue to run on\n#BSUB -R \"span[hosts=1]\"              # number of hosts to spread the jobs across, 1 host used here\n#BSUB -R \"rusage[mem=4GB]\"            # required total memory for the job \n#BSUB -o \"./output.%J_%I.log\"         # standard output file (%J is job name)\n#BSUB -e \"./error.%J_%I.log\"          # standard error file (%I is job ID)\n#BSUB -W 10:00                        # time to run\n\n# --------------------------------------------------\n# Load modules here\n# --------------------------------------------------\n\nmodule load apptainer\n\n# --------------------------------------------------\n# Execute commands here\n# --------------------------------------------------\n\n# Print job start information\necho \"==================================================\"\necho \"Job started: $(date)\"\necho \"Job ID: $LSB_JOBID\"\necho \"Running on host: $(hostname)\"\necho \"Working directory: $(pwd)\"\necho \"==================================================\"\n\n# Source config file and get sample name from input list based on job array index\nsource ./config.sh\nexport SAMPLE=`head -n +${LSB_JOBINDEX} $IN_LIST | tail -n 1`\n\n\n# --------------------------------------------------\n# Validate inputs\n# --------------------------------------------------\n\n# Check if container exists\nif [ ! -f \"${FASTQC_SIF}\" ]; then\n    echo \"ERROR: Container not found at ${FASTQC_SIF}\"\n    exit 1\nfi\n\n# Check if input directory exists\nif [ ! -d \"${IN_DIR}\" ]; then\n    echo \"ERROR: Input directory not found at ${IN_DIR}\"\n    exit 1\nfi\n\n# --------------------------------------------------\n# Execute FastQC\n# --------------------------------------------------\n\necho \"Running FastQC on sample: ${SAMPLE}\"\n\napptainer exec ${FASTQC_SIF} fastqc \\\n    --threads 2 \\\n    --outdir ${OUT_DIR} \\\n    ${IN_DIR}/${SAMPLE}_*.fastq*\n\n# Check if FastQC completed successfully\nif [ $? -eq 0 ]; then\n    echo \"FastQC completed successfully\"\nelse\n    echo \"ERROR: FastQC failed with exit code $?\"\n    exit 1\nfi\n\n# --------------------------------------------------\n# Job completion\n# --------------------------------------------------\n\necho \"==================================================\"\necho \"Job completed: $(date)\"\necho \"Results saved to: ${OUT_DIR}\"\necho \"==================================================\"\nCritical concept: The line export SAMPLE=head -n +${LSB_JOBINDEX $IN_LIST | tail -n 1 is what makes each sub-job unique. It extracts the Nth line from your sample list, where N is the job index.\n\n\n\n\n\n\nImportantThe Magic of $LSB_JOBINDEX\n\n\n\n\nJob 1 gets line 1: sample_001\nJob 2 gets line 2: sample_002\nJob 3 gets line 3: sample_003\n\nThis allows one script to process all samples!",
+    "crumbs": [
+      "Day 2",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Parallel Job Arrays</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/04_parallel_jobs.html#resource-specification-three-approaches",
+    "href": "notebooks/04_parallel_jobs.html#resource-specification-three-approaches",
+    "title": "4  Parallel Job Arrays",
+    "section": "5.3 Resource Specification: Three Approaches",
+    "text": "5.3 Resource Specification: Three Approaches\nThere are multiple ways to specify compute resources. Up to now we have been “hardcoding” (typing the exact value) the resource request in the job script. While the simplest method, this is however not the recommended one. It is commonly accepted as best practice to only modify the config file when adapting a pipeline. In that case, we would want to create the necessary variables in the config file and then pass them to the job via the launcer. Let’s see how this works.\n\n5.3.1 Approach 1: Hardcoded in Job Script (Simplest)\nThis is the approach we have been using so far in this training.\n# --------------------------------------------------\n# Request resources here\n# --------------------------------------------------\n#BSUB -n 2                            # number of CPUs required per task\n#BSUB -q shared_memory                # the queue to run on\n#BSUB -R \"span[hosts=1]\"              # number of hosts to spread the jobs across, 1 host used here\n#BSUB -R \"rusage[mem=4GB]\"            # required total memory for the job \n#BSUB -o \"./output.%J_%I.log\"         # standard output file (%J is job name)\n#BSUB -e \"./error.%J_%I.log\"          # standard error file (%I is job ID)\n#BSUB -W 10:00 \n\nPros: Simple, self-contained\nCons: Must edit job script to change resources\n\n\n\n5.3.2 Approach 2: Command-Line Specification (Recommended)\nHere we first want to create the variables and populate them (give them values) in the config.sh file.\nconfig.sh:\n# --- Job Parameters ---\nexport JOB3=\"03_fastqc_before\"\nexport QUEUE=\"shared_memory\"\n# 03 FastQC Before Trim\nexport CPUS=1\nexport QUEUE=\"${QUEUE}\"\nexport MEMORY=\"1GB\"\nexport TIME=\"02:00\"\nThis allows us to skip the #BSUB directives entirely in your .lsf file and pass all resource requests directly to the bsub command in your launcher script. This is useful for pipelines where one launcher controls many different job scripts.\nThe command to launch the job changes from this:\n# submit job arrays for each step\necho \"launching ${JOB1}.lsf as a job.\"\nJOB_ID=`bsub -J \"$JOB1[1-$NUM_JOB]%$NUM_JOB\" &lt; ${JOB1}.lsf`\nTo this:\n# submit job arrays for each step\necho \"launching ${JOB1}.lsf as a job.\"\nJOB_ID=$(bsub -J \"$JOB1[1-$NUM_JOB]%$NUM_JOB\" \\\n      -n $CPUS \\\n      -q $QUEUE \\\n      -R \"rusage[mem=$MEM]\" \\\n      -W $TIME \\\n      -o $STD_OUT \\\n      -e $STD_ERR \\\n      &lt; ./${JOB1}.lsf | awk '{print $2}' | tr -d '&lt;&gt;[]')\n\nPros: Complete control from launcher, no #BSUB directives needed\nCons: Longer bsub commands, all jobs use same resources\n\n\n\n\n\n\n\nTipBest Practice\n\n\n\nWe recommend you use Approach 2 (variables from config) for most pipelines. It provides the best balance of flexibility and maintainability. In fact this is what we have used in the example code. See: brc_hazel_training/scripts",
+    "crumbs": [
+      "Day 2",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Parallel Job Arrays</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/04_parallel_jobs.html#advanced-topics-this-hasnt-been-tested",
+    "href": "notebooks/04_parallel_jobs.html#advanced-topics-this-hasnt-been-tested",
+    "title": "4  Parallel Job Arrays",
+    "section": "5.4 Advanced Topics (⚠️ This hasn’t been tested)",
+    "text": "5.4 Advanced Topics (⚠️ This hasn’t been tested)\n\n5.4.1 Non-Sequential Arrays\n# Skip certain indices\nbsub -J \"myjob[1-100:2]\"  # Only odd numbers: 1,3,5...99\nbsub -J \"myjob[10,20,30,40]\"  # Specific indices only\n\n\n5.4.2 Job Dependencies\n# Wait for array to complete before starting next job\nJOB1_ID=$(bsub -J \"step1[1-100]\" &lt; step1.lsf)\nJOB2_ID=$(bsub -w \"done(step1)\" &lt; step2.lsf)\n\n\n5.4.3 Resubmitting Failed Jobs\n# If jobs 5, 12, and 23 failed\nbsub -J \"myjob[5,12,23]\" &lt; myjob.lsf",
+    "crumbs": [
+      "Day 2",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Parallel Job Arrays</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/04_parallel_jobs.html#questions",
+    "href": "notebooks/04_parallel_jobs.html#questions",
+    "title": "4  Parallel Job Arrays",
+    "section": "5.5 Questions",
+    "text": "5.5 Questions\n\nHow to tell (properly) which job inside the array has failed\nWhat really is this: \"$JOB1[1-$NUM_JOB]%$NUM_JOB\"\nmake a schematic figure of the config-job script-launcher",
+    "crumbs": [
+      "Day 2",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Parallel Job Arrays</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/03_gnu_parallel.html",
+    "href": "notebooks/03_gnu_parallel.html",
+    "title": "5  GNU Parallel",
+    "section": "",
+    "text": "6 03. Login node script with GNU Parallel\nIn some HPCs the compute nodes do not have internet access. This is the case of the NCSU Hazel HPC. This poses a challenge for some bioinformatics tasks, such as:\n\nDownloading databases and data, which is sometimes embedded in a pipeline\nInstalling tools that require internet connectivity\n\nWhen compute nodes lack internet access, these tasks must be performed on the login node. However, remember that we CANNOT run computationally intensive tasks on the login node. Some of these processes, like downloading large databases, can be resource-intensive and could violate cluster policies if executed directly on the login node without proper resource management.\nTo address this challenge, we’ll learn how to use GNU Parallel to efficiently manage these tasks while respecting login node limitations.\n\n6.0.1 What is GNU Parallel?\nGNU Parallel is a command-line tool that allows you to execute multiple jobs simultaneously while controlling resource usage. Think of it as a way to run several commands at once, but with intelligent management of how many processes run at any given time. Instead of running tasks sequentially (one after another) or launching them all at once (which could overwhelm the system), GNU Parallel lets you specify how many jobs should run in parallel. For example, if you need to download 100 datasets, you could tell GNU Parallel to download 4 at a time—as soon as one download finishes, it automatically starts the next one until all are complete.\nThis controlled parallelization is particularly valuable on login nodes, where we need to be mindful of resource consumption while still completing tasks efficiently. By limiting the number of concurrent processes, GNU Parallel allows us to perform necessary downloads and installations without monopolizing the login node’s resources or violating cluster policies.\nIt also provides useful features like progress monitoring, automatic retry of failed jobs, and the ability to resume interrupted work—making it an essential tool for managing data-intensive tasks in restricted HPC environments.\n\n\n\n\n\n6.0.2 Example 1: Downloading data from SRA\nLet’s see how to use GNU Parallel to download multiple datasets from the Sequence Read Archive (SRA) efficiently and responsibly on the login node.\n\n6.0.2.1 Basic Setup\nFirst, create a text file listing the SRA accession numbers you want to download. For example, create a file called sra_accessions.txt:\nSRR28473915\nSRR28473916\nSRR28473917\nSRR28473918\nSRR28473919\n\n\n6.0.2.2 Simple Parallel Download\nTo download these datasets with GNU Parallel, limiting to 3 concurrent downloads:\n#! /bin/bash\n\n# create some variables for a more clean script\nTASKS=3\nPARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel\nSRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif\n\n# load apptainer module\nmodule load apptainer\n\n# run gnu parallel downloads\ncat sra_accessions.txt | $PARALLEL -j $TASKS \"apptainer exec $SRA_CONTAINER prefetch {}\" &gt; output.log 2&gt; error.log\n\nNote: Make sure that you use double quotes \"...\" instead of single quotes '...' so that the variable $SRA_CONTAINER gets expanded to its actual value.\n\nThis command reads each accession number from the file and passes it to prefetch. The -j 3 flag ensures only 3 downloads run simultaneously, preventing system overload. By using &gt; output.log 2&gt; error.log we redirect the standard output and standard error to separate files.\n\n\n6.0.2.3 More Robust Download with Progress Monitoring\nFor a more informative and robust approach:\n#! /bin/bash\n# create some variables for a more clean script\nTASKS=3\nPARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel\nJOBLOG=/your_workdir/path/download_log.txt\nSRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif\n\n# load apptainer module\nmodule load apptainer\n\n# run gnu parallel downloads with joblog\ncat sra_accessions.txt | $PARALLEL -j $TASKS --progress --joblog $JOBLOG \"apptainer exec $SRA_CONTAINER prefetch {}\" &gt; output.log 2&gt; error.log\nKey options explained:\n\n-j $TASKS: Run 3 ($TASKS) tasks in parallel\n--progress: Display a progress bar showing completed/remaining jobs\n--joblog $JOBLOG: Create a log file (download_log.txt) tracking each job’s status and timing\n&gt; output.log 2&gt; error.log: Redirect standard output and standard error to separate files\n\n\n\n\n\n\n\n6.0.3 Example 2: Run a list of commands\nSometimes you need to execute multiple independent commands that all require internet access. GNU Parallel can read a list of these commands from a file and execute them in parallel on the login node. This is particularly useful for tasks like downloading reference genomes, databases, or datasets from different sources.\n\n\n6.0.4 Creating a Command List\nFirst, create a file called all_commands.txt with your internet-dependent commands. Here’s an example with common bioinformatics download tasks:\nwget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt -O bacteria_summary.txt\ncurl -O https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz\nSRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif\napptainer exec $SRA_CONTAINER prefetch SRR123456\napptainer exec $SRA_CONTAINER prefetch SRR123457\nwget https://ftp.ncbi.nlm.nih.gov/blast/db/16S_ribosomal_RNA.tar.gz\ncurl -O https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz\naws s3 cp s3://1000genomes/data/sample1.vcf.gz . --no-sign-request\naws s3 cp s3://1000genomes/data/sample2.vcf.gz . --no-sign-request\nThese commands download various bioinformatics datasets and databases from different online repositories using appropriate tools for each source. The list includes bacterial genome summaries and BLAST databases from NCBI (using wget), human genome sequences and protein databases from Ensembl and UniProt (using curl), sequencing data from the Sequence Read Archive (using prefetch), and genomic variant files from the 1000 Genomes Project on AWS S3 (using aws s3 cp), all of which will be executed in parallel to efficiently retrieve multiple large files simultaneously.\n\n6.0.4.0.1 wget commands\nwget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt -O bacteria_summary.txt\n\nwget: A command-line tool for downloading files from the web\nThe URL points to a bacterial genome assembly summary from NCBI\n-O bacteria_summary.txt: Saves the downloaded file with a specific name (instead of using the original filename)\n\n\n\n6.0.4.0.2 curl commands\ncurl -O https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz\n\ncurl: Another download tool (similar to wget but with different features)\n-O: Saves the file with its original filename from the URL\nDownloads human chromosome 1 sequence data in FASTA format from Ensembl\n\n\n\n6.0.4.0.3 prefetch commands\nSRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif\napptainer exec $SRA_CONTAINER prefetch SRR123456\napptainer exec $SRA_CONTAINER prefetch SRR123457\n\nprefetch: Part of the SRA Toolkit for downloading sequencing data from NCBI’s Sequence Read Archive\nSRR123456 and SRR123457: Accession numbers for specific sequencing datasets\nAutomatically downloads and caches the data in the proper format\n\n\n\n6.0.4.0.4 aws s3 cpcommands\naws s3 cp s3://1000genomes/data/sample1.vcf.gz . --no-sign-request\naws s3 cp s3://1000genomes/data/sample2.vcf.gz . --no-sign-request\n\naws s3 cp: AWS command-line tool for copying files from Amazon S3 storage\ns3://1000genomes/data/sample1.vcf.gz: The source file location in S3\n.: Copies to the current directory\n–no-sign-request: Accesses public S3 buckets without AWS credentials (for openly available data like the 1000 Genomes Project)\n\n\n\n\n\n6.0.5 Running the Commands in Parallel\nNow use this script to execute the commands with controlled parallelization:\n#! /bin/bash\n# create some variables for a more clean script\nTASKS=6\nPARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel\n\n# load apptainer module\nmodule load apptainer\n\n# run a list of commands\ncat all_commands.txt | $PARALLEL -j $TASKS -a - &gt; output.log 2&gt; error.log\nScript breakdown:\n\nTASKS=6: Limits execution to 6 concurrent downloads\nPARALLEL: Variable storing the path to the GNU Parallel executable (adjust for your system)\n-j $TASKS: Run up to 6 tasks simultaneously\n-a -: Read commands from standard input (stdin), which comes from the cat command\n\n\n6.0.5.1 Adding Progress Tracking\nFor better monitoring, enhance the script with progress reporting:\n#!/bin/bash\nTASKS=6\nPARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel\nJOBLOG=/your_workdir/path/commands_log.txt\n\n# load apptainer module\nmodule load apptainer\n\n# Run commands with progress tracking and logging\ncat all_commands.txt | $PARALLEL -j $TASKS --progress --joblog $JOBLOG &gt; output.log 2&gt; error.log\nThis approach allows you to download multiple resources from different sources simultaneously while maintaining control over login node resource usage.\n\n\n\n\n\n6.0.6 Sending the processes to the background\nSince we are running these scripts on the login node, we are going to want to be able to send them to the background so we can continue using the login node terminal. There are several options to do this\n\n6.0.6.1 1. Execute the process directy on the background\n./simple_download.sh &\n\n\n6.0.6.2 2. Start the process, then background it\n\nRun the script: ./simple_download.sh\nPress Ctrl+Z to suspend it\nType bg to resume it in the background\n\n\n\n6.0.6.3 3. Modifying your script\n# Save the process ID\necho $! &gt; download.pid\necho \"Background process ID: $!\"\necho \"To kill this process later, run: kill $(cat download.pid)\"\nThis modification allows you to directly obtain the process ID and send it to the background.\nYou can also kill the process manually by: 1. Finding the process id with: ps -ef 2. Killing the process using its process id with: kill -9 [process_id]",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>GNU Parallel</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html",
+    "href": "notebooks/05_job_performance.html",
+    "title": "6  Job Performance",
+    "section": "",
+    "text": "6.1 Training Objectives\nBy the end of this session, you will be able to:",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#training-objectives",
+    "href": "notebooks/05_job_performance.html#training-objectives",
+    "title": "6  Job Performance",
+    "section": "",
+    "text": "Estimate computational resource requirements for jobs\nMonitor and analyze job performance on Hazel\nConduct basic scaling analysis to optimize resource usage\nIdentify performance bottlenecks and inefficiencies",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#why-estimate-resources",
+    "href": "notebooks/05_job_performance.html#why-estimate-resources",
+    "title": "6  Job Performance",
+    "section": "7.1 Why Estimate Resources?",
+    "text": "7.1 Why Estimate Resources?\nUnderestimation:\n\nJobs fail or timeout\nWasted computational time\nNeed to resubmit\n\nOverestimation:\n\nLonger queue times\nWasted cluster resources\nReduced fair share priority\n\n\n\n\n\n\n\nTip\n\n\n\nBetter estimates = faster completion + efficient resource use",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#key-resources-to-estimate",
+    "href": "notebooks/05_job_performance.html#key-resources-to-estimate",
+    "title": "6  Job Performance",
+    "section": "7.2 Key Resources to Estimate",
+    "text": "7.2 Key Resources to Estimate\n\n\n\nResource\nQuestion to Ask\n\n\n\n\nCores\nIs this parallel? How many can it use effectively?\n\n\nMemory\nWhat’s the dataset size? Algorithm requirements?\n\n\nTime\nHow long for a test case? How does it scale?\n\n\nStorage\nInput/output file sizes? Temporary files?\n\n\n\n\n\n\n\n\n\nNoteRemember\n\n\n\nMemory = RAM used during computation (temporary, in-node) Storage = Disk space for input/output files (persistent)",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#estimating-cores",
+    "href": "notebooks/05_job_performance.html#estimating-cores",
+    "title": "6  Job Performance",
+    "section": "7.3 Estimating Cores",
+    "text": "7.3 Estimating Cores\nStart with the application:\n\n\nSerial code → 1 core\nOpenMP/threaded → typically 8-16 cores on one node\nMPI → can span multiple nodes, test scaling\nHybrid MPI+OpenMP → combination approach\n\n\nRule of thumb: Start small, measure, then scale up\n\n\n\n\n\n\nTipHazel Node Types\n\n\n\nHazel nodes vary in CPU generation and core count. For shared-memory parallel jobs, keep all tasks on a single node to avoid inter-node communication overhead. Use --nodes=1 in your job script to enforce this.",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#estimating-memory",
+    "href": "notebooks/05_job_performance.html#estimating-memory",
+    "title": "6  Job Performance",
+    "section": "7.4 Estimating Memory",
+    "text": "7.4 Estimating Memory\nQuick estimation methods:\n\nDocumentation: Check software requirements\nSimilar jobs: Look at past jobs in your group\nTest runs: Run small version, check actual usage with bjobs -l\nData-driven: Estimate based on your input data structure:\n\nIf the code reads input as a matrix and makes copies: memory ≈ N × file size (where N = number of matrix copies held simultaneously)\nNumber of grid points × number of variables × size of data type\n\n\n\n\n\n\n\n\nWarningHazel Node Memory Sizes\n\n\n\nHazel nodes have the following memory configurations (in GB):\n64 / 128 / 192 / 256 / 512* / 1024**\n* Higher memory nodes are limited outside of partner queues. ** Very few nodes; may not be available in every partition and will incur longer wait times.\nImportant: Request memory slightly below the node maximum — OS processes also consume RAM. For example, to target a 128 GB node, request --mem=120G.",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#estimating-wall-time",
+    "href": "notebooks/05_job_performance.html#estimating-wall-time",
+    "title": "6  Job Performance",
+    "section": "7.5 Estimating Wall Time",
+    "text": "7.5 Estimating Wall Time\nStrategies:\n\nRun a small test problem\n\n# Run test\nbsub -W 0:30 -n 4 ./test_run\n\n# Check how long it took\nbjobs -l JOBID | grep \"CPU time\"\nThen extrapolate:\n\nLinear scaling: 2x data ≈ 2x time\nWorse than linear: iterative algorithms, complex I/O\nConsider adding 20-30% buffer",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#monitoring-running-jobs",
+    "href": "notebooks/05_job_performance.html#monitoring-running-jobs",
+    "title": "6  Job Performance",
+    "section": "8.1 Monitoring Running Jobs",
+    "text": "8.1 Monitoring Running Jobs\nBasic monitoring:\n# Check your jobs\nbjobs\n\n# Detailed information\nbjobs -l JOBID\n\n# Check specific queue\nbqueues shared_memory\n\n# Why is my job pending?\nbjobs -p JOBID",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#understanding-job-status",
+    "href": "notebooks/05_job_performance.html#understanding-job-status",
+    "title": "6  Job Performance",
+    "section": "8.2 Understanding Job Status",
+    "text": "8.2 Understanding Job Status\nJOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME\n123456  user01  RUN   shared_mem login01     node042     analysis\n123457  user01  PEND  medium     login01     -           bigrun\nKey states:\n\nRUN - Currently executing\nPEND - Waiting in queue\nDONE - Completed successfully\nEXIT - Failed",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#pending-job-analysis",
+    "href": "notebooks/05_job_performance.html#pending-job-analysis",
+    "title": "6  Job Performance",
+    "section": "8.3 Pending Job Analysis",
+    "text": "8.3 Pending Job Analysis\nCommon reasons jobs wait:\nbjobs -p JOBID\nTypical outputs:\n\n“Not enough processors” - cluster at capacity\n“User has reached job limit”\n“Queue has reached job limit”\n“Resource requirements not satisfied”",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#actual-vs-requested-resources",
+    "href": "notebooks/05_job_performance.html#actual-vs-requested-resources",
+    "title": "6  Job Performance",
+    "section": "8.4 Actual vs Requested Resources",
+    "text": "8.4 Actual vs Requested Resources\nCheck what was actually used:\nbjobs -l JOBID | grep -A 5 \"CPU time\"\nLook for:\n\nCPU utilization - Were cores actually busy?\nMemory usage - Did you request too much/little?\nRun time - Did it finish early or timeout?",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#performance-red-flags",
+    "href": "notebooks/05_job_performance.html#performance-red-flags",
+    "title": "6  Job Performance",
+    "section": "8.5 Performance Red Flags",
+    "text": "8.5 Performance Red Flags\n\n\nInefficient Usage\n\nRequested 16 cores, used 2\n128GB RAM requested, 8GB used\nJob finished in 10 min, requested 24 hrs\n\n\nResource Issues\n\nJob killed for exceeding memory\nTimeout before completion\nHigh I/O wait times\nSwapping to disk\n\n\n\nNote that LSF outputs some job performance information at the end of the SDOUT. This resource usage summary is a standard output from IBM Spectrum LSF (Load Sharing Facility). It provides a post-job analysis of how efficiently your task used the hardware resources it was allocated.\nHere is a breakdown of what each metric means using the example of our fastqc.lsf job:\n\nMemory Utilization:\n\nMax Memory (1 GB): The peak amount of physical RAM (resident set size) your job used at any single point during its execution.\nAverage Memory (0.80 GB): The mean memory usage over the entire duration of the job.\nTotal Requested Memory (4.00 GB): The amount of RAM you specifically asked for in your submission script (e.g., via #BSUB -R \"rusage[mem=4000]\").\nDelta Memory (3.00 GB): The difference between what you requested and what you actually used.\n\nObservation: We over-requested memory by 3 GB. In a shared cluster, reducing your request to 1.5 GB or 2 GB would help your jobs start faster and be more “neighborly” to other users.\n\nMax Swap (-): The maximum amount of swap space (disk-based virtual memory) used. A dash usually means zero swap was used, which is good for performance.\n\nProcessing & Parallelism:\n\nCPU time (173.09 sec): The total time spent by all CPU cores executing your job’s instructions.\nMax Processes (6): The peak number of simultaneous processes created by your job.\nMax Threads (41): The peak number of simultaneous threads running within those processes.\n\nTime Metrics:\n\nRun time (103 sec): The “wall clock” time. This is the actual time that passed from the moment the job started until it finished.\n\nNote: Since our CPU time (173s) is higher than your Run time (103s), it confirms our job was multi-threaded or multi-process, utilizing more than one core’s worth of processing power.\n\nTurnaround time (94 sec): This usually represents the time from when the job was dispatched to when it finished.\n\nNote: In some LSF configurations, if Turnaround is shorter than Run time, it may indicate how LSF tracks the cleanup phase or specific reporting intervals, but generally, these two will be very close.",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#exercise-1-analyzing-a-job",
+    "href": "notebooks/05_job_performance.html#exercise-1-analyzing-a-job",
+    "title": "6  Job Performance",
+    "section": "8.6 Exercise 1: Analyzing a Job",
+    "text": "8.6 Exercise 1: Analyzing a Job\n# Submit a test job\nbsub -n 4 -W 0:10 ./test_program\n\n# Get job ID and monitor\nbjobs\n\n# After completion, check performance\nbjobs -l JOBID &gt; job_analysis.txt\n\n# Look at the output\nless job_analysis.txt\nAnalyze and identify:\n\nWas the resource request appropriate?\nWhat would you change for the next run?\nAny red flags or issues?",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#hazel-specific-considerations",
+    "href": "notebooks/05_job_performance.html#hazel-specific-considerations",
+    "title": "6  Job Performance",
+    "section": "8.7 Hazel-Specific Considerations",
+    "text": "8.7 Hazel-Specific Considerations\nNode characteristics:\n\nNodes are heterogeneous (different CPU generations)\nShared vs exclusive node access matters\nNetwork topology affects MPI jobs\nMemory per core varies by node type\n\nBest practice: Use -R \"span[hosts=1]\" for shared memory to avoid communication penalties",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#workflow-for-job-optimization",
+    "href": "notebooks/05_job_performance.html#workflow-for-job-optimization",
+    "title": "6  Job Performance",
+    "section": "9.1 Workflow for Job Optimization",
+    "text": "9.1 Workflow for Job Optimization\n\nStart small: Test with minimal resources\nMeasure: Collect actual performance data\nAnalyze: Check utilization and identify bottlenecks\nScale: Run controlled scaling experiments\nOptimize: Choose resource configuration that balances time and cost\nDocument: Record optimal settings for future runs",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#common-patterns",
+    "href": "notebooks/05_job_performance.html#common-patterns",
+    "title": "6  Job Performance",
+    "section": "9.2 Common Patterns",
+    "text": "9.2 Common Patterns\nCPU-bound jobs:\n\nScale well with cores (up to a point)\nMemory not a limiting factor\nFocus on finding optimal core count\n\nMemory-bound jobs:\n\nLimited by available RAM\nMay need fewer cores per node\nConsider high-memory nodes\n\nI/O-bound jobs:\n\nDon’t scale well with cores\nFocus on minimizing file operations\nUse /share/scratch effectively",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/05_job_performance.html#practical-tips",
+    "href": "notebooks/05_job_performance.html#practical-tips",
+    "title": "6  Job Performance",
+    "section": "9.3 Practical Tips",
+    "text": "9.3 Practical Tips\n\n\nStart testing with short runs - use subsets of data\nCheck job output files - they contain valuable timing info\nCompare similar jobs - learn from past successes\nDon’t over-optimize - 80/20 rule applies\nShare findings - help your research group",
+    "crumbs": [
+      "Day 3",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Job Performance</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html",
+    "href": "notebooks/globus_basics.html",
+    "title": "7  Globus Basics",
+    "section": "",
+    "text": "7.1 Overview\nGlobus is a secure, point-to-point file synchronization platform that orchestrates data transfers between endpoints. Unlike traditional file transfer methods, data never traverses through Globus servers—instead, Globus facilitates end-to-end encrypted communication between endpoints, allowing them to transfer files directly.",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#key-terminology",
+    "href": "notebooks/globus_basics.html#key-terminology",
+    "title": "7  Globus Basics",
+    "section": "7.2 Key Terminology",
+    "text": "7.2 Key Terminology\n\nCollection\n\nA named set of files and folders that can be accessed through Globus\n\nEndpoint\n\nA computer or server that hosts files and can send or receive data via Globus\n\nGlobus Connect Server\n\nInfrastructure deployed in front of storage platforms (e.g., Google Drive, research storage, HPC systems) to enable Globus transfers\n\nGlobus Connect Personal\n\nA desktop application that transforms your local machine into a Globus endpoint for data transfers\n\nGlobus Plus\n\nAn enhanced subscription that provides additional features, including the ability to synchronize multiple endpoints and share data with external collaborators",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#why-use-globus",
+    "href": "notebooks/globus_basics.html#why-use-globus",
+    "title": "7  Globus Basics",
+    "section": "7.3 Why Use Globus?",
+    "text": "7.3 Why Use Globus?\nGlobus offers several advantages over traditional file transfer methods:\n\nReliability: Automatic retry and resume capabilities for interrupted transfers\nSpeed: Optimized for high-performance transfers, especially for large datasets\nConvenience: Transfers continue in the background; no need to keep your browser open\nSecurity: End-to-end encryption and authentication through institutional credentials\nScalability: Efficiently handles transfers from single files to millions of files\nSharing: Easy and secure data sharing with collaborators at other institutions\n\n\n\n\n\n\n\nNoteWhen to Use Globus\n\n\n\nGlobus is particularly useful for:\n\nTransferring large datasets (&gt;1 GB)\nMoving data to/from HPC systems\nSharing data with external collaborators\nAutomated/scheduled transfers\nTransfers with many small files\n\nFor quick transfers of small files (&lt;100 MB), traditional methods may be simpler.",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#getting-started",
+    "href": "notebooks/globus_basics.html#getting-started",
+    "title": "7  Globus Basics",
+    "section": "7.4 Getting Started",
+    "text": "7.4 Getting Started\n\n7.4.1 Prerequisites\nBefore you begin, ensure you have:\n\nActive NCSU credentials (Unity ID and password)\nAccess to the systems you want to transfer data between\nA modern web browser (Chrome, Firefox, Safari, or Edge)\n\n\n\n7.4.2 Creating a Globus Account\n\nNavigate to https://www.globus.org\nClick Log In in the top right corner\nSearch for “North Carolina State University” in the organization list\nClick Continue and authenticate with your NCSU credentials\nComplete any first-time setup prompts\n\n\n\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIn my experience some of the first-time setup promts might take a couple of trys, you might need to refresh the page and do it again one of two times before it works",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#connecting-your-ncsu-google-drive",
+    "href": "notebooks/globus_basics.html#connecting-your-ncsu-google-drive",
+    "title": "7  Globus Basics",
+    "section": "7.5 Connecting Your NCSU Google Drive",
+    "text": "7.5 Connecting Your NCSU Google Drive\nFollow these steps to make your NCSU Google Drive accessible through Globus:\n\nNavigate to Collections on the Globus website \nSearch for ncsu google in the search bar\nLocate and click on NC State Google Drive Connector\nClick Collections in the top menu\n\nYou may be prompted to grant permissions to Globus at this point\n\nClick the Add Guest Collection button (top right)\n\nA popup will appear requesting your NCSU credentials\n\nConfigure your collection:\n\nSelect the directory you want to share\nEnter a memorable Display Name (e.g., “My Research Data 2024”)\nUse the Description field to add details about the collection’s contents\n\nClick Create Collection and authorize in the popup window\n\n\n\n\n\n\n\nTip\n\n\n\nChoose descriptive collection names that clearly indicate what data they contain. This will help you and collaborators quickly identify the correct collection during transfers.",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#conencting-your-local-machine",
+    "href": "notebooks/globus_basics.html#conencting-your-local-machine",
+    "title": "7  Globus Basics",
+    "section": "7.6 Conencting Your Local Machine",
+    "text": "7.6 Conencting Your Local Machine\nTo transfer files to/from your personal computer, you’ll need to install Globus Connect Personal.\n\n\n\n\n\n\nNote\n\n\n\nFor a second set of instructions, see the University of Arizona HPC Globus guide.\n\n\n\nDownload Globus Connect Personal from the Collections page (link in top right corner)\n\n\n\n\n\n\n\nInstall and launch the application\nLog in using your NCSU credentials\n\nAuthentication occurs via a browser popup\n\nCreate a label for your local machine (e.g., “Meri-Laptop” or “Lab-Workstation”)\nEnter your preferred Display Name for this endpoint and click Save\n\nYour local machine is now configured as a Globus endpoint and will appear under Collections.",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#transferring-files",
+    "href": "notebooks/globus_basics.html#transferring-files",
+    "title": "7  Globus Basics",
+    "section": "7.7 Transferring Files",
+    "text": "7.7 Transferring Files\nOnce you have at least two collections set up, you can initiate transfers:\n\nIn the File Manager, select your source collection (left panel) and destination collection (right panel)\n\n\n\n\n\n\n\nNavigate to and select the file(s) or folder(s) you want to transfer\nConfigure Transfer & Timer Options:\n\nSync options (sync only new/changed files)\nTransfer label for tracking\nEmail notifications\n\n\n\n\n\n\n\n\nClick Start to begin the transfer\n\n\n\n\n\n\n\nMonitor progress in the Activity page (accessible from the left sidebar)\n\n\n\n\n\n\n\nWarning\n\n\n\nLarge transfers can take time. Globus will continue transfers even if you close your browser, and can send you an email notification when complete.\n\n\n\n\n\n\n\n\nTipTransfer Best Practices\n\n\n\n\nLabel your transfers: Use descriptive labels to identify transfers in your activity history\nEnable email notifications: Get notified when large transfers complete\nUse sync mode for ongoing projects to only transfer changed files\nVerify transfers: Check the Activity log to confirm successful completion\nDelete carefully: Use the delete function in Globus rather than local deletion to avoid sync issues",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#scheduled-transfers",
+    "href": "notebooks/globus_basics.html#scheduled-transfers",
+    "title": "7  Globus Basics",
+    "section": "7.8 Scheduled Transfers",
+    "text": "7.8 Scheduled Transfers\nGlobus allows you to schedule transfers for specific times:\n\n\n\n\n\n\nWhen configuring a transfer, click Schedule Start\nSelect the date and time for the transfer to begin\nComplete the transfer setup as usual",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#sharing-data-with-collaborators",
+    "href": "notebooks/globus_basics.html#sharing-data-with-collaborators",
+    "title": "7  Globus Basics",
+    "section": "7.9 Sharing Data with Collaborators",
+    "text": "7.9 Sharing Data with Collaborators\nGlobus makes it easy to share specific datasets with colleagues, even if they’re at different institutions.\n\n7.9.1 Creating a Shared Collection\n\nNavigate to your collection in the File Manager\nSelect the folder you want to share\nClick the Share button (or right-click and select “Share”)\n\n\n\n\n\n\n\nConfigure sharing permissions:\n\nAdd email addresses or Globus IDs of collaborators\nSet permissions (read-only or read-write)\nSet expiration date (optional but recommended)\n\nClick Add Permission\nShare the collection name with your collaborators\n\n\n\n\n\n\n\nWarningData Sharing Considerations\n\n\n\nBefore sharing data:\n\nVerify you have permission to share the data\nEnsure sensitive or confidential data is properly protected\nConsider setting expiration dates for temporary collaborations\nUse read-only permissions unless collaborators need to add/modify files\nFollow your institution’s data management policies\n\n\n\n\n\n7.9.2 Accessing Shared Collections\nWhen someone shares a collection with you:\n\nYou’ll receive an email notification with the collection name\nGo to Collections and search for the shared collection name\nThe collection will appear in your search results\nYou may need to authenticate the first time you access it",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#linking-multiple-institutional-identities",
+    "href": "notebooks/globus_basics.html#linking-multiple-institutional-identities",
+    "title": "7  Globus Basics",
+    "section": "7.10 Linking Multiple Institutional Identities",
+    "text": "7.10 Linking Multiple Institutional Identities\nIf you’re affiliated with multiple universities or organizations that partner with Globus, you can link these identities to access endpoints from all institutions.\n\nClick Settings in the left sidebar\nNavigate to the Accounts tab\nClick Link Another Identity\n\n\n\n\n\n\n\nComplete the authentication process for your other institutional account\nOnce linked, you can access and transfer between endpoints from both organizations\n\nExample use case: Transfer data between NCSU’s HPC cluster and another university’s research storage system.",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#advanced-features",
+    "href": "notebooks/globus_basics.html#advanced-features",
+    "title": "7  Globus Basics",
+    "section": "7.11 Advanced Features",
+    "text": "7.11 Advanced Features\n\n7.11.1 Command Line Interface (CLI)\nFor power users and automation, Globus offers a command-line interface:\n# Install Globus CLI\npip install globus-cli\n\n# Login\nglobus login\n\n# Transfer files\nglobus transfer : \\\n                : \\\n                --label \"My Transfer\"\n\n\n7.11.2 Python SDK\nAutomate transfers programmatically using the Globus Python SDK:\nfrom globus_sdk import TransferClient, TransferData\n\n# Initialize client\ntc = TransferClient()\n\n# Create transfer\ntdata = TransferData(tc, source_endpoint_id, dest_endpoint_id,\n                     label=\"My automated transfer\")\ntdata.add_item(\"/source/path/file.txt\", \"/dest/path/file.txt\")\n\n# Submit transfer\ntransfer_result = tc.submit_transfer(tdata)\nprint(f\"Transfer ID: {transfer_result['task_id']}\")",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#troubleshooting",
+    "href": "notebooks/globus_basics.html#troubleshooting",
+    "title": "7  Globus Basics",
+    "section": "7.12 Troubleshooting",
+    "text": "7.12 Troubleshooting\n\n7.12.1 Common Issues and Solutions\nIssue: “Permission Denied” errors\n\nSolution: Verify you have appropriate permissions on both source and destination\nCheck that Globus Connect Personal has access to the folders you’re trying to access\nEnsure you’re authenticated to both endpoints\n\nIssue: Transfer is very slow\n\nSolution: Check your network connection\nVerify both endpoints are online and responsive\nConsider scheduling the transfer during off-peak hours\nLarge numbers of small files transfer slower than fewer large files\n\nIssue: Cannot find my endpoint\n\nSolution: Ensure Globus Connect Personal is running on your local machine\nCheck that your endpoint is set to “Public” visibility if trying to access from elsewhere\nVerify you’re logged in with the correct identity\n\nIssue: Transfer fails or gets stuck\n\nSolution: Check the Activity log for specific error messages\nVerify both endpoints have sufficient storage space\nTry canceling and restarting the transfer\nCheck for file permission issues or locked files\n\nIssue: Authentication keeps timing out\n\nSolution: Refresh your credentials by clicking on the endpoint and re-authenticating\nSome endpoints require re-authentication after a certain period\nCheck if your institutional credentials have expired\n\n\n\n\n\n\n\nTipGetting Help\n\n\n\nIf you encounter issues not covered here:\n\nCheck the detailed error message in the Activity log\nConsult the Globus documentation\nContact BRC support with your transfer ID and error details\nInclude screenshots of any error messages",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#best-practices",
+    "href": "notebooks/globus_basics.html#best-practices",
+    "title": "7  Globus Basics",
+    "section": "7.13 Best Practices",
+    "text": "7.13 Best Practices\n\n7.13.1 Data Management\n\nOrganize before transferring: Well-organized source data transfers more efficiently\nUse consistent naming conventions: Makes it easier to locate files after transfer\nDocument your transfers: Keep a log of what you transferred and when\nTest with small datasets first: Verify your workflow before transferring large amounts of data\n\n\n\n7.13.2 Performance Optimization\n\nBundle small files: Compress many small files into archives (.tar.gz, .zip) before transferring\nTransfer during off-peak hours: Network congestion can slow transfers\nUse sync mode: Only transfers changed files, saving time and bandwidth\nAvoid transferring unnecessary files: Filter out temporary files, caches, etc.\n\n\n\n7.13.3 Security\n\nReview sharing permissions regularly: Remove access for completed collaborations\nUse strong passwords: Protect your institutional credentials\nDon’t share credentials: Each user should have their own Globus account\nBe mindful of data sensitivity: Ensure appropriate security measures for sensitive data\nSet expiration dates: For temporary data sharing arrangements",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#frequently-asked-questions",
+    "href": "notebooks/globus_basics.html#frequently-asked-questions",
+    "title": "7  Globus Basics",
+    "section": "7.14 Frequently Asked Questions",
+    "text": "7.14 Frequently Asked Questions\nQ: How long do transfers take?\nA: Transfer time depends on file size, number of files, network speed, and endpoint performance. As a rough estimate, expect 50-100 MB/s on good connections. Globus provides time estimates in the Activity log.\nQ: Can I pause and resume transfers?\nA: Globus automatically handles interruptions. If a transfer is interrupted, it will automatically retry and resume from where it left off.\nQ: Is there a file size limit?\nA: Globus itself has no file size limits, but individual endpoints may have restrictions. Check with your system administrator for endpoint-specific limits.\nQ: Can I transfer files from my phone?\nA: While there’s no official mobile app, you can initiate and monitor transfers through a mobile web browser. The actual transfer happens between endpoints, not through your device.\nQ: How much does Globus cost?\nA: Basic Globus access is free for all NCSU users. Globus Plus ($50/year) offers additional features like sharing and synchronization.\nQ: Can I use Globus for backups?\nA: Yes! Use sync mode with scheduled transfers to create automated backup workflows. However, Globus should supplement, not replace, your institutional backup solutions.\nQ: What happens if I close my browser during a transfer?\nA: Nothing! Transfers continue running on Globus servers. You can close your browser, shut down your computer (if not a source/destination), and the transfer will complete.",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/globus_basics.html#additional-resources",
+    "href": "notebooks/globus_basics.html#additional-resources",
+    "title": "7  Globus Basics",
+    "section": "7.15 Additional Resources",
+    "text": "7.15 Additional Resources\n\n7.15.1 Documentation\n\nGlobus Documentation\nGlobus Support\nGlobus CLI Documentation\nGlobus Python SDK\n\n\n\n7.15.2 Training and Tutorials\n\nGlobus Video Tutorials\nGlobus Webinars\nNCSU Research Computing Workshops\n\n\n\n7.15.3 Support Channels\n\nBRC Support: ncsate_brc@ncsu.edu\nNCSU OIT Help Desk: 919-515-HELP (4357)\nGlobus Support: support@globus.org\n\n\nDocument version: 1.0 | Last updated: 11/19/2025 | For questions or assistance, contact the BRC support team at ncsate_brc@ncsu.edu",
+    "crumbs": [
+      "Day 4",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Globus Basics</span>"
+    ]
+  }
+]
