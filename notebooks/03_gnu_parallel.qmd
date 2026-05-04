@@ -1,19 +1,5 @@
 ---
-title: "BRC Documentation: Introduction to Hazel-HPC"
-author: "Mery Touceda-Suárez"
-date: today
-format:
-  html:
-    toc: true
-    toc-depth: 3
-    theme: cosmo
-    code-fold: false
-  pdf:
-    toc: true
-    toc-depth: 3
-    documentclass: article
-    geometry: margin=1in
-    colorlinks: true
+title: "GNU Parallel"
 ---
 
 # 03. Login node script with GNU Parallel

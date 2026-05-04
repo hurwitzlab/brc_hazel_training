@@ -1,0 +1,32 @@
+# Preface {.unnumbered}
+
+This handbook accompanies the NC State Bioinformatics Resource Center (BRC) week-long training workshop on Hazel HPC. It covers everything from HPC fundamentals and job submission to parallel workflows and large-scale data transfer.
+
+## Workshop Schedule
+
+| Day | Topics |
+|-----|--------|
+| Day 1 | HPC terminology, getting started on Hazel, running jobs |
+| Day 2 | Parallel job arrays |
+| Day 3 | GNU Parallel, job performance |
+| Day 4 | Globus data transfer |
+
+Materials can also be followed in order for self-paced learning outside of the live workshop.
+
+## Conventions
+
+Shell commands are shown in code blocks. Commands you type at a prompt begin with `$`; omit the `$` when copying. Expected output appears below without a leading `$`.
+
+```bash
+$ echo "hello world!"
+hello world!
+```
+
+::: {.callout-important}
+Never run computationally intensive work on the login nodes. Always submit jobs through the LSF scheduler.
+:::
+
+## Support
+
+- **BRC support**: mtouced@ncsu.edu | blhurwit@ncsu.edu
+- **OIT HPC help**: <https://hpc.ncsu.edu>
