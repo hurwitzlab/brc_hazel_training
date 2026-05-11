@@ -88,3 +88,7 @@ If you find issues or have suggestions for improvements, please open an issue or
 ## 📧 Contact
 
 For questions about the training materials, please contact the Hurwitz Lab (mtouced@ncsu.edu or blhurwit@ncsu.edu)
+
+## Feedback
+
+If you have taken one of our workshops and would like to give us your feedback please follow this link to the feedback form: https://forms.gle/azNF6h11opiSBT4v5
