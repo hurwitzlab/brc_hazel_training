@@ -145,8 +145,8 @@ echo "Running on host: $(hostname)"
 echo "Working directory: $(pwd)"
 echo "=================================================="
 
-FASTQC_SIF="/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_fastqc:0.12.1--hdfd78af_0.sif"
-IN_DIR="/rs1/shares/brc/trainings/hazel_hpc/data"
+FASTQC_SIF="/gpfs_backup/bioinfo_data/containers/images/quay.io_biocontainers_fastqc:0.12.1--hdfd78af_0.sif"
+IN_DIR="/path/to/your/repo/data"
 SAMPLE="sample_001”
 
 mkdir -p /path/to/working/dir/fastqc_results

@@ -1,0 +1,30 @@
+#!/bin/bash
+# ==================================================
+# Hello World python Job Script for Hazel HPC
+# ==================================================
+# This job script submits a python program to print "Hello World"
+
+
+# --------------------------------------------------
+# Request resources here
+# --------------------------------------------------
+#BSUB -J hello                        # job name
+#BSUB -n 2                            # number of CPUs required per task
+#BSUB -q shared_memory                # the queue to run on
+#BSUB -R "span[hosts=1]"              # number of hosts to spread the jobs across, 1 host used here
+#BSUB -R "rusage[mem=4GB]"            # required total memory for the job 
+#BSUB -o "./output.%J.log"            # standard output file (%J is job name)
+#BSUB -e "./error.%J.log"             # standard error file (%J is job ID)
+#BSUB -W 10:00                        # time to run
+
+# --------------------------------------------------
+# Load modules here
+# --------------------------------------------------
+
+module load python
+
+# --------------------------------------------------
+# Execute commands here
+# --------------------------------------------------
+
+python hello.py
