@@ -322,7 +322,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create some variables for a more clean script</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">TASKS</span><span class="op">=</span>3</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/gpfs_backup/bioinfo_data/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># load apptainer module</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
@@ -342,7 +342,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">TASKS</span><span class="op">=</span>3</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="va">PARALLEL</span><span class="op">=</span>/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="va">JOBLOG</span><span class="op">=</span>/your_workdir/path/download_log.txt</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/gpfs_backup/bioinfo_data/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># load apptainer module</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
@@ -398,7 +398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="prefetch-commands" class="level5" data-number="6.0.4.0.3">
 <h5 data-number="6.0.4.0.3" class="anchored" data-anchor-id="prefetch-commands"><span class="header-section-number">6.0.4.0.3</span> <code>prefetch</code> commands</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">SRA_CONTAINER</span><span class="op">=</span>/gpfs_backup/bioinfo_data/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="va">$SRA_CONTAINER</span> prefetch SRR123456</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="va">$SRA_CONTAINER</span> prefetch SRR123457</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
