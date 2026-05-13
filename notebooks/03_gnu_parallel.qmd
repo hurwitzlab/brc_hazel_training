@@ -49,7 +49,7 @@ To download these datasets with GNU Parallel, limiting to 3 concurrent downloads
 # create some variables for a more clean script
 TASKS=3
 PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
-SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
+SRA_CONTAINER=/gpfs_backup/bioinfo_data/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
 
 # load apptainer module
 module load apptainer
@@ -71,7 +71,7 @@ For a more informative and robust approach:
 TASKS=3
 PARALLEL=/rs1/shares/brc/admin/tools/parallel-20250922/bin/parallel
 JOBLOG=/your_workdir/path/download_log.txt
-SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
+SRA_CONTAINER=/gpfs_backup/bioinfo_data/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
 
 # load apptainer module
 module load apptainer
@@ -132,7 +132,7 @@ curl -O https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapi
 
 ##### `prefetch` commands
 ```bash
-SRA_CONTAINER=/rs1/shares/brc/admin/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
+SRA_CONTAINER=/gpfs_backup/bioinfo_data/containers/images/quay.io_biocontainers_sra-tools:3.2.1--h4304569_1.sif
 apptainer exec $SRA_CONTAINER prefetch SRR123456
 apptainer exec $SRA_CONTAINER prefetch SRR123457
 ```
